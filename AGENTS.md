@@ -28,21 +28,37 @@ one interaction: **open → shake → get something good → run it.** The value
    No "empower educators", no "transform learning outcomes", no unsupported efficacy claims.
 6. **Scope discipline.** Anything not needed for the MVP goes in `FUTURE.md` and is not built.
 
-## Localisation
+## Localisation and age
 
 The app ships to seven English-speaking markets that use different words for the same school
-year. **Never write an education level as text.**
+year — and put the same *age* in differently-numbered years. **Never write an education level as
+text, and never classify an activity by year number.**
 
-- Activities store `levels: [from, to]` on a canonical numeric scale (`-1` to `13`), anchored so
-  level 8 is the same cohort everywhere: `Year 8` (AU/GB/NZ), `Grade 8` (US/CA/ZA),
-  `2nd Year` (IE).
+- Activities store `ageRange: { min, max }`. Ages, not year numbers, because a British Year 8
+  class is 12–13 and an Australian Year 8 class is 13–14. Each country's `startAge` in
+  `education.ts` converts between the two.
+- Levels are canonical numbers (`-1` to `13`) used for *labels only*: level 8 is `Year 8`
+  (AU/GB/NZ), `Grade 8` (US/CA/ZA), `2nd Year` (IE).
 - All wording lives in `src/lib/i18n/education.ts`. Components call `useCountry()` and use
-  `label()`, `shortLabel()`, `rangeLabel()`, `levels()` or `terminology.levelNoun` — they never
+  `label()`, `shortLabel()`, `ageLabel()`, `levels()` or `terminology.levelNoun` — they never
   spell out a level, and they never say "Year level" either, since the US says "grade".
 - Adding an eighth market is one entry in `COUNTRIES`. If it needs a component change, the
   abstraction has leaked and the fix belongs in the layer, not the component.
 - Country is **not** language. English everywhere for now; a future translation adds a message
   catalogue without touching any of the above. See the note at the top of `src/lib/i18n/index.ts`.
+
+## Age suitability is a hard constraint
+
+`pickActivity` takes the teacher's active level and excludes anything outside its age range
+*before* anything else is considered. A Prep teacher must never be handed a written debate; a
+Year 11 teacher must never be handed "move like a kangaroo". `ageFit` then nudges towards
+activities squarely aimed at that class, but only as a multiplier — it must not be allowed to
+outweigh need relevance, or asking for "calm" stops reliably returning calm.
+
+When adding an activity, classify it on what's *appropriate*, not what's technically possible:
+cognitive load, reading and vocabulary demands, attention span, social maturity, abstraction,
+irony, and how babyish it would feel to a teenager. `activities.test.ts` enforces that the
+library doesn't drift towards marking everything all-ages.
 
 ## Conventions
 

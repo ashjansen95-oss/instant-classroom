@@ -8,6 +8,7 @@ import { ActivityList } from "@/components/explore/activity-list";
 import { FilterSheet } from "@/components/explore/filter-sheet";
 import { Button } from "@/components/ui/button";
 import { Page, PageHeader } from "@/components/ui/page";
+import { useCountry } from "@/hooks/use-country";
 import { track } from "@/lib/analytics";
 import { applyFilters, countActiveFilters } from "@/lib/selection";
 import { CATEGORIES, EMPTY_FILTERS, type Category, type FilterState } from "@/lib/types";
@@ -23,7 +24,8 @@ export function ExploreScreen() {
   );
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  const results = useMemo(() => applyFilters(ACTIVITIES, filters), [filters]);
+  const { country } = useCountry();
+  const results = useMemo(() => applyFilters(ACTIVITIES, filters, country), [filters, country]);
   const activeCount = countActiveFilters(filters);
 
   useEffect(() => {

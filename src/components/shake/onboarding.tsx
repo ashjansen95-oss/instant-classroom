@@ -1,20 +1,34 @@
 "use client";
 
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CountryPicker } from "@/components/settings/country-picker";
+import { Chip } from "@/components/ui/chip";
 import { useCountry } from "@/hooks/use-country";
 import { useStoredState } from "@/hooks/use-stored-state";
+import { useTeaching } from "@/hooks/use-teaching";
+import { COUNTRY_LIST, type EducationLevel } from "@/lib/i18n";
 import { KEYS } from "@/lib/storage";
+import { cn } from "@/lib/utils";
 
 /**
- * The entire onboarding. Shown once, dismissible, and never blocks use — a
- * teacher who ignores it still lands on a working generator.
+ * First-launch setup: where do you teach, and who do you teach.
+ *
+ * Two questions, then straight into the app. No account, no email, no school,
+ * no subject — the only things asked are the two that change what activities
+ * a teacher is shown.
  */
 export function Onboarding() {
   const [onboarded, setOnboarded, hydrated] = useStoredState<boolean>(KEYS.onboarded, false);
-  const { terminology, label } = useCountry();
-  const [pickingCountry, setPickingCountry] = useState(false);
+  const { country, setCountry, terminology, label, shortLabel, levels } = useCountry();
+  const {
+    teachingLevels,
+    defaultTeachingLevel,
+    toggleTeachingLevel,
+    setDefaultTeachingLevel,
+  } = useTeaching();
+
+  const [step, setStep] = useState<1 | 2 | 3>(1);
 
   // Held back until hydration so returning teachers never see it flash past.
   if (!hydrated || onboarded) return null;
@@ -24,61 +38,151 @@ export function Onboarding() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="onboarding-title"
-      className="fixed inset-0 z-50 flex flex-col justify-end bg-paper p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:justify-center"
+      className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-paper px-5 pt-[max(1.5rem,env(safe-area-inset-top))] pb-[max(1.25rem,env(safe-area-inset-bottom))]"
     >
-      <div className="animate-rise-in mx-auto w-full max-w-md">
-        <p className="font-display text-sm font-bold tracking-[0.2em] text-primary uppercase">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col">
+        <p className="font-display text-xs font-bold tracking-[0.2em] text-primary uppercase">
           Instant Classroom
         </p>
 
-        <h1
-          id="onboarding-title"
-          className="mt-3 font-display text-[2.75rem] leading-[0.95] font-extrabold tracking-tight text-balance"
-        >
-          Got 3 minutes to kill?
-        </h1>
-
-        <p className="mt-5 text-xl text-ink-muted text-pretty">
-          Instant activities for teachers. No prep. No planning. Just shake.
-        </p>
-
-        <ul className="mt-7 space-y-3 text-[0.9375rem] text-ink-muted">
-          <li className="flex gap-3">
-            <span aria-hidden>📱</span>
-            Shake your phone or tap the button.
-          </li>
-          <li className="flex gap-3">
-            <span aria-hidden>⏱</span>
-            Get something you can run right now.
-          </li>
-          <li className="flex gap-3">
-            <span aria-hidden>🔒</span>
-            No account. No student data. Works offline.
-          </li>
-        </ul>
-
-        <Button size="xl" fullWidth onClick={() => setOnboarded(true)} className="mt-8" autoFocus>
-          Shake for your first activity
-        </Button>
-
-        {/* One line, one tap, no extra step. Confirms we're using the right
-            words for their country before they see their first activity. */}
-        {pickingCountry ? (
-          <div className="mt-5 max-h-[38dvh] overflow-y-auto rounded-2xl border-2 border-line p-3">
-            <CountryPicker compact />
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setPickingCountry(true)}
-            className="mt-5 flex min-h-11 w-full items-center justify-center gap-1.5 rounded-full text-sm text-ink-muted hover:text-ink"
+        {step === 1 && (
+          <Step
+            title="Where do you teach?"
+            intro="Let's make sure we give you activities that fit your students."
           >
-            <span aria-hidden>{terminology.flag}</span>
-            {terminology.name} — we&rsquo;ll say &ldquo;{label(8)}&rdquo;.
-            <span className="font-bold underline underline-offset-4">Change</span>
-          </button>
+            <ul className="mt-6 space-y-2">
+              {COUNTRY_LIST.map((option) => (
+                <li key={option.code}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCountry(option.code);
+                      setStep(2);
+                    }}
+                    aria-pressed={option.code === country}
+                    className={cn(
+                      "flex min-h-14 w-full items-center gap-3 rounded-2xl border-2 px-4 text-left",
+                      option.code === country
+                        ? "border-line-strong bg-primary-soft"
+                        : "border-line bg-surface hover:border-line-strong",
+                    )}
+                  >
+                    <span aria-hidden className="text-xl">
+                      {option.flag}
+                    </span>
+                    <span className="flex-1 font-display font-bold">{option.name}</span>
+                    {option.code === country && (
+                      <Check aria-hidden className="size-5 text-primary" strokeWidth={3} />
+                    )}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </Step>
+        )}
+
+        {step === 2 && (
+          <Step
+            title={`Which ${terminology.levelNoun}s do you teach?`}
+            intro="Pick as many as you like — most teachers have more than one."
+          >
+            <div className="mt-6 flex flex-wrap gap-2">
+              {levels().map((level) => (
+                <Chip
+                  key={level}
+                  selected={teachingLevels.includes(level)}
+                  onClick={() => toggleTeachingLevel(level)}
+                  aria-label={label(level)}
+                >
+                  {shortLabel(level)}
+                </Chip>
+              ))}
+            </div>
+
+            <p aria-live="polite" className="mt-4 min-h-6 text-sm text-ink-muted">
+              {teachingLevels.length > 0
+                ? teachingLevels.map((level) => label(level)).join(", ")
+                : "Nothing selected yet."}
+            </p>
+
+            <div className="mt-auto space-y-3 pt-8">
+              <Button
+                size="xl"
+                fullWidth
+                disabled={teachingLevels.length === 0}
+                onClick={() => setStep(3)}
+              >
+                Continue →
+              </Button>
+              <Button variant="ghost" size="md" fullWidth onClick={() => setStep(1)}>
+                Back
+              </Button>
+            </div>
+          </Step>
+        )}
+
+        {step === 3 && (
+          <Step
+            title="You're all set."
+            intro="We'll use your year levels to make sure the activities actually fit your students."
+          >
+            {/* Only worth asking when there's an actual choice to make. */}
+            {teachingLevels.length > 1 && (
+              <div className="mt-6">
+                <p className="font-display text-sm font-bold tracking-wide text-ink-muted uppercase">
+                  Which one first?
+                </p>
+                <p className="mt-1 mb-3 text-sm text-ink-muted text-pretty">
+                  We&rsquo;ll start here each time. You can switch any time.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {teachingLevels.map((level: EducationLevel) => (
+                    <Chip
+                      key={level}
+                      selected={defaultTeachingLevel === level}
+                      onClick={() => setDefaultTeachingLevel(level)}
+                    >
+                      {label(level)}
+                    </Chip>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="mt-auto space-y-3 pt-8">
+              <Button size="xl" fullWidth onClick={() => setOnboarded(true)} autoFocus>
+                🎲 Give me my first activity
+              </Button>
+              <Button variant="ghost" size="md" fullWidth onClick={() => setStep(2)}>
+                Back
+              </Button>
+            </div>
+          </Step>
         )}
       </div>
+    </div>
+  );
+}
+
+function Step({
+  title,
+  intro,
+  children,
+}: {
+  title: string;
+  intro: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="animate-rise-in flex flex-1 flex-col">
+      <h1
+        id="onboarding-title"
+        className="mt-3 font-display text-[2rem] leading-[1.05] font-extrabold tracking-tight text-balance"
+      >
+        {title}
+      </h1>
+      <p className="mt-3 text-lg text-ink-muted text-pretty">{intro}</p>
+      {children}
     </div>
   );
 }

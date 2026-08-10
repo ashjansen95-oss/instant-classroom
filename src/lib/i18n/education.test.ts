@@ -3,6 +3,10 @@ import {
   COUNTRIES,
   COUNTRY_CODES,
   DEFAULT_COUNTRY,
+  ageRangeLabel,
+  levelsForAges,
+  startAgeForLevel,
+  suitsLevel,
   countryFromLocale,
   detectCountry,
   isCountryCode,
@@ -191,6 +195,92 @@ describe("rangeIncludes", () => {
     expect(rangeIncludes([3, 9], 9)).toBe(true);
     expect(rangeIncludes([3, 9], 2)).toBe(false);
     expect(rangeIncludes([3, 9], 10)).toBe(false);
+  });
+});
+
+describe("age mapping", () => {
+  it("knows the real age of each country's first school year", () => {
+    expect(startAgeForLevel("AU", 0)).toBe(5); // Prep
+    expect(startAgeForLevel("GB", 0)).toBe(4); // Reception
+    expect(startAgeForLevel("US", 0)).toBe(5); // Kindergarten
+    expect(startAgeForLevel("NZ", 1)).toBe(5); // Year 1
+    expect(startAgeForLevel("IE", -1)).toBe(4); // Junior Infants
+    expect(startAgeForLevel("ZA", 0)).toBe(5); // Grade R
+  });
+
+  it("finishes every market's schooling at 17–18", () => {
+    expect(startAgeForLevel("AU", 12)).toBe(17);
+    expect(startAgeForLevel("GB", 13)).toBe(17);
+    expect(startAgeForLevel("US", 12)).toBe(17);
+    expect(startAgeForLevel("NZ", 13)).toBe(17);
+    expect(startAgeForLevel("IE", 12)).toBe(17);
+  });
+
+  it("does not pretend the same year number is the same age everywhere", () => {
+    // The point of the whole age model: a British Year 8 class is a year
+    // younger than an Australian Year 8 class.
+    expect(startAgeForLevel("AU", 8)).toBe(13);
+    expect(startAgeForLevel("GB", 8)).toBe(12);
+    expect(startAgeForLevel("NZ", 8)).toBe(12);
+  });
+
+  it("maps ages 12–15 to each market's own levels", () => {
+    const range = { min: 12, max: 15 };
+
+    expect(levelsForAges("AU", range)).toEqual([7, 8, 9]);
+    expect(levelsForAges("US", range)).toEqual([7, 8, 9]);
+    expect(levelsForAges("CA", range)).toEqual([7, 8, 9]);
+    expect(levelsForAges("ZA", range)).toEqual([7, 8, 9]);
+    expect(levelsForAges("IE", range)).toEqual([7, 8, 9]);
+    // A year earlier in the numbering, because school starts a year earlier.
+    expect(levelsForAges("GB", range)).toEqual([8, 9, 10]);
+    expect(levelsForAges("NZ", range)).toEqual([8, 9, 10]);
+  });
+
+  it("labels that same range in each market's words", () => {
+    const range = { min: 12, max: 15 };
+
+    expect(ageRangeLabel("AU", range)).toBe("Year 7–Year 9");
+    expect(ageRangeLabel("US", range)).toBe("Grade 7–Grade 9");
+    expect(ageRangeLabel("GB", range)).toBe("Year 8–Year 10");
+    expect(ageRangeLabel("NZ", range)).toBe("Year 8–Year 10");
+    expect(ageRangeLabel("IE", range)).toBe("1st Year–3rd Year");
+    expect(ageRangeLabel("ZA", range)).toBe("Grade 7–Grade 9");
+  });
+
+  it("maps an early-years range to the right levels", () => {
+    const range = { min: 4, max: 7 };
+
+    expect(levelsForAges("AU", range)).toEqual([0, 1]);
+    expect(levelsForAges("GB", range)).toEqual([0, 1, 2]);
+    expect(levelsForAges("NZ", range)).toEqual([1, 2]);
+    expect(levelsForAges("IE", range)).toEqual([-1, 0, 1]);
+    expect(ageRangeLabel("AU", range)).toBe("Prep–Year 1");
+    expect(ageRangeLabel("IE", range)).toBe("Junior Infants–1st Class");
+  });
+
+  it("maps a senior range to the right levels", () => {
+    const range = { min: 14, max: 18 };
+
+    expect(levelsForAges("AU", range)).toEqual([9, 10, 11, 12]);
+    expect(levelsForAges("GB", range)).toEqual([10, 11, 12, 13]);
+    expect(ageRangeLabel("US", range)).toBe("Grade 9–Grade 12");
+    expect(ageRangeLabel("GB", range)).toBe("Year 10–Year 13");
+  });
+
+  it("answers whether a class is the right age for an activity", () => {
+    const teens = { min: 12, max: 15 };
+
+    expect(suitsLevel(teens, "AU", 8)).toBe(true);
+    expect(suitsLevel(teens, "AU", 0)).toBe(false);
+    expect(suitsLevel(teens, "AU", 12)).toBe(false);
+    // Same activity, same level number, different answer by country.
+    expect(suitsLevel(teens, "GB", 7)).toBe(false);
+    expect(suitsLevel(teens, "AU", 7)).toBe(true);
+  });
+
+  it("falls back to plain ages when no level fits", () => {
+    expect(ageRangeLabel("NZ", { min: 4, max: 4.4 })).toBe("Ages 4–4.4");
   });
 });
 

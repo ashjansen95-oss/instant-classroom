@@ -6,7 +6,7 @@ import { ChevronRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Page, PageHeader } from "@/components/ui/page";
-import { CountryPicker } from "@/components/settings/country-picker";
+import { TeachingSettings } from "@/components/settings/teaching-settings";
 import { usePreferences, type ShakeSensitivity } from "@/hooks/use-preferences";
 import { useShake } from "@/hooks/use-shake";
 import { track } from "@/lib/analytics";
@@ -33,18 +33,9 @@ export function SettingsScreen() {
     <Page>
       <PageHeader title="Settings" />
 
-      <section className="mb-8" aria-labelledby="country-heading">
-        <h2
-          id="country-heading"
-          className="font-display text-sm font-bold tracking-wide text-ink-muted uppercase"
-        >
-          Country / region
-        </h2>
-        <p className="mt-1 mb-3 text-sm text-ink-muted text-pretty">
-          Sets what we call school years across the whole app.
-        </p>
-        <CountryPicker />
-      </section>
+      <div className="mb-8">
+        <TeachingSettings />
+      </div>
 
       <section className="space-y-3">
         <Toggle

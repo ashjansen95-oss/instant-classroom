@@ -7,54 +7,64 @@ import { STORAGE_PREFIX, type StorageAdapter } from "./adapter";
  * teacher, so failures degrade to the fallback silently.
  */
 
-function available(): boolean {
+function pick(kind: "local" | "session"): Storage | null {
   try {
-    return typeof window !== "undefined" && window.localStorage !== null;
+    if (typeof window === "undefined") return null;
+    return kind === "local" ? window.localStorage : window.sessionStorage;
   } catch {
-    return false;
+    return null;
   }
 }
 
-export const localStorageAdapter: StorageAdapter = {
-  get<T>(key: string, fallback: T): T {
-    if (!available()) return fallback;
-    try {
-      const raw = window.localStorage.getItem(STORAGE_PREFIX + key);
-      if (raw === null) return fallback;
-      const parsed = JSON.parse(raw) as T;
-      return parsed === null || parsed === undefined ? fallback : parsed;
-    } catch {
-      return fallback;
-    }
-  },
+function createAdapter(kind: "local" | "session"): StorageAdapter {
+  return {
+    get<T>(key: string, fallback: T): T {
+      const storage = pick(kind);
+      if (!storage) return fallback;
+      try {
+        const raw = storage.getItem(STORAGE_PREFIX + key);
+        if (raw === null) return fallback;
+        const parsed = JSON.parse(raw) as T;
+        return parsed === null || parsed === undefined ? fallback : parsed;
+      } catch {
+        return fallback;
+      }
+    },
 
-  set<T>(key: string, value: T): void {
-    if (!available()) return;
-    try {
-      window.localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(value));
-    } catch {
-      // Quota or private mode. The app keeps working, it just won't remember.
-    }
-  },
+    set<T>(key: string, value: T): void {
+      const storage = pick(kind);
+      if (!storage) return;
+      try {
+        storage.setItem(STORAGE_PREFIX + key, JSON.stringify(value));
+      } catch {
+        // Quota or private mode. The app keeps working, it just won't remember.
+      }
+    },
 
-  remove(key: string): void {
-    if (!available()) return;
-    try {
-      window.localStorage.removeItem(STORAGE_PREFIX + key);
-    } catch {
-      // Ignore.
-    }
-  },
+    remove(key: string): void {
+      const storage = pick(kind);
+      if (!storage) return;
+      try {
+        storage.removeItem(STORAGE_PREFIX + key);
+      } catch {
+        // Ignore.
+      }
+    },
 
-  clear(): void {
-    if (!available()) return;
-    try {
-      const ours = Object.keys(window.localStorage).filter((key) =>
-        key.startsWith(STORAGE_PREFIX),
-      );
-      for (const key of ours) window.localStorage.removeItem(key);
-    } catch {
-      // Ignore.
-    }
-  },
-};
+    clear(): void {
+      const storage = pick(kind);
+      if (!storage) return;
+      try {
+        const ours = Object.keys(storage).filter((key) => key.startsWith(STORAGE_PREFIX));
+        for (const key of ours) storage.removeItem(key);
+      } catch {
+        // Ignore.
+      }
+    },
+  };
+}
+
+export const localStorageAdapter: StorageAdapter = createAdapter("local");
+
+/** Same contract, but cleared when the tab closes. */
+export const sessionStorageAdapter: StorageAdapter = createAdapter("session");

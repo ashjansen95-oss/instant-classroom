@@ -6,7 +6,8 @@ import { resetStore } from './src/lib/storage/store'
 afterEach(() => {
   cleanup()
   window.localStorage.clear()
-  // The storage store caches snapshots at module scope, so it has to be
+  window.sessionStorage.clear()
+  // The storage stores cache snapshots at module scope, so they have to be
   // emptied too or state leaks between tests.
   resetStore()
 })

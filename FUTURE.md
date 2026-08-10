@@ -16,6 +16,12 @@ If you think of something while working, add it here and carry on.
   a Supabase implementation can be dropped in without touching a single component. Worth doing
   when cross-device favourite sync is actually requested, or when aggregate feedback data
   becomes more valuable than the simplicity of shipping nothing.
+
+  Teaching preferences (`country`, `teachingLevels`, `defaultTeachingLevel`) are the strongest
+  candidate to sync first — a teacher setting up a second device shouldn't answer the same two
+  questions again. They already go through the adapter, so syncing them is a backend change, not
+  a UI one. Note the active teaching level deliberately stays session-scoped and should *not*
+  sync: it means "the class in front of me right now".
 - **Real analytics provider.** `src/lib/analytics/` has the sink interface. Swapping the local
   ring buffer for Plausible/Umami is one file. Do it when there are enough users for the numbers
   to mean anything.
@@ -47,9 +53,10 @@ complicated *now* in anticipation of it.
 ## AI
 
 Eventually: *"Year 8 English, 3 minutes, seated, quiet, persuasive writing"* → a generated
-activity. Note that the prompt is in the teacher's own terms: parse it into a canonical level
-before it reaches a model, and render the result back through `src/lib/i18n/`. Generated
-activities must store `levels` like every other activity — never a country's words. Explicitly not in the MVP, and the curated library should stay the default path — an
+activity. Note that the prompt is in the teacher's own terms: parse it into a canonical level,
+then into an age, before it reaches a model, and render the result back through `src/lib/i18n/`.
+Generated activities must carry an honest `ageRange` like every other activity — never a
+country's words, and never "suitable for everyone" as a way of avoiding the judgement. Explicitly not in the MVP, and the curated library should stay the default path — an
 LLM call per random activity would destroy the thing the product is actually selling, which is
 speed.
 

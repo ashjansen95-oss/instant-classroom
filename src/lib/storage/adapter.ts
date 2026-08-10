@@ -23,6 +23,9 @@ export const KEYS = {
   onboarded: "onboarded",
   motionPermission: "motion-permission",
   country: "country",
+  teaching: "teaching",
+  /** Session-scoped: which class they're teaching right now. */
+  activeLevel: "active-level",
 } as const;
 
 export type StorageKey = (typeof KEYS)[keyof typeof KEYS];

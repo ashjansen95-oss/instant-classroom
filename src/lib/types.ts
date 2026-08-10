@@ -2,9 +2,9 @@
 
 // Education levels live in @/lib/i18n — canonical numbers here, and they only
 // get their country's words at display time.
-import type { EducationLevel, LevelRange } from "@/lib/i18n";
+import type { AgeRange, EducationLevel, LevelRange } from "@/lib/i18n";
 
-export type { EducationLevel, LevelRange };
+export type { AgeRange, EducationLevel, LevelRange };
 
 export const ENERGY_LEVELS = ["calm", "low", "medium", "high"] as const;
 export type Energy = (typeof ENERGY_LEVELS)[number];
@@ -54,10 +54,15 @@ export interface Activity {
   movement: Movement;
   equipment: Equipment[];
   /**
-   * Inclusive range on the canonical education scale — never "Year 8" or
-   * "Grade 8". See @/lib/i18n for how a range becomes words.
+   * The ages this activity is genuinely *appropriate* for — not merely
+   * possible with. Ages rather than year numbers, because a British Year 8
+   * class is a year younger than an Australian one; @/lib/i18n converts.
+   *
+   * Classified on cognitive load, reading and vocabulary demands, attention
+   * span, social maturity, abstraction and how babyish it would feel to a
+   * teenager. Deliberately narrow where that's the honest answer.
    */
-  levels: LevelRange;
+  ageRange: AgeRange;
   categories: Category[];
   tags: string[];
 }

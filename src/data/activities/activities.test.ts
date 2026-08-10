@@ -10,7 +10,7 @@ import {
   DURATION_BUCKETS,
   type DurationBucket,
 } from "@/lib/types";
-import { COUNTRY_CODES, MAX_LEVEL, MIN_LEVEL, levelsIn, rangeIncludes } from "@/lib/i18n";
+import { COUNTRY_CODES, MAX_AGE, MIN_AGE, levelsIn, suitsLevel } from "@/lib/i18n";
 
 /**
  * The data contract. These aren't stylistic preferences — every rule here maps
@@ -62,10 +62,11 @@ describe("activity library", () => {
     // "none" is a statement about the whole activity, so it can't be combined.
     if (activity.equipment.includes("none")) expect(activity.equipment).toHaveLength(1);
 
-    const [from, to] = activity.levels;
-    expect(from).toBeGreaterThanOrEqual(MIN_LEVEL);
-    expect(to).toBeLessThanOrEqual(MAX_LEVEL);
-    expect(from).toBeLessThanOrEqual(to);
+    const { min, max } = activity.ageRange;
+    expect(min).toBeGreaterThanOrEqual(MIN_AGE);
+    expect(max).toBeLessThanOrEqual(MAX_AGE);
+    // At least a year wide, or it can't cover a single school year.
+    expect(max - min).toBeGreaterThanOrEqual(1);
 
     expect(activity.categories.length).toBeGreaterThan(0);
     for (const category of activity.categories) expect(CATEGORIES).toContain(category);
@@ -114,19 +115,52 @@ describe("activity library", () => {
     // must not hit an empty library.
     for (const code of COUNTRY_CODES) {
       for (const level of levelsIn(code)) {
-        const matches = ACTIVITIES.filter((a) => rangeIncludes(a.levels, level));
+        const matches = ACTIVITIES.filter((a) => suitsLevel(a.ageRange, code, level));
         expect(
           matches.length,
           `${code} level ${level} only has ${matches.length} activities`,
-        ).toBeGreaterThanOrEqual(20);
+        ).toBeGreaterThanOrEqual(15);
       }
     }
   });
 
-  it("stores levels as canonical numbers, never a country's words for them", () => {
+  it("stores ages, never a country's words for a year level", () => {
     const source = JSON.stringify(ACTIVITIES);
     for (const term of ["Year 8", "Grade 8", "Kindergarten", "Reception", "Junior Infants"]) {
       expect(source, `"${term}" must not be baked into activity data`).not.toContain(term);
+    }
+  });
+
+  it("classifies deliberately rather than marking everything all-ages", () => {
+    const allAges = ACTIVITIES.filter((a) => a.ageRange.min <= 5 && a.ageRange.max >= 17);
+    expect(
+      allAges.length / ACTIVITIES.length,
+      `${allAges.length} activities claim to suit everyone from 5 to 17`,
+    ).toBeLessThan(0.1);
+  });
+
+  it("keeps the youngest and oldest classes genuinely different", () => {
+    // The point of the whole feature: a Prep teacher and a Year 12 teacher
+    // should not be looking at the same library.
+    const prep = ACTIVITIES.filter((a) => suitsLevel(a.ageRange, "AU", 0)).map((a) => a.id);
+    const year12 = ACTIVITIES.filter((a) => suitsLevel(a.ageRange, "AU", 12)).map((a) => a.id);
+
+    const shared = prep.filter((id) => year12.includes(id));
+    expect(shared.length / Math.min(prep.length, year12.length)).toBeLessThan(0.3);
+  });
+
+  it("keeps abstract reasoning away from the youngest classes", () => {
+    // Spot-check the specific failure mode the brief calls out.
+    for (const id of ["silent-debate", "what-if-history", "justify-the-absurd", "six-word-story"]) {
+      const activity = getActivity(id)!;
+      expect(activity.ageRange.min, `${id} should not suit a Prep class`).toBeGreaterThanOrEqual(11);
+    }
+  });
+
+  it("keeps obviously childish activities away from senior classes", () => {
+    for (const id of ["animal-moves", "body-alphabet", "simon-says", "freeze-dance"]) {
+      const activity = getActivity(id)!;
+      expect(activity.ageRange.max, `${id} should not suit Year 12`).toBeLessThanOrEqual(12);
     }
   });
 

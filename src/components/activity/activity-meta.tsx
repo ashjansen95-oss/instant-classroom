@@ -28,7 +28,7 @@ export function ActivityMeta({
   compact?: boolean;
   className?: string;
 }) {
-  const { rangeLabel } = useCountry();
+  const { ageLabel } = useCountry();
 
   const items = [
     { icon: "⏱", label: formatDuration(activity.duration), sr: "Duration" },
@@ -41,7 +41,7 @@ export function ActivityMeta({
   if (!compact) {
     items.push(
       { icon: "🧍", label: MOVEMENT_LABELS[activity.movement], sr: "Movement" },
-      { icon: "🎓", label: rangeLabel(activity.levels), sr: "Suits" },
+      { icon: "🎓", label: ageLabel(activity.ageRange), sr: "Suits" },
     );
   }
 

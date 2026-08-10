@@ -17,42 +17,44 @@ function withCountry(code: CountryCode) {
   writeKey(KEYS.country, code);
 }
 
-// Six-Word Story suits levels 3–13, so it reads differently in every market.
+// Six-Word Story is classified for ages 11–18 — the same underlying range
+// reads differently in every market, and lands a year later in the UK because
+// British students start school a year earlier.
 const activity = getActivity("six-word-story")!;
 
 describe("ActivityMeta level display", () => {
   it("uses Australian terminology", () => {
     withCountry("AU");
     render(<ActivityMeta activity={activity} />);
-    expect(screen.getByText("Year 3–Year 12")).toBeInTheDocument();
+    expect(screen.getByText("Year 6–Year 12")).toBeInTheDocument();
   });
 
   it("uses US terminology for the same activity", () => {
     withCountry("US");
     render(<ActivityMeta activity={activity} />);
-    expect(screen.getByText("Grade 3–Grade 12")).toBeInTheDocument();
+    expect(screen.getByText("Grade 6–Grade 12")).toBeInTheDocument();
   });
 
   it("uses Irish terminology for the same activity", () => {
     withCountry("IE");
     render(<ActivityMeta activity={activity} />);
-    expect(screen.getByText("3rd Class–6th Year")).toBeInTheDocument();
+    expect(screen.getByText("6th Class–6th Year")).toBeInTheDocument();
   });
 
-  it("extends to Year 13 in the UK", () => {
+  it("shifts a year in the UK, where the same ages sit in later year groups", () => {
     withCountry("GB");
     render(<ActivityMeta activity={activity} />);
-    expect(screen.getByText("Year 3–Year 13")).toBeInTheDocument();
+    expect(screen.getByText("Year 7–Year 13")).toBeInTheDocument();
   });
 
   it("uses South African terminology", () => {
     withCountry("ZA");
     render(<ActivityMeta activity={activity} />);
-    expect(screen.getByText("Grade 3–Grade 12")).toBeInTheDocument();
+    expect(screen.getByText("Grade 6–Grade 12")).toBeInTheDocument();
   });
 
-  it("says 'any' in the local word when an activity suits everyone", () => {
-    const everyone = getActivity("odd-one-out")!;
+  it("says 'any' in the local word when an activity really does suit everyone", () => {
+    const everyone = getActivity("heads-down-reset")!;
 
     withCountry("AU");
     const { unmount } = render(<ActivityMeta activity={everyone} />);
@@ -70,9 +72,9 @@ describe("ActivityMeta level display", () => {
     expect(container.textContent).not.toMatch(/Year \d/);
   });
 
-  it("leaves the country out of the compact strip, which has no room for it", () => {
+  it("leaves the level out of the compact strip, which has no room for it", () => {
     withCountry("AU");
     const { container } = render(<ActivityMeta activity={activity} compact />);
-    expect(container.textContent).not.toContain("Year 3");
+    expect(container.textContent).not.toContain("Year 6");
   });
 });

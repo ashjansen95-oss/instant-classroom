@@ -23,6 +23,31 @@ export type EducationLevel = number;
 /** Inclusive range of levels an activity suits, on the canonical scale. */
 export type LevelRange = [from: EducationLevel, to: EducationLevel];
 
+/* -------------------------------------------------------------------------- */
+/* Age                                                                         */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Age is what activities are actually classified by, because a level number
+ * does *not* mean the same age everywhere: a British Year 8 class is 12–13,
+ * an Australian Year 8 class is 13–14. Classifying by age and converting per
+ * country is the only way one library can serve seven markets honestly.
+ */
+export const MIN_AGE = 4;
+export const MAX_AGE = 18;
+
+/** The ages an activity suits. `max - min` is roughly how many school years it spans. */
+export interface AgeRange {
+  min: number;
+  max: number;
+}
+
+/**
+ * A level is suitable when students are that age for most of the school year,
+ * so we compare against the mid-year age rather than the age they start on.
+ */
+const MID_YEAR = 0.5;
+
 export interface LevelName {
   /** Full name, e.g. "Year 8", "Junior Infants". */
   label: string;
@@ -43,6 +68,15 @@ export interface CountryTerminology {
    * so even the category name isn't hard-coded to one market.
    */
   levelNoun: string;
+  /**
+   * The age students turn during their first year at canonical level 0 — or
+   * what level 0 *would* be, for New Zealand, which starts at level 1.
+   *
+   * This is the whole reason the same year number differs by country:
+   * England and New Zealand start school a year earlier than Australia and
+   * the US relative to the shared level numbering.
+   */
+  startAge: number;
   /** Every level this country has, ascending. */
   levels: EducationLevel[];
   names: Record<EducationLevel, LevelName>;
@@ -102,6 +136,7 @@ function country(
   name: string,
   flag: string,
   levelNoun: string,
+  startAge: number,
   entries: Entry[][],
 ): CountryTerminology {
   const flat = entries.flat().sort((a, b) => a[0] - b[0]);
@@ -110,6 +145,7 @@ function country(
     name,
     flag,
     levelNoun,
+    startAge,
     levels: flat.map(([level]) => level),
     names: Object.fromEntries(flat) as Record<EducationLevel, LevelName>,
   };
@@ -121,39 +157,44 @@ function country(
 /* -------------------------------------------------------------------------- */
 
 export const COUNTRIES: Record<CountryCode, CountryTerminology> = {
-  AU: country("AU", "Australia", "🇦🇺", "year level", [
+  // Prep is 5–6, Year 12 is 17–18.
+  AU: country("AU", "Australia", "🇦🇺", "year level", 5, [
     single(0, "Prep", "Prep"),
     numbered(1, 12, "Year", "Y"),
   ]),
 
-  GB: country("GB", "United Kingdom", "🇬🇧", "year group", [
+  // Reception is 4–5, so every UK year group is a year younger than the
+  // same-numbered Australian one. Year 13 is 17–18.
+  GB: country("GB", "United Kingdom", "🇬🇧", "year group", 4, [
     single(0, "Reception", "Rec"),
     numbered(1, 13, "Year", "Y"),
   ]),
 
-  US: country("US", "United States", "🇺🇸", "grade", [
+  US: country("US", "United States", "🇺🇸", "grade", 5, [
     single(0, "Kindergarten", "K"),
     numbered(1, 12, "Grade", "G"),
   ]),
 
-  CA: country("CA", "Canada", "🇨🇦", "grade", [
+  CA: country("CA", "Canada", "🇨🇦", "grade", 5, [
     single(0, "Kindergarten", "K"),
     numbered(1, 12, "Grade", "G"),
   ]),
 
-  // New Zealand starts at Year 1; there is no level 0.
-  NZ: country("NZ", "New Zealand", "🇳🇿", "year level", [numbered(1, 13, "Year", "Y")]),
+  // New Zealand starts at Year 1 (age 5), so it shares the UK's offset:
+  // NZ Year 8 is 12–13, the same age as UK Year 8 and a year below AU Year 8.
+  NZ: country("NZ", "New Zealand", "🇳🇿", "year level", 4, [numbered(1, 13, "Year", "Y")]),
 
   // Ireland is the only market with a level below the shared anchor, and the
   // only one where primary and secondary restart their numbering.
-  IE: country("IE", "Ireland", "🇮🇪", "year group", [
+  // Junior Infants is 4–5, 6th Year is 17–18.
+  IE: country("IE", "Ireland", "🇮🇪", "year group", 5, [
     single(-1, "Junior Infants", "JI"),
     single(0, "Senior Infants", "SI"),
     ordinal(1, 6, 0, "Class", "C"),
     ordinal(7, 12, 6, "Year", "Yr"),
   ]),
 
-  ZA: country("ZA", "South Africa", "🇿🇦", "grade", [
+  ZA: country("ZA", "South Africa", "🇿🇦", "grade", 5, [
     single(0, "Grade R", "GR"),
     numbered(1, 12, "Grade", "G"),
   ]),
@@ -219,6 +260,49 @@ export function levelRangeLabel(code: CountryCode, range: LevelRange): string {
 /** Whether an activity's range covers a given level. */
 export function rangeIncludes(range: LevelRange, level: EducationLevel): boolean {
   return level >= range[0] && level <= range[1];
+}
+
+/* -------------------------------------------------------------------------- */
+/* Age ↔ level                                                                 */
+/* -------------------------------------------------------------------------- */
+
+/** The age students turn at the start of this school year. */
+export function startAgeForLevel(code: CountryCode, level: EducationLevel): number {
+  return terminologyFor(code).startAge + level;
+}
+
+/**
+ * The age to judge an activity against — mid-year, since that's how old the
+ * class is for most of the time you'd be running it.
+ */
+export function studentAgeForLevel(code: CountryCode, level: EducationLevel): number {
+  return startAgeForLevel(code, level) + MID_YEAR;
+}
+
+export function ageRangeIncludes(range: AgeRange, age: number): boolean {
+  return age >= range.min && age <= range.max;
+}
+
+/** Whether a class at this level is the right age for this activity. */
+export function suitsLevel(range: AgeRange, code: CountryCode, level: EducationLevel): boolean {
+  return ageRangeIncludes(range, studentAgeForLevel(code, level));
+}
+
+/** The country's levels that an age range covers — the inverse of the above. */
+export function levelsForAges(code: CountryCode, range: AgeRange): EducationLevel[] {
+  return terminologyFor(code).levels.filter((level) => suitsLevel(range, code, level));
+}
+
+/**
+ * An age range in the teacher's own words: "Year 7–Year 9" in Australia,
+ * "Grade 7–Grade 9" in the US, "Year 8–Year 10" in New Zealand — all from the
+ * same underlying ages 12–15.
+ */
+export function ageRangeLabel(code: CountryCode, range: AgeRange): string {
+  const levels = levelsForAges(code, range);
+  if (levels.length === 0) return `Ages ${range.min}–${range.max}`;
+
+  return levelRangeLabel(code, [levels[0], levels[levels.length - 1]]);
 }
 
 /* -------------------------------------------------------------------------- */

@@ -12,6 +12,7 @@ import { Page } from "@/components/ui/page";
 import { Button } from "@/components/ui/button";
 import { NEEDS, type Need } from "@/lib/types";
 import { ActivityReel } from "./activity-reel";
+import { LevelSwitcher } from "./level-switcher";
 import { NeedGrid } from "./need-grid";
 import { Onboarding } from "./onboarding";
 import { Recommendations } from "./recommendations";
@@ -50,9 +51,12 @@ export function HomeScreen() {
 
       <Page className="flex flex-col">
         <header className="pt-2">
-          <p className="font-display text-xs font-bold tracking-[0.2em] text-primary uppercase">
-            Instant Classroom
-          </p>
+          <div className="flex items-baseline justify-between gap-3">
+            <p className="font-display text-xs font-bold tracking-[0.2em] text-primary uppercase">
+              Instant Classroom
+            </p>
+            <LevelSwitcher />
+          </div>
           <h1 className="mt-2 font-display text-[2rem] leading-[1.05] font-extrabold tracking-tight text-balance">
             What do you need?
           </h1>

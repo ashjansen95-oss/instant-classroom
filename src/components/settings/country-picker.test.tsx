@@ -69,15 +69,15 @@ describe("CountryPicker", () => {
       </>,
     );
 
-    expect(screen.getByText("Year 3–Year 12")).toBeInTheDocument();
+    expect(screen.getByText("Year 6–Year 12")).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: /United States/ }));
 
-    expect(screen.getByText("Grade 3–Grade 12")).toBeInTheDocument();
-    expect(screen.queryByText("Year 3–Year 12")).not.toBeInTheDocument();
+    expect(screen.getByText("Grade 6–Grade 12")).toBeInTheDocument();
+    expect(screen.queryByText("Year 6–Year 12")).not.toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: /Ireland/ }));
 
-    expect(screen.getByText("3rd Class–6th Year")).toBeInTheDocument();
+    expect(screen.getByText("6th Class–6th Year")).toBeInTheDocument();
   });
 });

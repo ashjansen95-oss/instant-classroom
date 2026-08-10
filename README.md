@@ -66,24 +66,36 @@ for *calm*, they get calm.
 
 It's pure, with an injectable `rng`, so all of that is actually tested rather than hoped for.
 
+### Knowing who you teach
+
+On first launch the app asks two questions and nothing else — no account, no email, no school,
+no subject:
+
+1. **Where do you teach?** (the seven markets above)
+2. **Which year/grade levels do you teach?** (as many as you like, plus which one to start on)
+
+That's it. Returning teachers never see it again. The home screen carries a small `Teaching
+Year 8 ▾` control for switching class mid-session; the switch lasts the session and then falls
+back to your default.
+
 ### Seven countries, one activity library
 
-Australia, the UK, the US, Canada, New Zealand, Ireland and South Africa all describe the same
-school year differently. Rather than duplicating the library, activities store a **canonical
-numeric level range** and the words are chosen at render time.
+Australia, the UK, the US, Canada, New Zealand, Ireland and South Africa describe the same school
+year differently — and, more awkwardly, put the same *age* in differently-numbered years. So
+activities are classified by **age**, and each country converts.
 
-The scale is anchored so a level always means the same cohort of students:
+| | Reception year | Age of "Year/Grade 8" | Final year |
+|---|---|---|---|
+| 🇦🇺 Australia | Prep (5–6) | 13–14 | Year 12 |
+| 🇬🇧 United Kingdom | Reception (4–5) | 12–13 | Year 13 |
+| 🇺🇸 🇨🇦 US / Canada | Kindergarten (5–6) | 13–14 | Grade 12 |
+| 🇳🇿 New Zealand | — (starts Year 1, 5–6) | 12–13 | Year 13 |
+| 🇮🇪 Ireland | Junior Infants (4–5) | 2nd Year, 13–14 | 6th Year |
+| 🇿🇦 South Africa | Grade R (5–6) | 13–14 | Grade 12 |
 
-| Level | 🇦🇺 🇳🇿 | 🇬🇧 | 🇺🇸 🇨🇦 🇿🇦 | 🇮🇪 |
-|---|---|---|---|---|
-| 0 | Prep / — | Reception | Kindergarten / Grade R | Senior Infants |
-| 8 | Year 8 | Year 8 | Grade 8 | 2nd Year |
-| 13 | — | Year 13 | — | — |
-
-Countries only declare the levels they actually have, so New Zealand starts at Year 1, Australia
-stops at Year 12, and Ireland gets the one level below the shared anchor (Junior Infants). Ranges
-clamp to whatever the country has, which is why one activity reads "Year 3–Year 12" in Sydney and
-"Grade 3–Grade 12" in Seattle.
+So one activity classified for **ages 12–15** shows as *Year 7–Year 9* in Sydney, *Grade 7–Grade
+9* in Seattle, *Year 8–Year 10* in Auckland and *1st Year–3rd Year* in Dublin. Same data, no
+duplication, and nobody is told their Year 8s are a year older than they are.
 
 Even the word for the concept is localised — Australia says "year level", the UK "year group",
 the US "grade".
@@ -93,6 +105,24 @@ choice is stored on the device. **Country is not language**: the interface is En
 seven markets, and adding a translation later means adding a message catalogue, not touching any
 of this. Adding an eighth market is one entry in `src/lib/i18n/education.ts` — no component
 knows any of these words.
+
+### Activities are classified for who they actually suit
+
+Every activity carries an age range chosen on cognitive load, reading and vocabulary demands,
+attention span, social maturity, abstraction, irony and how babyish it would feel to a
+teenager. **Appropriate, not merely possible** — a written debate is 13–18 even though you
+*could* attempt it with six-year-olds, and "move like an animal" stops at 8 even though
+teenagers might enjoy it.
+
+That range is a **hard constraint** in the engine, applied before need, duration, energy or
+anything else. The result is that pressing Surprise Me feels like the app knows the room:
+
+| Same button, Year 1 teacher | Same button, Year 11 teacher |
+|---|---|
+| Sound Effects Story | Soundtrack the Lesson |
+| Five Second Rule | Beat the Teacher |
+| Trace the Shape | Sixty-Second Hype |
+| Cross-Crawl | Heads Down |
 
 ### The reveal
 

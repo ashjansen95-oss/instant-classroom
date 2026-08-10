@@ -7,6 +7,8 @@ import { candidateBand, pickActivity } from "@/lib/selection";
 import { KEYS, storage } from "@/lib/storage";
 import type { Activity, FilterState, Need } from "@/lib/types";
 import { useActivityHistory } from "./use-activity-history";
+import { useActiveLevel } from "./use-teaching";
+import { useCountry } from "./use-country";
 import { useReducedMotion } from "./use-reduced-motion";
 
 /** Enough to cover a typical candidate band without hammering the network. */
@@ -27,6 +29,8 @@ export interface PendingPick {
 export function useActivityPicker() {
   const router = useRouter();
   const { history, record } = useActivityHistory();
+  const { country } = useCountry();
+  const { activeLevel } = useActiveLevel();
   const reducedMotion = useReducedMotion();
 
   const [pending, setPending] = useState<PendingPick | null>(null);
@@ -44,7 +48,9 @@ export function useActivityPicker() {
     (need: Need, source: "shake" | "button", filters?: FilterState) => {
       if (pending) return;
 
-      const activity = pickActivity({ need, filters, history });
+      // The active teaching level is what makes Surprise Me feel like it knows
+      // the class — it's a hard constraint inside pickActivity, not a garnish.
+      const activity = pickActivity({ need, filters, history, country, level: activeLevel });
       if (!activity) {
         setNoMatch(true);
         return;
@@ -67,7 +73,7 @@ export function useActivityPicker() {
       if (reducedMotion) go({ activity, need });
       else setPending({ activity, need });
     },
-    [go, history, pending, record, reducedMotion],
+    [activeLevel, country, go, history, pending, record, reducedMotion],
   );
 
   /** Called by the reel once it lands. */
@@ -82,11 +88,12 @@ export function useActivityPicker() {
    */
   const prefetch = useCallback(
     (need: Need, filters?: FilterState) => {
-      for (const activity of candidateBand({ need, filters, history }).slice(0, PREFETCH_LIMIT)) {
+      const band = candidateBand({ need, filters, history, country, level: activeLevel });
+      for (const activity of band.slice(0, PREFETCH_LIMIT)) {
         router.prefetch(`/activity/${activity.id}?need=${need}`);
       }
     },
-    [history, router],
+    [activeLevel, country, history, router],
   );
 
   return { pick, prefetch, complete, pending, busy: pending !== null, noMatch };

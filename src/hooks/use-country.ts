@@ -3,6 +3,7 @@
 import { useCallback, useSyncExternalStore } from "react";
 import {
   DEFAULT_COUNTRY,
+  ageRangeLabel,
   detectCountry,
   isCountryCode,
   levelLabel,
@@ -10,6 +11,7 @@ import {
   levelShortLabel,
   levelsIn,
   terminologyFor,
+  type AgeRange,
   type CountryCode,
   type EducationLevel,
   type LevelRange,
@@ -61,6 +63,8 @@ export function useCountry() {
     label: useCallback((level: EducationLevel) => levelLabel(country, level), [country]),
     shortLabel: useCallback((level: EducationLevel) => levelShortLabel(country, level), [country]),
     rangeLabel: useCallback((range: LevelRange) => levelRangeLabel(country, range), [country]),
+    /** An activity's age range, spoken in this country's year levels. */
+    ageLabel: useCallback((range: AgeRange) => ageRangeLabel(country, range), [country]),
     /** The levels this country actually has, for building selectors. */
     levels: useCallback((range?: LevelRange) => levelsIn(country, range), [country]),
   };

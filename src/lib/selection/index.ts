@@ -1,4 +1,10 @@
-export { applyFilters, countActiveFilters, durationBucketOf, matchesFilters } from "./filter";
+export {
+  applyFilters,
+  countActiveFilters,
+  durationBucketOf,
+  matchesFilters,
+  suitsTeachingLevel,
+} from "./filter";
 export { HISTORY_LIMIT, pushHistory, toHistoryEntry } from "./history";
 export {
   candidateBand,
@@ -7,4 +13,4 @@ export {
   similarActivities,
   type PickOptions,
 } from "./pick";
-export { scoreForNeed, varietyPenalty } from "./score";
+export { ageFit, scoreForNeed, varietyPenalty } from "./score";

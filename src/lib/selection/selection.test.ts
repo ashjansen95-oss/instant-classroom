@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { ACTIVITIES } from "@/data/activities";
-import { rangeIncludes } from "@/lib/i18n";
+import { studentAgeForLevel, suitsLevel } from "@/lib/i18n";
 import { EMPTY_FILTERS, type FilterState, type HistoryEntry, type Need } from "@/lib/types";
 import { applyFilters, durationBucketOf, matchesFilters } from "./filter";
 import { pushHistory, HISTORY_LIMIT } from "./history";
 import { pickActivity, similarActivities } from "./pick";
-import { scoreForNeed } from "./score";
+import { ageFit, scoreForNeed } from "./score";
 
 const filters = (overrides: Partial<FilterState> = {}): FilterState => ({
   ...EMPTY_FILTERS,
@@ -22,13 +22,13 @@ function seeded(seed: number) {
 }
 
 /** Draw `count` activities in sequence, feeding each result back into history. */
-function drawSequence(need: Need, count: number, seed = 42) {
+function drawSequence(need: Need, count: number, seed = 42, level: number | null = null) {
   const rng = seeded(seed);
   let history: HistoryEntry[] = [];
   const drawn = [];
 
   for (let i = 0; i < count; i++) {
-    const activity = pickActivity({ need, history, rng });
+    const activity = pickActivity({ need, history, rng, country: "AU", level });
     if (!activity) break;
     drawn.push(activity);
     history = pushHistory(history, activity, i);
@@ -39,17 +39,17 @@ function drawSequence(need: Need, count: number, seed = 42) {
 
 describe("filters", () => {
   it("treats an empty filter group as no opinion", () => {
-    expect(applyFilters(ACTIVITIES, EMPTY_FILTERS)).toHaveLength(ACTIVITIES.length);
+    expect(applyFilters(ACTIVITIES, EMPTY_FILTERS, "AU")).toHaveLength(ACTIVITIES.length);
   });
 
   it("filters by energy", () => {
-    const result = applyFilters(ACTIVITIES, filters({ energy: ["calm"] }));
+    const result = applyFilters(ACTIVITIES, filters({ energy: ["calm"] }), "AU");
     expect(result.length).toBeGreaterThan(0);
     expect(result.every((a) => a.energy === "calm")).toBe(true);
   });
 
   it("filters by duration bucket", () => {
-    const result = applyFilters(ACTIVITIES, filters({ durations: ["2-min"] }));
+    const result = applyFilters(ACTIVITIES, filters({ durations: ["2-min"] }), "AU");
     expect(result.length).toBeGreaterThan(0);
     expect(result.every((a) => a.duration >= 91 && a.duration <= 150)).toBe(true);
   });
@@ -58,34 +58,45 @@ describe("filters", () => {
     const result = applyFilters(
       ACTIVITIES,
       filters({ durations: ["30-sec", "1-min"], noise: ["quiet"] }),
+      "AU",
     );
     expect(result.length).toBeGreaterThan(0);
     expect(result.every((a) => a.duration <= 90 && a.noise === "quiet")).toBe(true);
   });
 
   it("matches an activity when it has any of the selected equipment", () => {
-    const result = applyFilters(ACTIVITIES, filters({ equipment: ["none"] }));
+    const result = applyFilters(ACTIVITIES, filters({ equipment: ["none"] }), "AU");
     expect(result.every((a) => a.equipment.includes("none"))).toBe(true);
   });
 
-  it("matches an activity whose range covers a selected level", () => {
-    const result = applyFilters(ACTIVITIES, filters({ levels: [11] }));
+  it("matches an activity whose age range suits a selected level", () => {
+    const result = applyFilters(ACTIVITIES, filters({ levels: [11] }), "AU");
     expect(result.length).toBeGreaterThan(0);
-    expect(result.every((a) => a.levels[0] <= 11 && a.levels[1] >= 11)).toBe(true);
+    // AU Year 11 students are 16.5 mid-year.
+    expect(result.every((a) => suitsLevel(a.ageRange, "AU", 11))).toBe(true);
   });
 
   it("treats several selected levels as OR", () => {
-    const result = applyFilters(ACTIVITIES, filters({ levels: [-1, 12] }));
+    const result = applyFilters(ACTIVITIES, filters({ levels: [0, 12] }), "AU");
     expect(result.length).toBeGreaterThan(0);
     expect(
-      result.every((a) => rangeIncludes(a.levels, -1) || rangeIncludes(a.levels, 12)),
+      result.every((a) => suitsLevel(a.ageRange, "AU", 0) || suitsLevel(a.ageRange, "AU", 12)),
     ).toBe(true);
   });
 
+  it("resolves the same level differently by country", () => {
+    // AU Year 8 is 13–14, GB Year 8 is 12–13, so the same filter selects
+    // genuinely different activities.
+    const au = applyFilters(ACTIVITIES, filters({ levels: [8] }), "AU").map((a) => a.id);
+    const gb = applyFilters(ACTIVITIES, filters({ levels: [8] }), "GB").map((a) => a.id);
+
+    expect(au).not.toEqual(gb);
+  });
+
   it("filters to early years only", () => {
-    const result = applyFilters(ACTIVITIES, filters({ levels: [0] }));
+    const result = applyFilters(ACTIVITIES, filters({ levels: [0] }), "AU");
     expect(result.length).toBeGreaterThan(0);
-    expect(result.every((a) => a.levels[0] <= 0)).toBe(true);
+    expect(result.every((a) => a.ageRange.min <= 5.5)).toBe(true);
   });
 
   it("can produce an empty result for an over-specified class", () => {
@@ -96,7 +107,7 @@ describe("filters", () => {
       durations: ["5-10-min"],
       equipment: ["whiteboard"],
     });
-    expect(applyFilters(ACTIVITIES, impossible)).toHaveLength(0);
+    expect(applyFilters(ACTIVITIES, impossible, "AU")).toHaveLength(0);
   });
 
   it("maps durations to the right bucket", () => {
@@ -110,9 +121,9 @@ describe("filters", () => {
 
   it("agrees between matchesFilters and applyFilters", () => {
     const f = filters({ energy: ["high"], movement: ["movement"] });
-    const applied = applyFilters(ACTIVITIES, f);
+    const applied = applyFilters(ACTIVITIES, f, "AU");
     for (const activity of ACTIVITIES) {
-      expect(matchesFilters(activity, f)).toBe(applied.includes(activity));
+      expect(matchesFilters(activity, f, "AU")).toBe(applied.includes(activity));
     }
   });
 });
@@ -241,7 +252,7 @@ describe("picking", () => {
 
   it("still returns something when history covers most of a narrow pool", () => {
     const narrow = filters({ durations: ["5-10-min"] });
-    const pool = applyFilters(ACTIVITIES, narrow);
+    const pool = applyFilters(ACTIVITIES, narrow, "AU");
     const history = pool.map((activity, index) => ({
       id: activity.id,
       categories: activity.categories,
@@ -259,6 +270,98 @@ describe("picking", () => {
     expect(drawSequence("fun", 10, 5).map((a) => a.id)).toEqual(
       drawSequence("fun", 10, 5).map((a) => a.id),
     );
+  });
+});
+
+describe("teaching level shapes recommendations", () => {
+  it("never hands a Prep class something outside its age range", () => {
+    const drawn = drawSequence("surprise", 40, 7, 0);
+    const age = studentAgeForLevel("AU", 0);
+
+    expect(drawn.length).toBeGreaterThan(20);
+    for (const activity of drawn) {
+      expect(
+        activity.ageRange.min <= age && activity.ageRange.max >= age,
+        `${activity.id} (${activity.ageRange.min}–${activity.ageRange.max}) is wrong for Prep`,
+      ).toBe(true);
+    }
+  });
+
+  it("never hands a Year 12 class something outside its age range", () => {
+    const drawn = drawSequence("surprise", 40, 7, 12);
+    const age = studentAgeForLevel("AU", 12);
+
+    expect(drawn.length).toBeGreaterThan(20);
+    for (const activity of drawn) {
+      expect(
+        activity.ageRange.min <= age && activity.ageRange.max >= age,
+        `${activity.id} is wrong for Year 12`,
+      ).toBe(true);
+    }
+  });
+
+  it("gives a Year 1 and a Year 11 teacher substantially different activities", () => {
+    // This is the whole feature: same button, different classes, different results.
+    const young = new Set(drawSequence("surprise", 30, 3, 1).map((a) => a.id));
+    const senior = new Set(drawSequence("surprise", 30, 3, 11).map((a) => a.id));
+
+    const shared = [...young].filter((id) => senior.has(id));
+    expect(shared.length / young.size).toBeLessThan(0.25);
+  });
+
+  it("keeps abstract reasoning away from the youngest classes", () => {
+    const drawn = drawSequence("fun", 40, 5, 0).map((a) => a.id);
+
+    for (const id of ["silent-debate", "what-if-history", "justify-the-absurd", "six-word-story"]) {
+      expect(drawn, `Prep should never be offered ${id}`).not.toContain(id);
+    }
+  });
+
+  it("keeps activities pitched at small children away from senior classes", () => {
+    const drawn = drawSequence("wake", 40, 5, 11).map((a) => a.id);
+
+    for (const id of ["animal-moves", "body-alphabet", "simon-says", "freeze-dance"]) {
+      expect(drawn, `Year 11 should never be offered ${id}`).not.toContain(id);
+    }
+  });
+
+  it("prefers activities squarely aimed at the class over ones that merely include it", () => {
+    // ageFit rewards sitting in the middle of a band, not clinging to its edge.
+    expect(ageFit({ min: 8, max: 12 }, 10)).toBeGreaterThan(ageFit({ min: 8, max: 12 }, 8));
+    expect(ageFit({ min: 4, max: 18 }, 5)).toBeLessThan(ageFit({ min: 4, max: 7 }, 5.5));
+    expect(ageFit({ min: 8, max: 12 }, 13)).toBe(0);
+  });
+
+  it("still gives variety within an age group", () => {
+    const drawn = drawSequence("surprise", 25, 11, 4);
+
+    // The pool is smaller once age is enforced, so an eventual repeat is fine —
+    // what matters is that nothing recurs while it's still fresh.
+    for (let i = 0; i < drawn.length; i++) {
+      const window = drawn.slice(Math.max(0, i - 8), i).map((a) => a.id);
+      expect(window).not.toContain(drawn[i].id);
+    }
+    expect(new Set(drawn.map((a) => a.id)).size).toBeGreaterThanOrEqual(18);
+    expect(new Set(drawn.map((a) => a.energy)).size).toBeGreaterThan(2);
+  });
+
+  it("treats the same level differently in different countries", () => {
+    const rng = () => 0.5;
+    const au = pickActivity({ need: "surprise", country: "AU", level: 1, rng });
+    const gb = pickActivity({ need: "surprise", country: "GB", level: 1, rng });
+
+    // AU Year 1 is 6–7, GB Year 1 is 5–6. Both must be age-appropriate for
+    // their own country, which is only possible if country is respected.
+    expect(au && suitsLevel(au.ageRange, "AU", 1)).toBe(true);
+    expect(gb && suitsLevel(gb.ageRange, "GB", 1)).toBe(true);
+  });
+
+  it("falls back to the whole library when no level is set", () => {
+    const withLevel = drawSequence("surprise", 20, 9, 0).map((a) => a.id);
+    const without = drawSequence("surprise", 20, 9, null).map((a) => a.id);
+
+    expect(without).not.toEqual(withLevel);
+    expect(without.length).toBe(20);
   });
 });
 

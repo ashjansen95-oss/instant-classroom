@@ -1,4 +1,4 @@
-import { rangeIncludes } from "@/lib/i18n";
+import { ageRangeIncludes, studentAgeForLevel, type CountryCode } from "@/lib/i18n";
 import type { Activity, DurationBucket, FilterState } from "@/lib/types";
 import { DURATION_BUCKETS } from "@/lib/types";
 
@@ -20,7 +20,24 @@ function allowsAny<T>(selected: T[], values: T[]): boolean {
   return selected.length === 0 || values.some((value) => selected.includes(value));
 }
 
-export function matchesFilters(activity: Activity, filters: FilterState): boolean {
+/**
+ * Whether an activity suits a class at this level. Needs the country, because
+ * the level only tells you how old the students are once you know where they
+ * are: Year 8 is 12–13 in Britain and 13–14 in Australia.
+ */
+export function suitsTeachingLevel(
+  activity: Activity,
+  country: CountryCode,
+  level: number,
+): boolean {
+  return ageRangeIncludes(activity.ageRange, studentAgeForLevel(country, level));
+}
+
+export function matchesFilters(
+  activity: Activity,
+  filters: FilterState,
+  country: CountryCode,
+): boolean {
   const bucket = durationBucketOf(activity.duration);
 
   return (
@@ -30,15 +47,19 @@ export function matchesFilters(activity: Activity, filters: FilterState): boolea
     allows(filters.formats, activity.format) &&
     allows(filters.movement, activity.movement) &&
     allowsAny(filters.equipment, activity.equipment) &&
-    // An activity matches if its range covers any level the teacher picked.
+    // Matches if the activity suits any of the levels the teacher picked.
     (filters.levels.length === 0 ||
-      filters.levels.some((level) => rangeIncludes(activity.levels, level))) &&
+      filters.levels.some((level) => suitsTeachingLevel(activity, country, level))) &&
     allowsAny(filters.categories, activity.categories)
   );
 }
 
-export function applyFilters(activities: Activity[], filters: FilterState): Activity[] {
-  return activities.filter((activity) => matchesFilters(activity, filters));
+export function applyFilters(
+  activities: Activity[],
+  filters: FilterState,
+  country: CountryCode,
+): Activity[] {
+  return activities.filter((activity) => matchesFilters(activity, filters, country));
 }
 
 export function countActiveFilters(filters: FilterState): number {

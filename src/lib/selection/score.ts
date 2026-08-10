@@ -1,4 +1,4 @@
-import type { Activity, Category, Energy, HistoryEntry, Movement, Need, Noise } from "@/lib/types";
+import type { AgeRange, Activity, Category, Energy, HistoryEntry, Movement, Need, Noise } from "@/lib/types";
 import { ENERGY_LEVELS } from "@/lib/types";
 import { durationBucketOf } from "./filter";
 
@@ -115,6 +115,27 @@ export function scoreForNeed(activity: Activity, need: Need): number {
   }
 
   return score / total;
+}
+
+/**
+ * How well an activity fits a class of this age, from 0 to 1.
+ *
+ * Suitability is already a hard filter, so this is about *comfort*: an
+ * activity aimed at 9–18 technically suits a 9-year-old, but one aimed at
+ * 8–11 suits them squarely. Squarely wins.
+ */
+export function ageFit(range: AgeRange, studentAge: number): number {
+  const span = range.max - range.min;
+  if (span <= 0) return studentAge === range.min ? 1 : 0;
+  if (studentAge < range.min || studentAge > range.max) return 0;
+
+  // Distance from the middle of the band, normalised to 0 at the centre and 1
+  // at either edge.
+  const middle = (range.min + range.max) / 2;
+  const offCentre = Math.abs(studentAge - middle) / (span / 2);
+
+  // Edges still score 0.6 — being at the top of a range is fine, just not ideal.
+  return 1 - 0.4 * offCentre;
 }
 
 const RECENT_CATEGORIES = 2;
