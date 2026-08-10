@@ -45,12 +45,25 @@ export function useActivityPicker() {
   );
 
   const pick = useCallback(
-    (need: Need, source: "shake" | "button", filters?: FilterState) => {
+    (
+      need: Need,
+      source: "shake" | "button",
+      filters?: FilterState,
+      /** Passed by "give me another like this" — steers towards its shape. */
+      like?: Activity | null,
+    ) => {
       if (pending) return;
 
       // The active teaching level is what makes Surprise Me feel like it knows
       // the class — it's a hard constraint inside pickActivity, not a garnish.
-      const activity = pickActivity({ need, filters, history, country, level: activeLevel });
+      const activity = pickActivity({
+        need,
+        filters,
+        history,
+        country,
+        level: activeLevel,
+        like,
+      });
       if (!activity) {
         setNoMatch(true);
         return;

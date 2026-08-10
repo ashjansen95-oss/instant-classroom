@@ -35,6 +35,6 @@ export function entitlementsFor(plan: Plan): Entitlements {
 }
 
 export const PRICING = {
-  monthly: { amount: 5.99, label: "$5.99", period: "per month" },
-  annual: { amount: 49, label: "$49", period: "per year", note: "Best value" },
+  monthly: { amount: 2.99, label: "$2.99", period: "per month" },
+  annual: { amount: 29.99, label: "$29.99", period: "per year", note: "Best value" },
 } as const;

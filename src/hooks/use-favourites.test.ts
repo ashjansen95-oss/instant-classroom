@@ -1,6 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { STORAGE_PREFIX } from "@/lib/storage";
+import { FEEDBACK_OPTIONS } from "@/lib/types";
 import { useFavourites } from "./use-favourites";
 import { usePreferences } from "./use-preferences";
 import { useFeedback } from "./use-activity-history";
@@ -94,26 +95,41 @@ describe("usePreferences", () => {
 });
 
 describe("useFeedback", () => {
-  it("records a thumbs up", () => {
+  it("records a rating", () => {
     const { result } = renderHook(() => useFeedback());
-    act(() => result.current.submit("would-you-rather", "worked"));
+    act(() => result.current.submit("would-you-rather", "loved"));
 
-    expect(result.current.feedback["would-you-rather"]).toBe("worked");
+    expect(result.current.feedback["would-you-rather"]).toBe("loved");
   });
 
-  it("switches from up to down", () => {
+  it("switches between ratings", () => {
     const { result } = renderHook(() => useFeedback());
     act(() => result.current.submit("would-you-rather", "worked"));
-    act(() => result.current.submit("would-you-rather", "flopped"));
+    act(() => result.current.submit("would-you-rather", "never-again"));
 
-    expect(result.current.feedback["would-you-rather"]).toBe("flopped");
+    expect(result.current.feedback["would-you-rather"]).toBe("never-again");
   });
 
-  it("clears when the same thumb is tapped twice, for the inevitable misfire", () => {
+  it("clears when the same rating is tapped twice, for the inevitable misfire", () => {
     const { result } = renderHook(() => useFeedback());
-    act(() => result.current.submit("would-you-rather", "worked"));
-    act(() => result.current.submit("would-you-rather", "worked"));
+    act(() => result.current.submit("would-you-rather", "fine"));
+    act(() => result.current.submit("would-you-rather", "fine"));
 
     expect(result.current.feedback["would-you-rather"]).toBeUndefined();
+  });
+
+  it("offers five distinct ratings, not a thumb", () => {
+    expect(FEEDBACK_OPTIONS.map((option) => option.rating)).toEqual([
+      "fine",
+      "worked",
+      "flopped",
+      "loved",
+      "never-again",
+    ]);
+
+    // "Worked" and "they loved it" must stay separable — the second is the
+    // only signal that tells us an activity is worth keeping.
+    const positives = FEEDBACK_OPTIONS.filter((o) => o.tone === "positive");
+    expect(positives.map((o) => o.rating)).toEqual(["worked", "loved"]);
   });
 });

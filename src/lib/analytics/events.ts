@@ -9,6 +9,9 @@ export const EVENT_NAMES = [
   "activity_favourited",
   "activity_feedback_positive",
   "activity_feedback_negative",
+  // Added when feedback grew from a thumb to a five-point scale — "fine" is
+  // real information and shouldn't be forced into one of the other two.
+  "activity_feedback_neutral",
   "filter_used",
   "shake_triggered",
   "surprise_me_clicked",

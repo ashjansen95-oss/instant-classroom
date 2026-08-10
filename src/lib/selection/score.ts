@@ -138,6 +138,44 @@ export function ageFit(range: AgeRange, studentAge: number): number {
   return 1 - 0.4 * offCentre;
 }
 
+/**
+ * How much an activity resembles the one the teacher is looking at, 0 to 1.
+ *
+ * Used by "give me another like this": the teacher has told us the *shape* was
+ * right and only the specifics were wrong, which is a much stronger signal than
+ * the need they originally picked.
+ */
+export function similarityTo(candidate: Activity, seed: Activity): number {
+  const sharedCategories = candidate.categories.filter((c) =>
+    seed.categories.includes(c),
+  ).length;
+  // Measured against how many categories the seed actually has, capped at two —
+  // otherwise a single-category activity could never fully resemble itself.
+  const categoryFit = sharedCategories / Math.min(2, seed.categories.length);
+
+  const energyCloseness =
+    1 -
+    Math.abs(ENERGY_LEVELS.indexOf(candidate.energy) - ENERGY_LEVELS.indexOf(seed.energy)) / 3;
+
+  const sameFormat = candidate.format === seed.format ? 1 : 0;
+  const sameNoise = candidate.noise === seed.noise ? 1 : 0;
+
+  // Within a minute of each other counts as the same sort of gap to fill.
+  const durationCloseness = Math.max(
+    0,
+    1 - Math.abs(candidate.duration - seed.duration) / 240,
+  );
+
+  return Math.min(
+    1,
+    0.4 * categoryFit +
+      0.2 * energyCloseness +
+      0.15 * sameFormat +
+      0.1 * sameNoise +
+      0.15 * durationCloseness,
+  );
+}
+
 const RECENT_CATEGORIES = 2;
 const RECENT_ENERGY = 3;
 const RECENT_DURATION = 2;

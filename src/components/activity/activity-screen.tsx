@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Heart, RefreshCw, ThumbsDown, ThumbsUp, Timer } from "lucide-react";
+import { ArrowLeft, Heart, RefreshCw, Timer } from "lucide-react";
 import { ActivityMeta } from "@/components/activity/activity-meta";
+import { PromptDeck } from "@/components/activity/prompt-deck";
 import { ActivityReel } from "@/components/shake/activity-reel";
+import { getPrompts } from "@/data/prompts";
 import { TimerOverlay } from "@/components/timer/timer-overlay";
 import { Button } from "@/components/ui/button";
 import { Page } from "@/components/ui/page";
@@ -16,7 +18,13 @@ import { usePreferences } from "@/hooks/use-preferences";
 import { track } from "@/lib/analytics";
 import { vibrate } from "@/lib/haptics";
 import { CATEGORY_LABELS } from "@/lib/labels";
-import { NEEDS, type Activity, type Need } from "@/lib/types";
+import {
+  FEEDBACK_OPTIONS,
+  NEEDS,
+  type Activity,
+  type Feedback,
+  type Need,
+} from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 function needFrom(value: string | null): Need {
@@ -35,6 +43,7 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
 
   const favourited = isFavourite(activity.id);
   const currentFeedback = feedback[activity.id];
+  const prompts = getPrompts(activity.id);
 
   useEffect(() => {
     track("activity_viewed", { id: activity.id, need });
@@ -48,15 +57,26 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
   const another = () => {
     setTimerOpen(false);
     track("activity_skipped", { id: activity.id });
-    pick(need, "button");
+    // Steer towards this one's shape — the teacher liked the format enough to
+    // ask for another, they just want different specifics.
+    pick(need, "button", undefined, activity);
   };
 
-  const onFeedback = (value: "worked" | "flopped") => {
-    submit(activity.id, value);
+  const onFeedback = (rating: Feedback) => {
+    submit(activity.id, rating);
     vibrate("tap", preferences.haptics);
-    track(value === "worked" ? "activity_feedback_positive" : "activity_feedback_negative", {
-      id: activity.id,
-    });
+
+    const tone = FEEDBACK_OPTIONS.find((option) => option.rating === rating)!.tone;
+    track(
+      tone === "positive"
+        ? "activity_feedback_positive"
+        : tone === "negative"
+          ? "activity_feedback_negative"
+          : "activity_feedback_neutral",
+      // The exact rating rides along, so "worked" and "they loved it" stay
+      // distinguishable once this data leaves the device.
+      { id: activity.id, rating },
+    );
   };
 
   return (
@@ -125,6 +145,9 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
           </ol>
         </section>
 
+        {/* Only the activities that would otherwise leave a teacher improvising. */}
+        {prompts && <PromptDeck bank={prompts} />}
+
         <div className="mt-8 space-y-3">
           <Button size="xl" fullWidth onClick={() => setTimerOpen(true)}>
             <Timer aria-hidden className="size-6" />
@@ -133,38 +156,31 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
 
           <Button variant="secondary" size="lg" fullWidth onClick={another} disabled={busy}>
             <RefreshCw aria-hidden className={cn("size-5", busy && "animate-spin")} />
-            {busy ? "Finding…" : "Give me another"}
+            {busy ? "Finding…" : "Give me another like this"}
           </Button>
         </div>
 
         <section aria-labelledby="feedback-heading" className="mt-9">
           <h2 id="feedback-heading" className="text-center text-sm font-bold text-ink-muted">
-            Did it work?
+            How did it go?
           </h2>
 
-          <div className="mt-3 flex justify-center gap-3">
-            <FeedbackButton
-              active={currentFeedback === "worked"}
-              onClick={() => onFeedback("worked")}
-              tone="positive"
-            >
-              <ThumbsUp aria-hidden className="size-5" />
-              Worked
-            </FeedbackButton>
-
-            <FeedbackButton
-              active={currentFeedback === "flopped"}
-              onClick={() => onFeedback("flopped")}
-              tone="negative"
-            >
-              <ThumbsDown aria-hidden className="size-5" />
-              Didn&rsquo;t work
-            </FeedbackButton>
+          <div className="mt-3 flex flex-wrap justify-center gap-2">
+            {FEEDBACK_OPTIONS.map((option) => (
+              <FeedbackButton
+                key={option.rating}
+                active={currentFeedback === option.rating}
+                tone={option.tone}
+                onClick={() => onFeedback(option.rating)}
+              >
+                <span aria-hidden>{option.emoji}</span>
+                {option.label}
+              </FeedbackButton>
+            ))}
           </div>
 
           <p aria-live="polite" className="mt-3 min-h-5 text-center text-xs text-ink-faint">
-            {currentFeedback === "worked" && "Noted — we'll show you more like this."}
-            {currentFeedback === "flopped" && "Fair enough. Noted."}
+            {FEEDBACK_REPLIES[currentFeedback ?? ""] ?? ""}
           </p>
         </section>
 
@@ -193,6 +209,21 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
   );
 }
 
+/** What we say back. Short, and never scolding for a bad result. */
+const FEEDBACK_REPLIES: Record<string, string> = {
+  loved: "Noted — we'll send you more like this.",
+  worked: "Good. Noted.",
+  fine: "Fair enough. Noted.",
+  flopped: "Noted. We'll go lighter on these.",
+  "never-again": "Understood. We'll stop suggesting it.",
+};
+
+const TONE_STYLES = {
+  positive: "border-line-strong bg-positive text-white",
+  neutral: "border-line-strong bg-surface-sunk text-ink",
+  negative: "border-line-strong bg-negative text-white",
+} as const;
+
 function FeedbackButton({
   active,
   onClick,
@@ -201,7 +232,7 @@ function FeedbackButton({
 }: {
   active: boolean;
   onClick: () => void;
-  tone: "positive" | "negative";
+  tone: "positive" | "neutral" | "negative";
   children: React.ReactNode;
 }) {
   return (
@@ -210,11 +241,9 @@ function FeedbackButton({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "inline-flex min-h-12 items-center gap-2 rounded-full border-2 px-5 text-[0.9375rem] font-bold transition-colors",
+        "inline-flex min-h-12 items-center gap-1.5 rounded-full border-2 px-4 text-sm font-bold transition-colors",
         active
-          ? tone === "positive"
-            ? "border-line-strong bg-positive text-white"
-            : "border-line-strong bg-negative text-white"
+          ? TONE_STYLES[tone]
           : "border-line bg-surface text-ink-muted hover:border-line-strong hover:text-ink",
       )}
     >

@@ -77,6 +77,7 @@ describe("analytics", () => {
       "activity_favourited",
       "activity_feedback_positive",
       "activity_feedback_negative",
+      "activity_feedback_neutral",
       "filter_used",
       "shake_triggered",
       "surprise_me_clicked",

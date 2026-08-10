@@ -3,7 +3,7 @@ import { DEFAULT_COUNTRY, studentAgeForLevel, type CountryCode } from "@/lib/i18
 import type { Activity, EducationLevel, FilterState, HistoryEntry, Need } from "@/lib/types";
 import { EMPTY_FILTERS } from "@/lib/types";
 import { applyFilters } from "./filter";
-import { ageFit, scoreForNeed, varietyPenalty } from "./score";
+import { ageFit, scoreForNeed, similarityTo, varietyPenalty } from "./score";
 
 /**
  * The pipeline: age suitability → hard filters → need scoring → variety
@@ -42,6 +42,12 @@ export interface PickOptions {
   country?: CountryCode;
   /** The level they're teaching right now. Undefined means "no preference yet". */
   level?: EducationLevel | null;
+  /**
+   * Set by "give me another like this". When present, resemblance to this
+   * activity replaces the need profile as the main relevance signal — the
+   * teacher has told us the shape was right.
+   */
+  like?: Activity | null;
   rng?: () => number;
 }
 
@@ -57,6 +63,7 @@ export function scoreCandidates({
   activities = ACTIVITIES,
   country = DEFAULT_COUNTRY,
   level = null,
+  like = null,
 }: PickOptions): ScoredActivity[] {
   const studentAge = level === null ? null : studentAgeForLevel(country, level);
 
@@ -87,8 +94,13 @@ export function scoreCandidates({
   // 4. Score: how squarely it fits the age, then how well it meets the need,
   //    then penalise anything too similar to what they just saw.
   return pool
+    .filter((activity) => activity.id !== like?.id)
     .map((activity) => {
-      const relevance = scoreForNeed(activity, need);
+      // "Like this" is a stronger steer than the need they picked minutes ago,
+      // so when it's set it takes over as the relevance signal.
+      const relevance = like
+        ? 0.75 * similarityTo(activity, like) + 0.25 * scoreForNeed(activity, need)
+        : scoreForNeed(activity, need);
       const fit = studentAge === null ? 1 : ageFit(activity.ageRange, studentAge);
       const aged = relevance * (AGE_FIT_FLOOR + (1 - AGE_FIT_FLOOR) * fit);
 

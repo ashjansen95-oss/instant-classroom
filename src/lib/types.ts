@@ -108,7 +108,29 @@ export const EMPTY_FILTERS: FilterState = {
 /** Monetisation seam. Nothing is gated in the MVP — see FUTURE.md. */
 export type Plan = "free" | "pro";
 
-export type Feedback = "worked" | "flopped";
+/**
+ * How it actually went, in the order a teacher would rank them.
+ *
+ * Five options rather than a thumb because "worked" and "they loved it" are
+ * genuinely different signals — the second is what tells us an activity is
+ * worth keeping, and the first only tells us it isn't broken.
+ */
+export const FEEDBACK_RATINGS = ["never-again", "flopped", "fine", "worked", "loved"] as const;
+export type Feedback = (typeof FEEDBACK_RATINGS)[number];
+
+export const FEEDBACK_OPTIONS: {
+  rating: Feedback;
+  emoji: string;
+  label: string;
+  /** Which way this counts when we roll the numbers up. */
+  tone: "positive" | "neutral" | "negative";
+}[] = [
+  { rating: "fine", emoji: "😐", label: "Fine", tone: "neutral" },
+  { rating: "worked", emoji: "👍", label: "Worked", tone: "positive" },
+  { rating: "flopped", emoji: "👎", label: "Didn't work", tone: "negative" },
+  { rating: "loved", emoji: "🔥", label: "They loved it", tone: "positive" },
+  { rating: "never-again", emoji: "💀", label: "Never again", tone: "negative" },
+];
 
 /** One entry in the recently-seen ring buffer that stops repeats. */
 export interface HistoryEntry {

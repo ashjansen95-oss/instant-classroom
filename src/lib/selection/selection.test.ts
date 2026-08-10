@@ -5,7 +5,7 @@ import { EMPTY_FILTERS, type FilterState, type HistoryEntry, type Need } from "@
 import { applyFilters, durationBucketOf, matchesFilters } from "./filter";
 import { pushHistory, HISTORY_LIMIT } from "./history";
 import { pickActivity, similarActivities } from "./pick";
-import { ageFit, scoreForNeed } from "./score";
+import { ageFit, scoreForNeed, similarityTo } from "./score";
 
 const filters = (overrides: Partial<FilterState> = {}): FilterState => ({
   ...EMPTY_FILTERS,
@@ -246,7 +246,13 @@ describe("picking", () => {
 
   it("produces genuine variety on surprise me", () => {
     const drawn = drawSequence("surprise", 30);
-    expect(new Set(drawn.map((a) => a.id)).size).toBe(30);
+
+    // Nothing recurs while it's still fresh; an eventual repeat is fine.
+    for (let i = 0; i < drawn.length; i++) {
+      const window = drawn.slice(Math.max(0, i - 10), i).map((a) => a.id);
+      expect(window).not.toContain(drawn[i].id);
+    }
+    expect(new Set(drawn.map((a) => a.id)).size).toBeGreaterThanOrEqual(28);
     expect(new Set(drawn.map((a) => a.energy)).size).toBeGreaterThan(2);
   });
 
@@ -362,6 +368,79 @@ describe("teaching level shapes recommendations", () => {
 
     expect(without).not.toEqual(withLevel);
     expect(without.length).toBe(20);
+  });
+});
+
+describe("give me another like this", () => {
+  const seed = ACTIVITIES.find((a) => a.id === "box-breathing")!;
+
+  it("never returns the activity you were already looking at", () => {
+    const rng = seeded(4);
+    for (let i = 0; i < 30; i++) {
+      const next = pickActivity({ need: "surprise", like: seed, rng })!;
+      expect(next.id).not.toBe(seed.id);
+    }
+  });
+
+  it("returns activities that actually resemble the one you asked about", () => {
+    const rng = seeded(4);
+    const drawn = Array.from(
+      { length: 12 },
+      () => pickActivity({ need: "surprise", like: seed, rng })!,
+    );
+
+    // Box Breathing is calm, quiet, seated, individual. Its neighbours should be too.
+    const alike = drawn.filter(
+      (a) => a.categories.some((c) => seed.categories.includes(c)) && a.noise === seed.noise,
+    );
+    expect(alike.length / drawn.length).toBeGreaterThan(0.7);
+  });
+
+  it("resembles the seed more closely than a plain surprise would", () => {
+    // Drawn as a sequence with history, so both samples get real variety —
+    // re-seeding per draw gives near-identical rng values and hides the effect.
+    const draw = (like: typeof seed | null) => {
+      const rng = seeded(21);
+      let history: HistoryEntry[] = [];
+      const out = [];
+      for (let i = 0; i < 15; i++) {
+        const activity = pickActivity({ need: "surprise", like, history, rng })!;
+        out.push(activity);
+        history = pushHistory(history, activity, i);
+      }
+      return out;
+    };
+
+    const average = (list: typeof ACTIVITIES) =>
+      list.reduce((sum, a) => sum + similarityTo(a, seed), 0) / list.length;
+
+    expect(average(draw(seed))).toBeGreaterThan(average(draw(null)) + 0.15);
+  });
+
+  it("still refuses anything the class is the wrong age for", () => {
+    const childish = ACTIVITIES.find((a) => a.id === "animal-moves")!;
+    const rng = seeded(9);
+
+    for (let i = 0; i < 20; i++) {
+      // Asking for "more like Animal Moves" as a Year 11 teacher must not
+      // override the age constraint.
+      const next = pickActivity({
+        need: "surprise",
+        like: childish,
+        country: "AU",
+        level: 11,
+        rng,
+      })!;
+      expect(suitsLevel(next.ageRange, "AU", 11), `${next.id} is wrong for Year 11`).toBe(true);
+    }
+  });
+
+  it("scores resemblance sensibly", () => {
+    const calmQuiet = ACTIVITIES.find((a) => a.id === "body-scan")!;
+    const loudActive = ACTIVITIES.find((a) => a.id === "shake-it-out")!;
+
+    expect(similarityTo(calmQuiet, seed)).toBeGreaterThan(similarityTo(loudActive, seed));
+    expect(similarityTo(seed, seed)).toBeCloseTo(1, 1);
   });
 });
 

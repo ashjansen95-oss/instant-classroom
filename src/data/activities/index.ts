@@ -2,8 +2,10 @@ import type { Activity } from "@/lib/types";
 import { brainBreaks } from "./brain-breaks";
 import { calmDown } from "./calm-down";
 import { creative } from "./creative";
+import { earlyYears } from "./early-years";
 import { pairsAndCurriculum } from "./pairs-and-curriculum";
 import { quickFillers } from "./quick-fillers";
+import { senior } from "./senior";
 import { thinkFast } from "./think-fast";
 import { wakeThemUp } from "./wake-them-up";
 
@@ -19,6 +21,8 @@ export const ACTIVITIES: Activity[] = [
   ...thinkFast,
   ...creative,
   ...pairsAndCurriculum,
+  ...earlyYears,
+  ...senior,
 ];
 
 const BY_ID = new Map(ACTIVITIES.map((activity) => [activity.id, activity]));
