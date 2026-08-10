@@ -28,6 +28,22 @@ one interaction: **open → shake → get something good → run it.** The value
    No "empower educators", no "transform learning outcomes", no unsupported efficacy claims.
 6. **Scope discipline.** Anything not needed for the MVP goes in `FUTURE.md` and is not built.
 
+## Localisation
+
+The app ships to seven English-speaking markets that use different words for the same school
+year. **Never write an education level as text.**
+
+- Activities store `levels: [from, to]` on a canonical numeric scale (`-1` to `13`), anchored so
+  level 8 is the same cohort everywhere: `Year 8` (AU/GB/NZ), `Grade 8` (US/CA/ZA),
+  `2nd Year` (IE).
+- All wording lives in `src/lib/i18n/education.ts`. Components call `useCountry()` and use
+  `label()`, `shortLabel()`, `rangeLabel()`, `levels()` or `terminology.levelNoun` — they never
+  spell out a level, and they never say "Year level" either, since the US says "grade".
+- Adding an eighth market is one entry in `COUNTRIES`. If it needs a component change, the
+  abstraction has leaked and the fix belongs in the layer, not the component.
+- Country is **not** language. English everywhere for now; a future translation adds a message
+  catalogue without touching any of the above. See the note at the top of `src/lib/i18n/index.ts`.
+
 ## Conventions
 
 - `duration` on an activity is in **seconds**, not minutes. `formatDuration()` renders it.

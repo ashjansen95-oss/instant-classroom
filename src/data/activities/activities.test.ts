@@ -7,10 +7,10 @@ import {
   FORMATS,
   MOVEMENTS,
   NOISE_LEVELS,
-  YEAR_LEVELS,
   DURATION_BUCKETS,
   type DurationBucket,
 } from "@/lib/types";
+import { COUNTRY_CODES, MAX_LEVEL, MIN_LEVEL, levelsIn, rangeIncludes } from "@/lib/i18n";
 
 /**
  * The data contract. These aren't stylistic preferences — every rule here maps
@@ -62,8 +62,10 @@ describe("activity library", () => {
     // "none" is a statement about the whole activity, so it can't be combined.
     if (activity.equipment.includes("none")) expect(activity.equipment).toHaveLength(1);
 
-    expect(activity.yearLevels.length).toBeGreaterThan(0);
-    for (const level of activity.yearLevels) expect(YEAR_LEVELS).toContain(level);
+    const [from, to] = activity.levels;
+    expect(from).toBeGreaterThanOrEqual(MIN_LEVEL);
+    expect(to).toBeLessThanOrEqual(MAX_LEVEL);
+    expect(from).toBeLessThanOrEqual(to);
 
     expect(activity.categories.length).toBeGreaterThan(0);
     for (const category of activity.categories) expect(CATEGORIES).toContain(category);
@@ -107,10 +109,24 @@ describe("activity library", () => {
     }
   });
 
-  it("covers every year level", () => {
-    for (const level of YEAR_LEVELS) {
-      const matches = ACTIVITIES.filter((a) => a.yearLevels.includes(level));
-      expect(matches.length, `year level "${level}" is thin`).toBeGreaterThanOrEqual(15);
+  it("gives every level in every market something to run", () => {
+    // A teacher who picks "Junior Infants" in Ireland or "Grade 12" in the US
+    // must not hit an empty library.
+    for (const code of COUNTRY_CODES) {
+      for (const level of levelsIn(code)) {
+        const matches = ACTIVITIES.filter((a) => rangeIncludes(a.levels, level));
+        expect(
+          matches.length,
+          `${code} level ${level} only has ${matches.length} activities`,
+        ).toBeGreaterThanOrEqual(20);
+      }
+    }
+  });
+
+  it("stores levels as canonical numbers, never a country's words for them", () => {
+    const source = JSON.stringify(ACTIVITIES);
+    for (const term of ["Year 8", "Grade 8", "Kindergarten", "Reception", "Junior Infants"]) {
+      expect(source, `"${term}" must not be baked into activity data`).not.toContain(term);
     }
   });
 

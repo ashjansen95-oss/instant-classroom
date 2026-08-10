@@ -1,6 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { CountryPicker } from "@/components/settings/country-picker";
+import { useCountry } from "@/hooks/use-country";
 import { useStoredState } from "@/hooks/use-stored-state";
 import { KEYS } from "@/lib/storage";
 
@@ -10,6 +13,8 @@ import { KEYS } from "@/lib/storage";
  */
 export function Onboarding() {
   const [onboarded, setOnboarded, hydrated] = useStoredState<boolean>(KEYS.onboarded, false);
+  const { terminology, label } = useCountry();
+  const [pickingCountry, setPickingCountry] = useState(false);
 
   // Held back until hydration so returning teachers never see it flash past.
   if (!hydrated || onboarded) return null;
@@ -55,6 +60,24 @@ export function Onboarding() {
         <Button size="xl" fullWidth onClick={() => setOnboarded(true)} className="mt-8" autoFocus>
           Shake for your first activity
         </Button>
+
+        {/* One line, one tap, no extra step. Confirms we're using the right
+            words for their country before they see their first activity. */}
+        {pickingCountry ? (
+          <div className="mt-5 max-h-[38dvh] overflow-y-auto rounded-2xl border-2 border-line p-3">
+            <CountryPicker compact />
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setPickingCountry(true)}
+            className="mt-5 flex min-h-11 w-full items-center justify-center gap-1.5 rounded-full text-sm text-ink-muted hover:text-ink"
+          >
+            <span aria-hidden>{terminology.flag}</span>
+            {terminology.name} — we&rsquo;ll say &ldquo;{label(8)}&rdquo;.
+            <span className="font-bold underline underline-offset-4">Change</span>
+          </button>
+        )}
       </div>
     </div>
   );

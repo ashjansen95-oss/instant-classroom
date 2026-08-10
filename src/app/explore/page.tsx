@@ -4,7 +4,9 @@ import { ExploreScreen } from "@/components/explore/explore-screen";
 
 export const metadata: Metadata = {
   title: "Explore",
-  description: "Browse and filter every activity by time, energy, noise, format and year level.",
+  // Static page metadata, so it stays country-neutral rather than picking one
+  // market's wording for everyone.
+  description: "Browse and filter every activity by time, energy, noise, format and age group.",
 };
 
 export default function ExplorePage() {

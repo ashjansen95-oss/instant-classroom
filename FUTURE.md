@@ -23,20 +23,33 @@ If you think of something while working, add it here and carry on.
   locked. A paywall during the hypothesis test would contaminate the retention signal that is
   the entire point of the MVP.
 
+## More languages
+
+The country layer (`src/lib/i18n/`) handles *education terminology* and is done. What doesn't
+exist yet is a second *interface language* — every UI string is still written inline in English.
+
+When that's wanted: add a message catalogue and a `useLanguage()` binding alongside the existing
+country config. The two axes are deliberately independent, so translating the interface must not
+require touching a single level name, and adding an eighth country must not require a translator.
+
 ## Student mode
 
 Teacher creates a session → unique room code → students join on their own devices → real-time
 activity → teacher controls it → student responses → teacher sees results.
 
 Likely: Supabase Realtime or WebSockets, QR codes for joining, anonymous session IDs (never
-student accounts, never student names). The current architecture doesn't block this — activities
+student accounts, never student names). Anything it displays about year levels must go through
+`src/lib/i18n/` like the rest of the app — a room code shared between a teacher and a class
+should read "Grade 8" or "2nd Year" depending on where they are. The current architecture doesn't block this — activities
 are already plain data and the selection engine is already pure — but nothing should be
 complicated *now* in anticipation of it.
 
 ## AI
 
 Eventually: *"Year 8 English, 3 minutes, seated, quiet, persuasive writing"* → a generated
-activity. Explicitly not in the MVP, and the curated library should stay the default path — an
+activity. Note that the prompt is in the teacher's own terms: parse it into a canonical level
+before it reaches a model, and render the result back through `src/lib/i18n/`. Generated
+activities must store `levels` like every other activity — never a country's words. Explicitly not in the MVP, and the curated library should stay the default path — an
 LLM call per random activity would destroy the thing the product is actually selling, which is
 speed.
 

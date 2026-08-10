@@ -1,5 +1,11 @@
 /** Core domain types. Everything else in the app is built on these. */
 
+// Education levels live in @/lib/i18n — canonical numbers here, and they only
+// get their country's words at display time.
+import type { EducationLevel, LevelRange } from "@/lib/i18n";
+
+export type { EducationLevel, LevelRange };
+
 export const ENERGY_LEVELS = ["calm", "low", "medium", "high"] as const;
 export type Energy = (typeof ENERGY_LEVELS)[number];
 
@@ -11,9 +17,6 @@ export type Format = (typeof FORMATS)[number];
 
 export const MOVEMENTS = ["seated", "standing", "movement"] as const;
 export type Movement = (typeof MOVEMENTS)[number];
-
-export const YEAR_LEVELS = ["early-primary", "upper-primary", "years-7-9", "years-10-12"] as const;
-export type YearLevel = (typeof YEAR_LEVELS)[number];
 
 export const CATEGORIES = [
   "brain-break",
@@ -50,7 +53,11 @@ export interface Activity {
   format: Format;
   movement: Movement;
   equipment: Equipment[];
-  yearLevels: YearLevel[];
+  /**
+   * Inclusive range on the canonical education scale — never "Year 8" or
+   * "Grade 8". See @/lib/i18n for how a range becomes words.
+   */
+  levels: LevelRange;
   categories: Category[];
   tags: string[];
 }
@@ -77,7 +84,8 @@ export interface FilterState {
   formats: Format[];
   movement: Movement[];
   equipment: Equipment[];
-  yearLevels: YearLevel[];
+  /** Canonical levels the teacher selected, not bands. */
+  levels: EducationLevel[];
   categories: Category[];
 }
 
@@ -88,7 +96,7 @@ export const EMPTY_FILTERS: FilterState = {
   formats: [],
   movement: [],
   equipment: [],
-  yearLevels: [],
+  levels: [],
   categories: [],
 };
 

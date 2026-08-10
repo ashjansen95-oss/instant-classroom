@@ -1,3 +1,4 @@
+import { rangeIncludes } from "@/lib/i18n";
 import type { Activity, DurationBucket, FilterState } from "@/lib/types";
 import { DURATION_BUCKETS } from "@/lib/types";
 
@@ -29,7 +30,9 @@ export function matchesFilters(activity: Activity, filters: FilterState): boolea
     allows(filters.formats, activity.format) &&
     allows(filters.movement, activity.movement) &&
     allowsAny(filters.equipment, activity.equipment) &&
-    allowsAny(filters.yearLevels, activity.yearLevels) &&
+    // An activity matches if its range covers any level the teacher picked.
+    (filters.levels.length === 0 ||
+      filters.levels.some((level) => rangeIncludes(activity.levels, level))) &&
     allowsAny(filters.categories, activity.categories)
   );
 }

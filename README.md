@@ -66,6 +66,34 @@ for *calm*, they get calm.
 
 It's pure, with an injectable `rng`, so all of that is actually tested rather than hoped for.
 
+### Seven countries, one activity library
+
+Australia, the UK, the US, Canada, New Zealand, Ireland and South Africa all describe the same
+school year differently. Rather than duplicating the library, activities store a **canonical
+numeric level range** and the words are chosen at render time.
+
+The scale is anchored so a level always means the same cohort of students:
+
+| Level | 🇦🇺 🇳🇿 | 🇬🇧 | 🇺🇸 🇨🇦 🇿🇦 | 🇮🇪 |
+|---|---|---|---|---|
+| 0 | Prep / — | Reception | Kindergarten / Grade R | Senior Infants |
+| 8 | Year 8 | Year 8 | Grade 8 | 2nd Year |
+| 13 | — | Year 13 | — | — |
+
+Countries only declare the levels they actually have, so New Zealand starts at Year 1, Australia
+stops at Year 12, and Ireland gets the one level below the shared anchor (Junior Infants). Ranges
+clamp to whatever the country has, which is why one activity reads "Year 3–Year 12" in Sydney and
+"Grade 3–Grade 12" in Seattle.
+
+Even the word for the concept is localised — Australia says "year level", the UK "year group",
+the US "grade".
+
+Country is picked up from the browser locale on first run and can be changed in Settings; the
+choice is stored on the device. **Country is not language**: the interface is English in all
+seven markets, and adding a translation later means adding a message catalogue, not touching any
+of this. Adding an eighth market is one entry in `src/lib/i18n/education.ts` — no component
+knows any of these words.
+
 ### The reveal
 
 Shake or tap and a slot-machine reel spins through activity titles before landing on yours.

@@ -1,3 +1,6 @@
+"use client";
+
+import { useCountry } from "@/hooks/use-country";
 import {
   ENERGY_LABELS,
   FORMAT_LABELS,
@@ -5,7 +8,6 @@ import {
   NOISE_LABELS,
   equipmentSummary,
   formatDuration,
-  yearLevelSummary,
 } from "@/lib/labels";
 import type { Activity } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -13,6 +15,9 @@ import { cn } from "@/lib/utils";
 /**
  * The at-a-glance strip. A teacher should be able to rule an activity in or out
  * from this alone, without reading the description.
+ *
+ * The education level is the one item whose wording depends on where the
+ * teacher is; it comes from the country layer rather than the activity.
  */
 export function ActivityMeta({
   activity,
@@ -23,6 +28,8 @@ export function ActivityMeta({
   compact?: boolean;
   className?: string;
 }) {
+  const { rangeLabel } = useCountry();
+
   const items = [
     { icon: "⏱", label: formatDuration(activity.duration), sr: "Duration" },
     { icon: "⚡", label: ENERGY_LABELS[activity.energy], sr: "Energy" },
@@ -34,7 +41,7 @@ export function ActivityMeta({
   if (!compact) {
     items.push(
       { icon: "🧍", label: MOVEMENT_LABELS[activity.movement], sr: "Movement" },
-      { icon: "🎓", label: yearLevelSummary(activity.yearLevels), sr: "Year levels" },
+      { icon: "🎓", label: rangeLabel(activity.levels), sr: "Suits" },
     );
   }
 

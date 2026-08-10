@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Sheet } from "@/components/ui/sheet";
+import { useCountry } from "@/hooks/use-country";
 import {
   CATEGORY_LABELS,
   DURATION_LABELS,
@@ -11,7 +12,6 @@ import {
   FORMAT_LABELS,
   MOVEMENT_LABELS,
   NOISE_LABELS,
-  YEAR_LEVEL_LABELS,
 } from "@/lib/labels";
 import {
   CATEGORIES,
@@ -22,11 +22,10 @@ import {
   FORMATS,
   MOVEMENTS,
   NOISE_LEVELS,
-  YEAR_LEVELS,
   type FilterState,
 } from "@/lib/types";
 
-type Group = keyof FilterState;
+type Group = Exclude<keyof FilterState, "levels">;
 
 /** Every filter group, as data, so the sheet is one loop rather than eight blocks. */
 const GROUPS: {
@@ -46,7 +45,6 @@ const GROUPS: {
   { key: "formats", label: "Format", options: FORMATS, labels: FORMAT_LABELS },
   { key: "movement", label: "Movement", options: MOVEMENTS, labels: MOVEMENT_LABELS },
   { key: "equipment", label: "Equipment", options: EQUIPMENT, labels: EQUIPMENT_LABELS },
-  { key: "yearLevels", label: "Year level", options: YEAR_LEVELS, labels: YEAR_LEVEL_LABELS },
   { key: "categories", label: "Type", options: CATEGORIES, labels: CATEGORY_LABELS },
 ];
 
@@ -63,12 +61,21 @@ export function FilterSheet({
   onChange: (filters: FilterState) => void;
   resultCount: number;
 }) {
+  const { levels, shortLabel, label, terminology } = useCountry();
+
   const toggle = (group: Group, value: string) => {
     const current = filters[group] as string[];
     const next = current.includes(value)
       ? current.filter((item) => item !== value)
       : [...current, value];
     onChange({ ...filters, [group]: next } as FilterState);
+  };
+
+  const toggleLevel = (level: number) => {
+    const next = filters.levels.includes(level)
+      ? filters.levels.filter((item) => item !== level)
+      : [...filters.levels, level];
+    onChange({ ...filters, levels: next });
   };
 
   return (
@@ -88,6 +95,27 @@ export function FilterSheet({
       }
     >
       <div className="space-y-6">
+        {/* Level chips are built from the teacher's country, so this same list
+            reads "Prep, Y1…" in Australia and "K, G1…" in the US. */}
+        <fieldset>
+          <legend className="mb-2.5 font-display text-sm font-bold tracking-wide text-ink-muted uppercase">
+            {terminology.levelNoun}
+            <span className="ml-2 normal-case opacity-70">{terminology.flag}</span>
+          </legend>
+          <div className="flex flex-wrap gap-2">
+            {levels().map((level) => (
+              <Chip
+                key={level}
+                selected={filters.levels.includes(level)}
+                onClick={() => toggleLevel(level)}
+                aria-label={label(level)}
+              >
+                {shortLabel(level)}
+              </Chip>
+            ))}
+          </div>
+        </fieldset>
+
         {GROUPS.map((group) => (
           <fieldset key={group.key}>
             <legend className="mb-2.5 font-display text-sm font-bold tracking-wide text-ink-muted uppercase">

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ACTIVITIES } from "@/data/activities";
+import { rangeIncludes } from "@/lib/i18n";
 import { EMPTY_FILTERS, type FilterState, type HistoryEntry, type Need } from "@/lib/types";
 import { applyFilters, durationBucketOf, matchesFilters } from "./filter";
 import { pushHistory, HISTORY_LIMIT } from "./history";
@@ -67,10 +68,24 @@ describe("filters", () => {
     expect(result.every((a) => a.equipment.includes("none"))).toBe(true);
   });
 
-  it("matches an activity when it covers any of the selected year levels", () => {
-    const result = applyFilters(ACTIVITIES, filters({ yearLevels: ["years-10-12"] }));
+  it("matches an activity whose range covers a selected level", () => {
+    const result = applyFilters(ACTIVITIES, filters({ levels: [11] }));
     expect(result.length).toBeGreaterThan(0);
-    expect(result.every((a) => a.yearLevels.includes("years-10-12"))).toBe(true);
+    expect(result.every((a) => a.levels[0] <= 11 && a.levels[1] >= 11)).toBe(true);
+  });
+
+  it("treats several selected levels as OR", () => {
+    const result = applyFilters(ACTIVITIES, filters({ levels: [-1, 12] }));
+    expect(result.length).toBeGreaterThan(0);
+    expect(
+      result.every((a) => rangeIncludes(a.levels, -1) || rangeIncludes(a.levels, 12)),
+    ).toBe(true);
+  });
+
+  it("filters to early years only", () => {
+    const result = applyFilters(ACTIVITIES, filters({ levels: [0] }));
+    expect(result.length).toBeGreaterThan(0);
+    expect(result.every((a) => a.levels[0] <= 0)).toBe(true);
   });
 
   it("can produce an empty result for an over-specified class", () => {

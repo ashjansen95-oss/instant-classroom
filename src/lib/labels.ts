@@ -7,7 +7,6 @@ import type {
   Movement,
   Need,
   Noise,
-  YearLevel,
 } from "@/lib/types";
 import { DURATION_BUCKETS } from "@/lib/types";
 
@@ -53,13 +52,6 @@ export const EQUIPMENT_LABELS: Record<Equipment, string> = {
   other: "Other",
 };
 
-export const YEAR_LEVEL_LABELS: Record<YearLevel, string> = {
-  "early-primary": "Early primary",
-  "upper-primary": "Upper primary",
-  "years-7-9": "Years 7–9",
-  "years-10-12": "Years 10–12",
-};
-
 export const CATEGORY_LABELS: Record<Category, string> = {
   "brain-break": "Brain break",
   "wake-them-up": "Wake them up",
@@ -103,7 +95,5 @@ export function equipmentSummary(equipment: Equipment[]): string {
   return equipment.filter((item) => item !== "none").map((item) => EQUIPMENT_LABELS[item]).join(" + ");
 }
 
-export function yearLevelSummary(levels: YearLevel[]): string {
-  if (levels.length === 4) return "Any year level";
-  return levels.map((level) => YEAR_LEVEL_LABELS[level]).join(", ");
-}
+// Education-level wording is not here on purpose: it depends on the teacher's
+// country, so it lives in @/lib/i18n and is resolved at render time.

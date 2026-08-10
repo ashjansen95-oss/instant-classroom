@@ -22,6 +22,7 @@ export const KEYS = {
   events: "events",
   onboarded: "onboarded",
   motionPermission: "motion-permission",
+  country: "country",
 } as const;
 
 export type StorageKey = (typeof KEYS)[keyof typeof KEYS];
