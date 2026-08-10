@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Instant Classroom
 
-## Getting Started
+**Got 3 minutes to kill?** Shake your phone. Get a classroom activity. Run it.
 
-First, run the development server:
+A tool for teachers who suddenly have 30 seconds to 10 minutes to fill, need to reset a class,
+wake students up, or calm them down. No prep, no planning, no account.
+
+## Running it
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000. Mobile is the primary experience — use device emulation at
+390px, or open it on your phone over the local network.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run check   # lint + typecheck + tests
+npm test        # tests only
+npm run build   # production build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Trying it on a phone
 
-## Learn More
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+The terminal prints a Network address like `http://192.168.x.x:3000`. Open that on a phone
+connected to the same wifi.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+One caveat: **shake only works over HTTPS**, so on the local dev address you'll get the button
+but not the motion sensor. To test shaking for real, deploy it (Vercel, free) and open the
+HTTPS link — then add it to your home screen and it behaves like an app.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## How it's put together
 
-## Deploy on Vercel
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4. No backend, no database, no
+accounts. Every activity ships inside the JS bundle, so the core loop keeps working when the
+school wifi doesn't.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+├─ app/            routes — / is the generator, not a landing page
+├─ components/     ui/ primitives, plus one folder per feature
+├─ data/           the activity library, six themed files
+├─ hooks/          useShake, useTimer, useFavourites, usePreferences, useHistory
+└─ lib/
+   ├─ selection/   pure functions — filter → score → penalise → pick
+   ├─ storage/     StorageAdapter interface + localStorage implementation
+   └─ analytics/   typed track() with a swappable sink
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### The selection engine
+
+The interesting part. It is not `activities[Math.floor(Math.random() * n)]` — if a teacher asks
+for *calm*, they get calm.
+
+1. **Hard filter** — Explore's filters are absolute.
+2. **Score** — each need maps to a target profile (energy, noise, movement, duration, category);
+   distance from that profile gives a 0–1 relevance score.
+3. **Penalise** — recently seen activities drop out; Surprise Me additionally penalises
+   repeating the last few categories, energy levels and durations, so you don't get five
+   high-energy activities in a row.
+4. **Pick** — weighted-random within the top-scoring band.
+
+It's pure, with an injectable `rng`, so all of that is actually tested rather than hoped for.
+
+### The reveal
+
+Shake or tap and a slot-machine reel spins through activity titles before landing on yours.
+Worth being clear about what that is: **the winner is chosen before the reel mounts.** The
+animation is showmanship over a decision already made, so it can never be waiting on anything
+and can never fail to land. The candidate routes are prefetched too, which is what lets the reel
+land on a page that's already on the device — including when the wifi has dropped.
+
+Anyone with `prefers-reduced-motion` set skips the reel entirely and goes straight to the
+activity.
+
+### What we store
+
+Only on the device, only in `localStorage`: favourites, the last few activities seen (so you
+don't get repeats), thumbs up/down, and settings. No student data of any kind — no names, no
+emails, no behavioural profiles. No camera, microphone, location or contacts. Settings has a
+"clear everything" button that means it.
+
+## Conventions
+
+See `AGENTS.md`. The short version: `duration` is in seconds, `lib/selection/` stays pure, and
+motion is never required for anything.
+
+Ideas that aren't in the MVP live in `FUTURE.md`.

@@ -1,26 +1,211 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ---------------------------------------------------------------------------
+   Instant Classroom design tokens
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+   Warm paper, near-black ink, one confident violet, and six tile hues that stay
+   distinguishable from each other in both themes. Every foreground/background
+   pair below clears WCAG AA at body size.
+   --------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  --paper: #fffbf4;
+  --surface: #ffffff;
+  --surface-sunk: #f5efe4;
+  --ink: #15121f;
+  --ink-muted: #56505f;
+  --ink-faint: #6f6879;
+  --line: #e7dfd1;
+  --line-strong: #15121f;
+
+  --primary: #5b3df5;
+  --primary-hover: #4a2ee0;
+  --primary-ink: #ffffff;
+  --primary-soft: #eeeafe;
+
+  --accent: #cf2a47;
+  --accent-ink: #ffffff;
+
+  --positive: #0f7d52;
+  --negative: #c1352d;
+
+  /* Need tiles. Each is a text/border colour; backgrounds are mixed from it. */
+  --hue-reset: #5b3df5;
+  --hue-wake: #b4520a;
+  --hue-calm: #0e6f96;
+  --hue-time: #0f7d52;
+  --hue-fun: #b62d63;
+  --hue-surprise: #15121f;
+
+  --tile-tint: 10%;
+  --shadow-press: 0 2px 0 0 var(--line-strong);
+  --shadow-rest: 0 4px 0 0 var(--line-strong);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: dark;
+
+    --paper: #0e0d14;
+    --surface: #1a1824;
+    --surface-sunk: #262233;
+    --ink: #f6f3ec;
+    --ink-muted: #b0a9bd;
+    --ink-faint: #857e93;
+    --line: #322d40;
+    --line-strong: #000000;
+
+    --primary: #a794ff;
+    --primary-hover: #bcaeff;
+    --primary-ink: #14102a;
+    --primary-soft: #241f3d;
+
+    --accent: #ff8098;
+    --accent-ink: #2a0d14;
+
+    --positive: #5fd6a4;
+    --negative: #ff8b83;
+
+    --hue-reset: #a794ff;
+    --hue-wake: #ffab5e;
+    --hue-calm: #6ec9ec;
+    --hue-time: #5fd6a4;
+    --hue-fun: #ff85b0;
+    --hue-surprise: #f6f3ec;
+
+    --tile-tint: 16%;
   }
 }
 
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-surface-sunk: var(--surface-sunk);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-ink: var(--primary-ink);
+  --color-primary-soft: var(--primary-soft);
+
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-display), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+
+  --animate-wiggle: wiggle 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  --animate-pop-in: pop-in 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+  --animate-rise-in: rise-in 0.34s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-pulse-ring: pulse-ring 2.4s ease-out infinite;
+  --animate-ellipsis: ellipsis 1.2s steps(4, end) infinite;
+}
+
+@keyframes wiggle {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  15% { transform: translate3d(-9px, 0, 0) rotate(-3.5deg); }
+  30% { transform: translate3d(8px, 0, 0) rotate(3deg); }
+  45% { transform: translate3d(-7px, 0, 0) rotate(-2.5deg); }
+  60% { transform: translate3d(5px, 0, 0) rotate(2deg); }
+  75% { transform: translate3d(-3px, 0, 0) rotate(-1deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.88); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes rise-in {
+  0% { opacity: 0; transform: translate3d(0, 14px, 0); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes pulse-ring {
+  0% { opacity: 0.5; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(1.35); }
+}
+
+@keyframes ellipsis {
+  0% { content: ""; }
+  25% { content: "."; }
+  50% { content: ".."; }
+  75% { content: "..."; }
+}
+
+/* --------------------------------------------------------------------------- */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  background: var(--paper);
+  /* Keeps the bottom nav still while the page scrolls on iOS. */
+  overscroll-behavior-y: none;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* A visible, high-contrast focus ring everywhere — this app gets used one-handed
+   and keyboard users deserve better than the browser default. */
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@utility tile-surface {
+  background: color-mix(in oklab, var(--tile) var(--tile-tint), var(--surface));
+}
+
+/* Screen-reader-only, but becomes visible when focused (skip links). */
+@utility sr-focusable {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+
+  &:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+  }
 }
