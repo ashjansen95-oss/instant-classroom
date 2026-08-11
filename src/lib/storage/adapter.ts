@@ -28,6 +28,8 @@ export const KEYS = {
   activeLevel: "active-level",
   /** Session-scoped: Explore's filters, so they survive a look at an activity. */
   exploreFilters: "explore-filters",
+  /** Closed the "add to home screen" banner — Settings keeps a permanent way in. */
+  installPromptDismissed: "install-prompt-dismissed",
 } as const;
 
 export type StorageKey = (typeof KEYS)[keyof typeof KEYS];

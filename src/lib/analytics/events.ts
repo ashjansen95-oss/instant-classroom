@@ -16,6 +16,10 @@ export const EVENT_NAMES = [
   "shake_triggered",
   "surprise_me_clicked",
   "timer_started",
+  // Android/Chrome fire a real browser prompt with a real outcome. iOS Safari
+  // never does — there's nothing to await there, only our own banner closing.
+  "install_prompted",
+  "install_prompt_dismissed",
 ] as const;
 
 export type EventName = (typeof EVENT_NAMES)[number];

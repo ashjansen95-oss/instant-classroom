@@ -82,6 +82,8 @@ describe("analytics", () => {
       "shake_triggered",
       "surprise_me_clicked",
       "timer_started",
+      "install_prompted",
+      "install_prompt_dismissed",
     ]);
   });
 });

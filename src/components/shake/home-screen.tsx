@@ -12,6 +12,7 @@ import { Page } from "@/components/ui/page";
 import { Button } from "@/components/ui/button";
 import { NEEDS, type Need } from "@/lib/types";
 import { ActivityReel } from "./activity-reel";
+import { InstallPrompt } from "./install-prompt";
 import { LevelSwitcher } from "./level-switcher";
 import { NeedGrid } from "./need-grid";
 import { Onboarding } from "./onboarding";
@@ -99,6 +100,8 @@ export function HomeScreen() {
             Shaking needs a phone. On a laptop, the button is your friend.
           </p>
         )}
+
+        <InstallPrompt />
 
         <Recommendations favouriteIds={favouriteIds} />
 

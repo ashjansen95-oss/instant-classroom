@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Download, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Page, PageHeader } from "@/components/ui/page";
 import { TeachingSettings } from "@/components/settings/teaching-settings";
 import { usePreferences, type ShakeSensitivity } from "@/hooks/use-preferences";
+import { usePwaInstall } from "@/hooks/use-pwa-install";
 import { useShake } from "@/hooks/use-shake";
 import { track } from "@/lib/analytics";
 import { storage } from "@/lib/storage";
@@ -22,6 +24,7 @@ const SENSITIVITIES: { value: ShakeSensitivity; label: string }[] = [
 export function SettingsScreen() {
   const { preferences, setPreference } = usePreferences();
   const { status, requestPermission } = useShake({ onShake: () => {}, enabled: false });
+  const install = usePwaInstall();
   const [cleared, setCleared] = useState(false);
 
   useEffect(() => {
@@ -86,6 +89,33 @@ export function SettingsScreen() {
             <p className="mt-3 text-sm text-ink-muted text-pretty">
               Motion access is blocked in your browser settings. The button works exactly the same.
             </p>
+          )}
+        </section>
+      )}
+
+      {install.hydrated && !install.installed && (install.canPromptNatively || install.needsManualIosSteps) && (
+        <section className="mt-8" aria-labelledby="install-heading">
+          <h2
+            id="install-heading"
+            className="font-display text-sm font-bold tracking-wide text-ink-muted uppercase"
+          >
+            Add to home screen
+          </h2>
+          {install.needsManualIosSteps ? (
+            <p className="mt-3 text-[0.9375rem] text-ink-muted text-pretty">
+              Tap <Share aria-hidden className="inline size-4 -translate-y-0.5" strokeWidth={2.5} />
+              {" then “Add to Home Screen” "}— opens straight to this, no browser bar.
+            </p>
+          ) : (
+            <>
+              <p className="mt-3 text-[0.9375rem] text-ink-muted text-pretty">
+                Opens like any other app — no browser bar, no typing a URL.
+              </p>
+              <Button variant="secondary" size="md" className="mt-4" onClick={install.promptInstall}>
+                <Download aria-hidden className="size-4" />
+                Add to Home Screen
+              </Button>
+            </>
           )}
         </section>
       )}
