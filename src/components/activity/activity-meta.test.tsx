@@ -54,7 +54,7 @@ describe("ActivityMeta level display", () => {
   });
 
   it("says 'any' in the local word when an activity really does suit everyone", () => {
-    const everyone = getActivity("heads-down-reset")!;
+    const everyone = getActivity("biggest-stretch")!;
 
     withCountry("AU");
     const { unmount } = render(<ActivityMeta activity={everyone} />);

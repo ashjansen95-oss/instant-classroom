@@ -1,6 +1,7 @@
 import { categoryPrompts } from "./categories";
 import { choicePrompts } from "./choices";
 import { creativePrompts } from "./creative";
+import { partyPrompts } from "./party";
 import { thinkingPrompts } from "./thinking";
 import type { PromptBank, PromptBanks } from "./types";
 
@@ -16,6 +17,7 @@ export const PROMPTS: PromptBanks = {
   ...categoryPrompts,
   ...thinkingPrompts,
   ...creativePrompts,
+  ...partyPrompts,
 };
 
 export function getPrompts(activityId: string): PromptBank | undefined {

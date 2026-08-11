@@ -178,6 +178,8 @@ describe("activity library", () => {
         "rock-paper-scissors-champion",
         "statue-contest",
         "twenty-questions",
+        "what-did-we-move",
+        "warmer-warmer",
       ].sort(),
     );
   });

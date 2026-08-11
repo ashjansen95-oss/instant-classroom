@@ -50,6 +50,9 @@ const NEEDS_CONTENT = [
   "sound-effects-story",
   "quick-draw-relay",
   "hum-that-tune",
+  // Party
+  "never-have-i-ever-school",
+  "rhythm-categories",
 ];
 
 /** A teacher will reach for these weekly, so they get a deeper bank. */

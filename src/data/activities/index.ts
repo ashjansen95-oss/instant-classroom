@@ -4,6 +4,7 @@ import { calmDown } from "./calm-down";
 import { creative } from "./creative";
 import { earlyYears } from "./early-years";
 import { pairsAndCurriculum } from "./pairs-and-curriculum";
+import { partyGames } from "./party-games";
 import { quickFillers } from "./quick-fillers";
 import { senior } from "./senior";
 import { thinkFast } from "./think-fast";
@@ -23,6 +24,7 @@ export const ACTIVITIES: Activity[] = [
   ...pairsAndCurriculum,
   ...earlyYears,
   ...senior,
+  ...partyGames,
 ];
 
 const BY_ID = new Map(ACTIVITIES.map((activity) => [activity.id, activity]));
