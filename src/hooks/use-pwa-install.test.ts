@@ -68,16 +68,19 @@ describe("usePwaInstall", () => {
     expect(result.current.installable).toBe(true);
   });
 
-  it("doesn't guess at instructions for other iOS browsers", () => {
-    // Chrome on iOS reports a "CriOS" token and doesn't get Safari's Share
-    // sheet steps — better to show nothing than the wrong steps.
+  it("also offers the manual steps to Chrome on iPhone, not just Safari", () => {
+    // Apple restricts every iOS browser the same way — Chrome (which reports
+    // a "CriOS" token) is exactly as stuck as Safari is, and routes "Add to
+    // Home Screen" through the same system Share Sheet. An earlier version
+    // of this only recognised Safari specifically, which meant real iPhone
+    // users who simply prefer Chrome saw nothing at all.
     setUserAgent(
       "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/120.0 Mobile/15E148 Safari/604.1",
     );
     const { result } = renderHook(() => usePwaInstall());
 
-    expect(result.current.needsManualIosSteps).toBe(false);
-    expect(result.current.installable).toBe(false);
+    expect(result.current.needsManualIosSteps).toBe(true);
+    expect(result.current.installable).toBe(true);
   });
 
   it("shows nothing once already installed", () => {

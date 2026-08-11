@@ -74,6 +74,8 @@ describe("usePreferences", () => {
     expect(result.current.preferences.sound).toBe(true);
     expect(result.current.preferences.shakeEnabled).toBe(true);
     expect(result.current.preferences.shakeSensitivity).toBe("medium");
+    // "system" — follows the device, until a teacher picks light or dark.
+    expect(result.current.preferences.theme).toBe("system");
   });
 
   it("stores a changed preference", () => {
@@ -81,6 +83,15 @@ describe("usePreferences", () => {
     act(() => result.current.setPreference("sound", false));
 
     expect(result.current.preferences.sound).toBe(false);
+  });
+
+  it("stores and persists a chosen theme", () => {
+    const first = renderHook(() => usePreferences());
+    act(() => first.result.current.setPreference("theme", "dark"));
+    expect(first.result.current.preferences.theme).toBe("dark");
+
+    const second = renderHook(() => usePreferences());
+    expect(second.result.current.preferences.theme).toBe("dark");
   });
 
   it("merges defaults over a partial stored value", () => {

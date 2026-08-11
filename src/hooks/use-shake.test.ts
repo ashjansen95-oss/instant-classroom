@@ -227,5 +227,46 @@ describe("useShake", () => {
 
       expect(result.current.status).toBe("denied");
     });
+
+    it("remembers a granted choice across a remount, instead of asking again", async () => {
+      // The bug this guards against: "needs-permission" coming back every
+      // single time Home remounted, even for a teacher who'd already said
+      // yes — the choice lived in plain useState instead of storage.
+      Object.defineProperty(window, "DeviceMotionEvent", {
+        value: class {
+          static requestPermission = vi.fn().mockResolvedValue("granted");
+        },
+        configurable: true,
+        writable: true,
+      });
+
+      const first = renderHook(() => useShake({ onShake: vi.fn() }));
+      await act(async () => {
+        await first.result.current.requestPermission();
+      });
+      first.unmount();
+
+      const second = renderHook(() => useShake({ onShake: vi.fn() }));
+      expect(second.result.current.status).toBe("listening");
+    });
+
+    it("remembers a declined choice across a remount too", async () => {
+      Object.defineProperty(window, "DeviceMotionEvent", {
+        value: class {
+          static requestPermission = vi.fn().mockResolvedValue("denied");
+        },
+        configurable: true,
+        writable: true,
+      });
+
+      const first = renderHook(() => useShake({ onShake: vi.fn() }));
+      await act(async () => {
+        await first.result.current.requestPermission();
+      });
+      first.unmount();
+
+      const second = renderHook(() => useShake({ onShake: vi.fn() }));
+      expect(second.result.current.status).toBe("denied");
+    });
   });
 });

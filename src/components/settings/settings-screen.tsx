@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Page, PageHeader } from "@/components/ui/page";
 import { TeachingSettings } from "@/components/settings/teaching-settings";
-import { usePreferences, type ShakeSensitivity } from "@/hooks/use-preferences";
+import { usePreferences, type ShakeSensitivity, type ThemePreference } from "@/hooks/use-preferences";
 import { usePwaInstall } from "@/hooks/use-pwa-install";
 import { useShake } from "@/hooks/use-shake";
 import { track } from "@/lib/analytics";
@@ -19,6 +19,12 @@ const SENSITIVITIES: { value: ShakeSensitivity; label: string }[] = [
   { value: "low", label: "Firm shake" },
   { value: "medium", label: "Normal" },
   { value: "high", label: "Light shake" },
+];
+
+const THEMES: { value: ThemePreference; label: string }[] = [
+  { value: "system", label: "Auto" },
+  { value: "light", label: "Light" },
+  { value: "dark", label: "Dark" },
 ];
 
 export function SettingsScreen() {
@@ -38,6 +44,26 @@ export function SettingsScreen() {
       <div className="mb-8">
         <TeachingSettings />
       </div>
+
+      <section className="mb-8" aria-labelledby="appearance-heading">
+        <h2
+          id="appearance-heading"
+          className="mb-3 font-display text-sm font-bold tracking-wide text-ink-muted uppercase"
+        >
+          Appearance
+        </h2>
+        <div className="flex flex-wrap gap-2">
+          {THEMES.map((option) => (
+            <Chip
+              key={option.value}
+              selected={preferences.theme === option.value}
+              onClick={() => setPreference("theme", option.value)}
+            >
+              {option.label}
+            </Chip>
+          ))}
+        </div>
+      </section>
 
       <section className="space-y-3">
         <Toggle

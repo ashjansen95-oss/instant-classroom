@@ -6,11 +6,15 @@ import { useStoredState } from "./use-stored-state";
 
 export type ShakeSensitivity = "low" | "medium" | "high";
 
+/** "system" follows the device's own light/dark setting — the default. */
+export type ThemePreference = "system" | "light" | "dark";
+
 export interface Preferences {
   sound: boolean;
   haptics: boolean;
   shakeEnabled: boolean;
   shakeSensitivity: ShakeSensitivity;
+  theme: ThemePreference;
 }
 
 export const DEFAULT_PREFERENCES: Preferences = {
@@ -18,6 +22,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   haptics: true,
   shakeEnabled: true,
   shakeSensitivity: "medium",
+  theme: "system",
 };
 
 export function usePreferences() {

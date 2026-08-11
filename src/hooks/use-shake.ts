@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { KEYS } from "@/lib/storage";
 import type { ShakeSensitivity } from "./use-preferences";
+import { useStoredState } from "./use-stored-state";
 
 /**
  * Shake detection via DeviceMotion.
@@ -76,7 +78,13 @@ export function useShake({
   sensitivity?: ShakeSensitivity;
 }) {
   const capability = useMotionCapability();
-  const [choice, setChoice] = useState<PermissionChoice>("unasked");
+  // Persisted — without this, "choice" reset to "unasked" on every remount
+  // (leaving Home, coming back, reopening the app) and the "Turn on shake"
+  // card came back every single time, even for a teacher who'd already
+  // granted or explicitly declined. iOS silently re-resolves a repeat
+  // requestPermission() call with the answer it already knows, so this only
+  // changes what our own UI assumes — it doesn't skip a real OS prompt.
+  const [choice, setChoice] = useStoredState<PermissionChoice>(KEYS.motionPermission, "unasked");
   const [shaking, setShaking] = useState(false);
 
   // Derived, never assigned from an effect.
@@ -172,7 +180,7 @@ export function useShake({
       setChoice("denied");
       return false;
     }
-  }, []);
+  }, [setChoice]);
 
   return { status, shaking, requestPermission };
 }

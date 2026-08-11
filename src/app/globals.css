@@ -44,8 +44,17 @@
   --shadow-rest: 0 4px 0 0 var(--line-strong);
 }
 
+/*
+ * Dark tokens are declared twice on purpose: once behind the system's own
+ * `prefers-color-scheme` (the default, "Auto" in Settings), and again behind
+ * `[data-theme="dark"]` so a teacher's explicit choice always wins regardless
+ * of what their OS is set to. `[data-theme]` is stamped onto <html> — see
+ * theme-sync.tsx — by an inline script that runs before first paint (no
+ * flash of the wrong theme) and kept in sync afterwards by React. Explicit
+ * "light" gets the same treatment in reverse, overriding a dark OS setting.
+ */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     color-scheme: dark;
 
     --paper: #0e0d14;
@@ -77,6 +86,39 @@
 
     --tile-tint: 16%;
   }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper: #0e0d14;
+  --surface: #1a1824;
+  --surface-sunk: #262233;
+  --ink: #f6f3ec;
+  --ink-muted: #b0a9bd;
+  --ink-faint: #857e93;
+  --line: #322d40;
+  --line-strong: #000000;
+
+  --primary: #a794ff;
+  --primary-hover: #bcaeff;
+  --primary-ink: #14102a;
+  --primary-soft: #241f3d;
+
+  --accent: #ff8098;
+  --accent-ink: #2a0d14;
+
+  --positive: #5fd6a4;
+  --negative: #ff8b83;
+
+  --hue-reset: #a794ff;
+  --hue-wake: #ffab5e;
+  --hue-calm: #6ec9ec;
+  --hue-time: #5fd6a4;
+  --hue-fun: #ff85b0;
+  --hue-surprise: #f6f3ec;
+
+  --tile-tint: 16%;
 }
 
 @theme inline {
@@ -153,8 +195,14 @@
 
 html {
   background: var(--paper);
-  /* Keeps the bottom nav still while the page scrolls on iOS. */
-  overscroll-behavior-y: none;
+  /* Stops an overscroll at the top or bottom from chaining into the browser's
+     own gestures (pull-to-refresh, URL bar reveal) — that's what could make
+     the sticky bottom nav glitch. `contain` rather than `none`: `none` also
+     kills the page's own native rubber-band bounce, which just reads as
+     broken on a real phone — every other scrollable surface in the app (the
+     filter sheet, a separate scroll container this rule never reached) still
+     bounces, so the plain page should too. */
+  overscroll-behavior-y: contain;
 }
 
 body {

@@ -19,12 +19,10 @@ function isStandalone(): boolean {
   );
 }
 
-function isIosSafari(): boolean {
+function isIos(): boolean {
   const ua = navigator.userAgent;
   // iPadOS 13+ reports as "Macintosh" but, unlike a real Mac, has touch points.
-  const isIos = /iPad|iPhone|iPod/.test(ua) || (ua.includes("Macintosh") && navigator.maxTouchPoints > 1);
-  const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
-  return isIos && isSafari;
+  return /iPad|iPhone|iPod/.test(ua) || (ua.includes("Macintosh") && navigator.maxTouchPoints > 1);
 }
 
 /**
@@ -32,9 +30,15 @@ function isIosSafari(): boolean {
  * paths rather than one feature with two skins:
  *
  * Android, Chrome, Edge fire `beforeinstallprompt` and can be triggered from
- * our own button with a real accept/dismiss outcome. iOS Safari never fires
- * it — Apple's deliberate choice, not a gap — so that path can only ever be
- * "here's how", read off the screen, with no way to know if it was followed.
+ * our own button with a real accept/dismiss outcome. **No** browser on iOS
+ * ever fires it — this is an Apple platform restriction, not a Safari-only
+ * quirk, so Chrome and Firefox on an iPhone are just as stuck as Safari is.
+ * (An earlier version of this only offered manual steps to Safari
+ * specifically, reasoning that other iOS browsers might have a different
+ * path and it's better to show nothing than wrong instructions — but that
+ * left real iPhone users who simply prefer Chrome with nothing at all.
+ * Every iOS browser routes "Add to Home Screen" through the same system
+ * Share Sheet, so the same instructions hold everywhere on iOS.)
  *
  * Held back behind `hydrated` throughout: `matchMedia` and `navigator` are
  * browser-only and must never run during the render that has to match the
@@ -74,7 +78,7 @@ export function usePwaInstall() {
 
   const installed = hydrated && isStandalone();
   const canPromptNatively = deferred !== null;
-  const needsManualIosSteps = hydrated && !installed && !canPromptNatively && isIosSafari();
+  const needsManualIosSteps = hydrated && !installed && !canPromptNatively && isIos();
 
   return {
     hydrated,

@@ -42,7 +42,7 @@ describe("InstallPrompt", () => {
     expect(screen.getByRole("button", { name: /Add to Home Screen/ })).toBeInTheDocument();
   });
 
-  it("gives Safari-specific steps on iOS, with no button to press", () => {
+  it("gives manual steps on iOS, with no button to press", () => {
     vi.stubGlobal("navigator", {
       ...navigator,
       userAgent:
