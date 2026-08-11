@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ChevronRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Page, PageHeader } from "@/components/ui/page";
@@ -90,20 +89,6 @@ export function SettingsScreen() {
           )}
         </section>
       )}
-
-      <section className="mt-8">
-        <Link
-          href="/upgrade"
-          className="flex items-center gap-3 rounded-2xl border-2 border-line-strong bg-primary-soft p-4"
-        >
-          <Sparkles aria-hidden className="size-6 shrink-0 text-primary" />
-          <span className="min-w-0 flex-1">
-            <span className="block font-display font-extrabold">Instant Classroom Pro</span>
-            <span className="block text-sm text-ink-muted">Coming soon. Have a look.</span>
-          </span>
-          <ChevronRight aria-hidden className="size-5 shrink-0 text-ink-faint" />
-        </Link>
-      </section>
 
       <section className="mt-8" aria-labelledby="data-heading">
         <h2

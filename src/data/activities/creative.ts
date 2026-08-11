@@ -7,7 +7,7 @@ export const creative: Activity[] = [
     title: "One-Minute Doodle",
     description: "Everyone draws the same prompt in sixty seconds and the results are gloriously different.",
     instructions: [
-      "Give a prompt — 'a house that can walk'.",
+      "Read out the prompt below.",
       "Sixty seconds. Pens down when the timer goes, finished or not.",
       "Hold them up all at once.",
       "Nobody explains theirs. Just look.",
@@ -107,8 +107,8 @@ export const creative: Activity[] = [
     title: "Sound Effects Story",
     description: "You tell a story and the class provides every sound effect live.",
     instructions: [
-      "Assign sounds to sections of the room — wind, footsteps, rain, a door.",
-      "Start telling a story and point at a section when you need their sound.",
+      "Assign a sound to each section of the room — wind, footsteps, rain, a door.",
+      "Start telling the story below, pointing at a section when you need their sound.",
       "Build it up until three or four sounds are running at once.",
       "Cut everything dead on the last line.",
     ],
@@ -367,7 +367,7 @@ export const creative: Activity[] = [
     title: "Design the Worst",
     description: "Groups design the worst possible version of an everyday object and explain why it fails.",
     instructions: [
-      "In groups: design the worst possible chair.",
+      "In groups: design the worst possible version of the thing below.",
       "Three minutes. Sketch it and label the terrible features.",
       "Each group shows theirs in fifteen seconds.",
       "Vote on the one you'd least like to sit on.",

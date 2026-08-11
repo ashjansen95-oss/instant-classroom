@@ -123,6 +123,19 @@ export function candidateBand(options: PickOptions): Activity[] {
   return scored.filter((entry) => entry.score >= best * BAND).map((entry) => entry.activity);
 }
 
+/** One weighted draw from an already-scored, already-sorted list. */
+function weightedDraw(band: ScoredActivity[], rng: () => number): ScoredActivity {
+  const totalWeight = band.reduce((sum, entry) => sum + entry.score, 0);
+  let threshold = rng() * totalWeight;
+
+  for (const entry of band) {
+    threshold -= entry.score;
+    if (threshold <= 0) return entry;
+  }
+
+  return band[band.length - 1];
+}
+
 /** Weighted pick across the top-scoring band. Returns null when nothing matches. */
 export function pickActivity(options: PickOptions): Activity | null {
   const rng = options.rng ?? Math.random;
@@ -131,16 +144,39 @@ export function pickActivity(options: PickOptions): Activity | null {
 
   const best = scored[0].score;
   const band = scored.filter((entry) => entry.score >= best * BAND);
+  return weightedDraw(band, rng).activity;
+}
 
-  const totalWeight = band.reduce((sum, entry) => sum + entry.score, 0);
-  let threshold = rng() * totalWeight;
+/**
+ * `count` distinct activities that resemble `seed`, for the activity screen's
+ * "More like this" — three concrete alternatives rather than another spin of
+ * the wheel. Reuses the exact same age-hard-constraint + similarity scoring as
+ * "give me another like this", so a suggestion is never wrong for the class
+ * the teacher is actually standing in front of.
+ *
+ * Re-bands after each pick rather than drawing all `count` from one band: in a
+ * small library, the initial top band can easily be smaller than `count` once
+ * the activities already chosen are excluded.
+ */
+export function pickSimilarActivities(
+  seed: Activity,
+  count: number,
+  options: Omit<PickOptions, "need" | "like"> = {},
+): Activity[] {
+  const rng = options.rng ?? Math.random;
+  let remaining = scoreCandidates({ ...options, need: "surprise", like: seed });
 
-  for (const entry of band) {
-    threshold -= entry.score;
-    if (threshold <= 0) return entry.activity;
+  const chosen: Activity[] = [];
+  for (let i = 0; i < count && remaining.length > 0; i++) {
+    const best = remaining[0].score;
+    const band = remaining.filter((entry) => entry.score >= best * BAND);
+    const picked = weightedDraw(band, rng);
+
+    chosen.push(picked.activity);
+    remaining = remaining.filter((entry) => entry.activity.id !== picked.activity.id);
   }
 
-  return band[band.length - 1].activity;
+  return chosen;
 }
 
 /** Activities similar to this one, for the "more like this" strip. */

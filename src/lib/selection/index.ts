@@ -9,6 +9,7 @@ export { HISTORY_LIMIT, pushHistory, toHistoryEntry } from "./history";
 export {
   candidateBand,
   pickActivity,
+  pickSimilarActivities,
   scoreCandidates,
   similarActivities,
   type PickOptions,

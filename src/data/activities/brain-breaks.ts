@@ -8,7 +8,7 @@ export const brainBreaks: Activity[] = [
     description: "Students pick a side of the room for each impossible choice.",
     instructions: [
       "Point out which wall is option A and which is option B.",
-      "Read a 'would you rather' — pineapple on pizza or never eat cheese again?",
+      "Read out the prompt below.",
       "Give 10 seconds to move, then call the next one.",
       "Ask one or two students to justify a choice if you want to stretch it out.",
     ],
@@ -47,10 +47,10 @@ export const brainBreaks: Activity[] = [
     title: "Stand If",
     description: "Students stand up if a statement is true for them, and it gets sillier.",
     instructions: [
-      "Start easy: stand if you had breakfast.",
-      "Sit down, then go again — stand if you've ever broken a bone.",
-      "Escalate: stand if you could beat me in a staring contest.",
-      "Finish on something the whole class will stand for.",
+      "Read the first statement below. Stand if it's true for you.",
+      "Sit back down, then read the next one.",
+      "Keep going — they get sillier as the list goes on.",
+      "Finish on one the whole class will stand for.",
     ],
     duration: 90,
     energy: "medium",
@@ -370,7 +370,7 @@ export const brainBreaks: Activity[] = [
     description: "Rapid-fire either/or choices shown with a thumb left or right.",
     instructions: [
       "Thumb left for the first option, thumb right for the second.",
-      "Beach or bush. Summer or winter. Movie or book.",
+      "Read the choices below, one at a time.",
       "One second per question — do not slow down.",
       "Fire off fifteen and stop.",
     ],

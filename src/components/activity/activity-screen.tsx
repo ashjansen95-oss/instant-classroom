@@ -5,10 +5,11 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Heart, RefreshCw, Timer } from "lucide-react";
 import { ActivityMeta } from "@/components/activity/activity-meta";
+import { MoreLikeThis } from "@/components/activity/more-like-this";
 import { PromptDeck } from "@/components/activity/prompt-deck";
 import { ActivityReel } from "@/components/shake/activity-reel";
 import { getPrompts } from "@/data/prompts";
-import { TimerOverlay } from "@/components/timer/timer-overlay";
+import { TimerButton } from "@/components/timer/timer-button";
 import { Button } from "@/components/ui/button";
 import { Page } from "@/components/ui/page";
 import { useActivityPicker } from "@/hooks/use-activity-picker";
@@ -17,7 +18,6 @@ import { useFeedback } from "@/hooks/use-activity-history";
 import { usePreferences } from "@/hooks/use-preferences";
 import { track } from "@/lib/analytics";
 import { vibrate } from "@/lib/haptics";
-import { CATEGORY_LABELS } from "@/lib/labels";
 import {
   FEEDBACK_OPTIONS,
   NEEDS,
@@ -36,9 +36,6 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
   const need = needFrom(searchParams.get("need"));
 
   const [timerOpen, setTimerOpen] = useState(false);
-  // Whether they've actually run this one, as opposed to glancing and
-  // rejecting it — decides what "give me another" means. See the button below.
-  const [hasStartedTimer, setHasStartedTimer] = useState(false);
   const { isFavourite, toggle } = useFavourites();
   const { feedback, submit } = useFeedback();
   const { preferences } = usePreferences();
@@ -64,30 +61,28 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
   if (lastActivityId !== activity.id) {
     setLastActivityId(activity.id);
     setTimerOpen(false);
-    setHasStartedTimer(false);
   }
-
-  const startTimer = () => {
-    setHasStartedTimer(true);
-    setTimerOpen(true);
-  };
 
   const another = () => {
     setTimerOpen(false);
     track("activity_skipped", { id: activity.id });
-    // Rejected on sight, before they've run it: no similarity bias — a bad
-    // first impression isn't evidence the *shape* was right. Actually ran it:
-    // steer towards its shape, since now we know it worked.
-    pick(need, "button", undefined, hasStartedTimer ? activity : undefined);
+    // A plain fresh pick — no similarity bias. That's what "More like this"
+    // below is for; this button means "not this one", nothing more specific.
+    pick(need, "button");
   };
 
-  const timerButton = (
+  // Self-ending activities (a champion, a correct guess, five points) finish
+  // on their own — a countdown fights that, so the timer steps back to a
+  // secondary, optional cap rather than leading.
+  const timerSlot = timerOpen ? (
+    <TimerButton key="timer" activity={activity} size={activity.selfEnding ? "lg" : "xl"} />
+  ) : (
     <Button
       key="timer"
       size={activity.selfEnding ? "lg" : "xl"}
       variant={activity.selfEnding ? "secondary" : "primary"}
       fullWidth
-      onClick={startTimer}
+      onClick={() => setTimerOpen(true)}
     >
       <Timer aria-hidden className="size-6" />
       Start timer
@@ -104,7 +99,7 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
       disabled={busy}
     >
       <RefreshCw aria-hidden className={cn("size-5", busy && "animate-spin")} />
-      {busy ? "Finding…" : hasStartedTimer ? "Give me another like this" : "Give me another"}
+      {busy ? "Finding…" : "Give me another"}
     </Button>
   );
 
@@ -194,58 +189,41 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
         {/* Only the activities that would otherwise leave a teacher improvising. */}
         {prompts && <PromptDeck bank={prompts} />}
 
-        {/* Self-ending activities (a champion, a correct guess, five points)
-            finish on their own — a countdown fights that, so it's demoted to
-            a secondary, optional cap rather than leading. */}
         <div className="mt-8 space-y-3">
-          {activity.selfEnding ? [anotherButton, timerButton] : [timerButton, anotherButton]}
+          {activity.selfEnding ? [anotherButton, timerSlot] : [timerSlot, anotherButton]}
         </div>
 
         <section aria-labelledby="feedback-heading" className="mt-9">
-          <h2 id="feedback-heading" className="text-center text-sm font-bold text-ink-muted">
-            How did it go?
-          </h2>
-
-          <div className="mt-3 flex flex-wrap justify-center gap-2">
-            {FEEDBACK_OPTIONS.map((option) => (
-              <FeedbackButton
-                key={option.rating}
-                active={currentFeedback === option.rating}
-                tone={option.tone}
-                onClick={() => onFeedback(option.rating)}
-              >
-                <span aria-hidden>{option.emoji}</span>
-                {option.label}
-              </FeedbackButton>
-            ))}
-          </div>
-
-          <p aria-live="polite" className="mt-3 min-h-5 text-center text-xs text-ink-faint">
-            {FEEDBACK_REPLIES[currentFeedback ?? ""] ?? ""}
-          </p>
+          {currentFeedback ? (
+            // Once a rating's in, the chips have done their job — showing them
+            // alongside the confirmation just invites a second, redundant tap.
+            // The message itself is the way back, for the inevitable misfire.
+            <button
+              type="button"
+              onClick={() => onFeedback(currentFeedback)}
+              className="mx-auto block text-center text-sm text-ink-muted underline decoration-line underline-offset-4 hover:text-ink"
+            >
+              {FEEDBACK_REPLIES[currentFeedback]}
+            </button>
+          ) : (
+            <>
+              <h2 id="feedback-heading" className="text-center text-sm font-bold text-ink-muted">
+                How did it go?
+              </h2>
+              <div className="mt-3 flex flex-wrap justify-center gap-2">
+                {FEEDBACK_OPTIONS.map((option) => (
+                  <FeedbackButton key={option.rating} onClick={() => onFeedback(option.rating)}>
+                    <span aria-hidden>{option.emoji}</span>
+                    {option.label}
+                  </FeedbackButton>
+                ))}
+              </div>
+            </>
+          )}
         </section>
 
-        <ul className="mt-8 flex flex-wrap justify-center gap-2">
-          {activity.categories.map((category) => (
-            <li key={category}>
-              <Link
-                href={`/explore?category=${category}`}
-                className="inline-flex min-h-11 items-center rounded-full border-2 border-line px-4 text-xs font-semibold text-ink-muted hover:border-line-strong hover:text-ink"
-              >
-                {CATEGORY_LABELS[category]}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <MoreLikeThis activity={activity} />
       </Page>
-
-      {timerOpen && (
-        <TimerOverlay
-          activity={activity}
-          onClose={() => setTimerOpen(false)}
-          onAnother={another}
-        />
-      )}
     </>
   );
 }
@@ -259,34 +237,21 @@ const FEEDBACK_REPLIES: Record<string, string> = {
   "never-again": "Understood. We'll stop suggesting it.",
 };
 
-const TONE_STYLES = {
-  positive: "border-line-strong bg-positive text-white",
-  neutral: "border-line-strong bg-surface-sunk text-ink",
-  negative: "border-line-strong bg-negative text-white",
-} as const;
-
+// No selected/active state to style — the moment one is chosen, the whole
+// row is replaced by the confirmation message, so these only ever render
+// unselected.
 function FeedbackButton({
-  active,
   onClick,
-  tone,
   children,
 }: {
-  active: boolean;
   onClick: () => void;
-  tone: "positive" | "neutral" | "negative";
   children: React.ReactNode;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-pressed={active}
-      className={cn(
-        "inline-flex min-h-12 items-center gap-1.5 rounded-full border-2 px-4 text-sm font-bold transition-colors",
-        active
-          ? TONE_STYLES[tone]
-          : "border-line bg-surface text-ink-muted hover:border-line-strong hover:text-ink",
-      )}
+      className="inline-flex min-h-12 items-center gap-1.5 rounded-full border-2 border-line bg-surface px-4 text-sm font-bold text-ink-muted transition-colors hover:border-line-strong hover:text-ink"
     >
       {children}
     </button>

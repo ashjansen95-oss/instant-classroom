@@ -180,17 +180,19 @@ export const thinkingPrompts: PromptBanks = {
 
   "blockbuster-letters": {
     label: "What's the…",
+    // The answer sits in brackets at the end — for the teacher's eyes, not to
+    // read aloud. Without it there's no way to confirm a guess on the spot.
     items: [
-      "P — a shape with many sides.",
-      "G — the force that keeps you on the ground.",
-      "V — a word that describes an action.",
-      "H — the organ that pumps blood.",
-      "C — the distance all the way around a circle.",
-      "D — the bottom number in a fraction.",
-      "M — the middle value when numbers are put in order.",
-      "S — a group of words with a subject and a verb.",
-      "A — the answer to an addition problem.",
-      "E — the imaginary line around the middle of the Earth.",
+      "P — a shape with many sides. (Polygon)",
+      "G — the force that keeps you on the ground. (Gravity)",
+      "V — a word that describes an action. (Verb)",
+      "H — the organ that pumps blood. (Heart)",
+      "C — the distance all the way around a circle. (Circumference)",
+      "D — the bottom number in a fraction. (Denominator)",
+      "M — the middle value when numbers are put in order. (Median)",
+      "S — a group of words with a subject and a verb. (Sentence)",
+      "A — the space inside a shape, measured in square units. (Area)",
+      "E — the imaginary line around the middle of the Earth. (Equator)",
     ],
   },
 

@@ -7,7 +7,7 @@ export const thinkFast: Activity[] = [
     title: "Categories",
     description: "Name a category and students take turns giving examples until someone hesitates.",
     instructions: [
-      "Give a category — Australian animals.",
+      "Read out the category below.",
       "Go around the room. One example each, no repeats.",
       "Hesitate for more than three seconds and you sit out the round.",
       "New category, everyone back in.",
@@ -67,7 +67,7 @@ export const thinkFast: Activity[] = [
     title: "Twenty Questions",
     description: "You think of something and the class narrows it down with yes-or-no questions.",
     instructions: [
-      "Think of an object, person or place. Tell them the category.",
+      "Pick one from the list below, or think of your own. Tell them the category.",
       "Class asks questions you can only answer yes or no.",
       "Count the questions out loud as you go.",
       "Twenty questions or they lose. They will almost always win.",
@@ -126,10 +126,10 @@ export const thinkFast: Activity[] = [
   },
   {
     id: "alternative-uses",
-    title: "Twenty Uses for a Brick",
+    title: "Alternative Uses",
     description: "Teams list as many uses as they can for an ordinary object in ninety seconds.",
     instructions: [
-      "Name an object — a brick, a sock, a paperclip.",
+      "Read out the object below.",
       "Ninety seconds. Every table lists as many uses as possible.",
       "Nothing is too stupid. Quantity beats quality.",
       "Highest count reads their five weirdest.",
@@ -169,7 +169,7 @@ export const thinkFast: Activity[] = [
     title: "Guess the Rule",
     description: "You sort students into two groups by a secret rule and they work out what it is.",
     instructions: [
-      "Pick a secret rule — wearing something blue, name has an E in it.",
+      "Read the secret rule below (don't say it out loud).",
       "Call students to one side of the room or the other. Say nothing.",
       "Once about eight are sorted, take guesses.",
       "Reveal the rule and let a student invent the next one.",
@@ -189,7 +189,7 @@ export const thinkFast: Activity[] = [
     title: "Word Ladder",
     description: "Change one letter at a time to get from one word to another.",
     instructions: [
-      "Put two four-letter words on the board — COLD and WARM.",
+      "Put the two words below on the board.",
       "Change one letter at a time. Every step must be a real word.",
       "Class calls out steps and you write them up.",
       "Try to beat the record number of steps.",
@@ -209,7 +209,7 @@ export const thinkFast: Activity[] = [
     title: "Anagram Attack",
     description: "A scrambled word goes on the board and the class races to unscramble it.",
     instructions: [
-      "Scramble a word from the topic and write it up.",
+      "Put one of the scrambled words below on the board.",
       "Hands up when you've got it — don't shout it out.",
       "Wait until half the hands are up, then take an answer.",
       "Next word, longer this time.",
@@ -229,7 +229,7 @@ export const thinkFast: Activity[] = [
     title: "Connect These Two",
     description: "Two random words go up and students find a genuine link between them.",
     instructions: [
-      "Write two unrelated words — 'volcano' and 'toothbrush'.",
+      "Write the two words below on the board.",
       "Sixty seconds to find a real connection.",
       "Take three answers. Best reasoning wins, not the funniest.",
       "Two new words and go again.",
@@ -249,7 +249,7 @@ export const thinkFast: Activity[] = [
     title: "Justify the Absurd",
     description: "Students get thirty seconds to argue for a ridiculous position they don't hold.",
     instructions: [
-      "Give a silly claim — 'homework should be done by parents'.",
+      "Read out the claim below.",
       "Thirty seconds thinking, in silence.",
       "Take two volunteers to argue it as convincingly as they can.",
       "Class votes on who was most persuasive.",
@@ -269,9 +269,9 @@ export const thinkFast: Activity[] = [
     title: "Speed Sort",
     description: "Call out items and students sort them into two categories using their hands.",
     instructions: [
+      "Read out one of the pairings below, so they know what each hand means.",
       "Left hand up for category one, right hand for category two.",
-      "Call out items fast — vertebrate or invertebrate, metal or non-metal.",
-      "No pausing between items.",
+      "Call out items fast, no pausing between them.",
       "Slip a genuinely tricky one in near the end.",
     ],
     duration: 90,
@@ -329,8 +329,8 @@ export const thinkFast: Activity[] = [
     title: "Starts With",
     description: "Pick a letter and every answer for the next two minutes must start with it.",
     instructions: [
-      "Pick a letter. Everything from now on starts with it.",
-      "Name a food. Name a country. Name something in this room.",
+      "Read out the letter and prompts below.",
+      "Everything from now on starts with that letter.",
       "Fire the prompts out fast, going around the room.",
       "Change the letter when it gets too easy.",
     ],
@@ -349,7 +349,7 @@ export const thinkFast: Activity[] = [
     title: "How Many Ways?",
     description: "Students find as many different ways as possible to reach the same answer.",
     instructions: [
-      "Write a number on the board — twenty-four.",
+      "Write the number below on the board.",
       "Ninety seconds to find as many calculations as possible that make it.",
       "Different operations score more than repeating the same trick.",
       "Take the three most inventive.",
@@ -386,13 +386,13 @@ export const thinkFast: Activity[] = [
   },
   {
     id: "blockbuster-letters",
-    title: "What's the B?",
+    title: "What's the Letter?",
     description: "Give a letter and a clue, and the class works out the word.",
     instructions: [
-      "'What's the P? A shape with many sides.' Polygon.",
+      "Read out the clue below — the answer is in brackets, for you only.",
       "Keep the clues short and the pace fast.",
       "Hands up, not shouting out.",
-      "Ten letters and stop.",
+      "Ten clues and stop.",
     ],
     duration: 180,
     energy: "medium",

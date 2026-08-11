@@ -68,6 +68,14 @@ library doesn't drift towards marking everything all-ages.
   single `ACTIVITIES` array. `activities.test.ts` enforces the data contract — run it after
   touching any activity.
 - Run `npm run check` (lint + typecheck + tests) before considering a change done.
+- **Never call `Math.random()` (or anything else nondeterministic) directly inside a client
+  component's render or a `useMemo` that runs during render.** These components are still
+  server-rendered for the initial HTML; if the random pick differs between that server pass and
+  the client's hydration pass, React throws a hydration error and discards the tree. `vitest`
+  won't catch this — it renders client-only, with no server pass to disagree with. Gate it behind
+  `useHydrated()` from `use-stored-state.ts` instead (see `MoreLikeThis`), so nothing random
+  renders until the client is confirmed live. Verify with `npm run build && npx next start`, not
+  `next dev` — dev mode is far more forgiving about mismatches than a real deploy will be.
 
 ## Activity safety constraints
 

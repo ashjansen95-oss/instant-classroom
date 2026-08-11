@@ -7,7 +7,7 @@ export const quickFillers: Activity[] = [
     title: "Odd One Out",
     description: "Name three things and ask which doesn't belong and why.",
     instructions: [
-      "Say three things — dog, cat, whale.",
+      "Read out the three things below.",
       "Which is the odd one out? Take a few answers.",
       "The trick: accept any answer with a good reason. There's more than one right answer.",
       "Three or four rounds, harder each time.",
@@ -27,7 +27,7 @@ export const quickFillers: Activity[] = [
     title: "Five Second Rule",
     description: "Name three things in a category before five seconds runs out.",
     instructions: [
-      "Pick a student and give them a category — three types of bread.",
+      "Pick a student and read them the category below.",
       "Count down from five out loud, fast.",
       "Three answers before zero or the class takes over.",
       "Next person, next category.",
@@ -47,7 +47,7 @@ export const quickFillers: Activity[] = [
     title: "One-Word Story",
     description: "The class builds a story one word at a time, going around the room.",
     instructions: [
-      "Start it off: 'Yesterday...'",
+      "Read out the opener below to start it off.",
       "Each person adds exactly one word. No more.",
       "No stopping to think — if you hesitate, the next person goes.",
       "Cut it off at a ridiculous moment and read the whole thing back.",
@@ -67,7 +67,7 @@ export const quickFillers: Activity[] = [
     title: "Memory Chain",
     description: "Each student repeats everything said before them and adds one more item.",
     instructions: [
-      "Pick a category — things in a school bag.",
+      "Read out the category below.",
       "First person says one item. Second repeats it and adds theirs.",
       "Keep going round. The list gets brutal fast.",
       "See how far the class can get before it collapses.",
@@ -87,7 +87,7 @@ export const quickFillers: Activity[] = [
     title: "Alphabet Race",
     description: "The class works through the alphabet naming something in a category for each letter.",
     instructions: [
-      "Pick a category — animals, countries, anything from the topic.",
+      "Read out the category below, or use something from the topic.",
       "A, then B, then C, going around the room.",
       "Stuck on a letter? The class shouts help.",
       "Time it, then try to beat it with a new category.",
@@ -107,7 +107,7 @@ export const quickFillers: Activity[] = [
     title: "Ten in Thirty",
     description: "Thirty seconds for the class to shout out ten things in a category.",
     instructions: [
-      "Give the category. Thirty seconds on the clock.",
+      "Read out the category below. Thirty seconds on the clock.",
       "The class calls out answers — you count on your fingers.",
       "Ten before the buzzer or they lose.",
       "Best of three, getting harder each round.",
@@ -127,9 +127,9 @@ export const quickFillers: Activity[] = [
     title: "Finish the Sentence",
     description: "You start a sentence and students finish it as fast as they can.",
     instructions: [
-      "'The worst possible thing to find in your lunchbox is...'",
+      "Read out the sentence starter below.",
       "Hands up, take three or four answers.",
-      "'A school rule that should exist is...'",
+      "Next starter, same deal.",
       "Keep the sentences coming until the bell.",
     ],
     duration: 90,
@@ -208,7 +208,7 @@ export const quickFillers: Activity[] = [
     title: "Word Association",
     description: "Each student says the first word the previous one makes them think of.",
     instructions: [
-      "Start with any word. 'Ocean.'",
+      "Read out the starting word below.",
       "Next person says the first word that comes to mind. No thinking time.",
       "Anyone who pauses too long ends the round.",
       "Look back at where you started and where you ended up.",
@@ -228,10 +228,10 @@ export const quickFillers: Activity[] = [
     title: "What Happens Next?",
     description: "You describe an odd situation and students predict what happens next.",
     instructions: [
-      "'A man walks into a supermarket with an empty fish tank.'",
+      "Read out the scenario below.",
       "Hands up. What happens next?",
       "Take three wildly different answers.",
-      "New scenario. Repeat until the bell goes.",
+      "New scenario from the list. Repeat until the bell goes.",
     ],
     duration: 120,
     energy: "low",
@@ -268,7 +268,7 @@ export const quickFillers: Activity[] = [
     title: "Rank These Three",
     description: "Three things go on the board and the class argues about the correct order.",
     instructions: [
-      "Name three things — pizza, hot chips, dumplings.",
+      "Read out the three things below.",
       "Everyone ranks them silently in their head.",
       "Show the ranking on fingers: one, two or three for the winner.",
       "Ask the smallest group to defend themselves.",
@@ -288,10 +288,10 @@ export const quickFillers: Activity[] = [
     title: "Lightning Spelling",
     description: "Rapid-fire spelling where the whole class spells together, out loud.",
     instructions: [
-      "Call a word. The whole class spells it out loud together.",
+      "Read out the words below, one at a time. The class spells each one out loud together.",
       "Get faster with each word.",
-      "Throw in one they'll definitely get wrong.",
-      "Finish with the longest word from the lesson.",
+      "One of them will trip them up — that's fine.",
+      "Finish with the longest one.",
     ],
     duration: 90,
     energy: "medium",
@@ -348,7 +348,7 @@ export const quickFillers: Activity[] = [
     title: "Countdown Categories",
     description: "Everyone names something in a category, going around, with no repeats allowed.",
     instructions: [
-      "Category: things you'd find in a kitchen.",
+      "Read out the category below.",
       "Go around the room. Every answer must be new.",
       "Repeat an answer or hesitate and you're out for that round.",
       "Change category and restart with everyone back in.",
@@ -369,7 +369,7 @@ export const quickFillers: Activity[] = [
     description: "Two teams race to draw a word on the board while their team shouts guesses.",
     instructions: [
       "Two volunteers at the board, one from each team.",
-      "Show them the same word. Thirty seconds to draw it.",
+      "Show them the same word from the list below. Thirty seconds to draw it.",
       "No letters, no numbers, no talking. Their team guesses.",
       "First team to shout the word wins the point.",
     ],

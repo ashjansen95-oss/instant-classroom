@@ -5,12 +5,13 @@ import { getActivity } from "@/data/activities";
 import { ActivityScreen } from "./activity-screen";
 
 /**
- * The two behaviours from the "give me another" merge:
+ * Two behaviours worth locking in:
  *   - button order flips for self-ending activities, where a countdown fights
  *     the mechanic instead of supporting it
- *   - the single button reads "Give me another" and carries no similarity
- *     bias until the teacher has actually started the timer, at which point
- *     it becomes "…like this" and steers towards the activity's shape
+ *   - "Give me another" is a plain fresh pick, always — no hidden state, no
+ *     relabeling. Steering towards a specific shape lives in "More like this"
+ *     instead, which is a deliberate, visible choice rather than a side effect
+ *     of which button the teacher happened to press.
  */
 
 vi.mock("next/navigation", () => ({
@@ -18,10 +19,19 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => ({ get: () => null }),
 }));
 
-// The timer's own behaviour (ticking, wake lock, chime) is covered in
-// use-timer.test.ts — stubbed here so this file only exercises the button.
-vi.mock("@/components/timer/timer-overlay", () => ({
-  TimerOverlay: () => <div data-testid="timer-overlay" />,
+// The timer's own behaviour (ticking, drain, wake lock, chime) is covered in
+// timer-button.test.tsx — stubbed here so this file only exercises which
+// element occupies the slot.
+vi.mock("@/components/timer/timer-button", () => ({
+  TimerButton: () => <div data-testid="timer-panel" />,
+}));
+
+// "More like this" pulls from the real activity library via useMemo — fine to
+// let it run for real, but stubbed here so these tests aren't coupled to
+// exactly which three activities the engine happens to suggest. A marker
+// rather than null so page-order assertions still have something to find.
+vi.mock("@/components/activity/more-like-this", () => ({
+  MoreLikeThis: () => <div data-testid="more-like-this" />,
 }));
 
 const pick = vi.fn();
@@ -64,44 +74,98 @@ describe("ActivityScreen action buttons", () => {
     expect(anotherIndex).toBeLessThan(startIndex);
   });
 
-  it("reads plainly before the activity has been run", () => {
+  it("always reads plainly — no dynamic relabeling", () => {
     render(<ActivityScreen activity={timed} />);
     expect(screen.getByRole("button", { name: "Give me another" })).toBeInTheDocument();
   });
 
-  it("carries no similarity bias when rejected on sight", async () => {
+  it("is a plain fresh pick, with no similarity bias, regardless of timer state", async () => {
     render(<ActivityScreen activity={timed} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Start timer" }));
+    expect(screen.getByTestId("timer-panel")).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "Give me another" }));
 
-    expect(pick).toHaveBeenCalledWith("surprise", "button", undefined, undefined);
+    expect(pick).toHaveBeenCalledWith("surprise", "button");
   });
 
-  it("relabels once the timer has actually been started", async () => {
+  it("replaces the Start timer button with the timer panel in place, without navigating away", async () => {
     render(<ActivityScreen activity={timed} />);
 
     await userEvent.click(screen.getByRole("button", { name: "Start timer" }));
 
-    expect(screen.getByRole("button", { name: "Give me another like this" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Give me another" })).not.toBeInTheDocument();
+    expect(screen.getByTestId("timer-panel")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Start timer" })).not.toBeInTheDocument();
+    // The instructions stay on screen — the whole point of not using an overlay.
+    expect(screen.getByText("How to run it")).toBeInTheDocument();
   });
 
-  it("steers towards the activity's shape once it's been run", async () => {
+  it("returns to the idle Start timer button once a fresh activity is picked", async () => {
     render(<ActivityScreen activity={timed} />);
 
     await userEvent.click(screen.getByRole("button", { name: "Start timer" }));
-    await userEvent.click(screen.getByRole("button", { name: "Give me another like this" }));
+    expect(screen.getByTestId("timer-panel")).toBeInTheDocument();
 
-    expect(pick).toHaveBeenCalledWith("surprise", "button", undefined, timed);
+    await userEvent.click(screen.getByRole("button", { name: "Give me another" }));
+
+    expect(screen.getByRole("button", { name: "Start timer" })).toBeInTheDocument();
+    expect(screen.queryByTestId("timer-panel")).not.toBeInTheDocument();
   });
 
-  it("resets when a new activity loads, even without unmounting", async () => {
+  it("closes an open timer panel when a new activity loads, even without unmounting", async () => {
     const { rerender } = render(<ActivityScreen activity={timed} />);
     await userEvent.click(screen.getByRole("button", { name: "Start timer" }));
-    expect(screen.getByRole("button", { name: "Give me another like this" })).toBeInTheDocument();
+    expect(screen.getByTestId("timer-panel")).toBeInTheDocument();
 
     rerender(<ActivityScreen activity={selfEnding} />);
 
-    expect(screen.getByRole("button", { name: "Give me another" })).toBeInTheDocument();
+    expect(screen.queryByTestId("timer-panel")).not.toBeInTheDocument();
+  });
+});
+
+describe("ActivityScreen page order", () => {
+  it("puts More Like This at the very end, with nothing after it", () => {
+    render(<ActivityScreen activity={timed} />);
+
+    const main = screen.getByRole("main");
+    expect(main.lastElementChild).toBe(screen.getByTestId("more-like-this"));
+  });
+
+  it("no longer shows category filter chips", () => {
+    render(<ActivityScreen activity={timed} />);
+    expect(screen.queryByRole("link", { name: /brain break|calm down|kill time/i })).not.toBeInTheDocument();
+  });
+});
+
+describe("ActivityScreen feedback", () => {
+  it("shows five options and no message before anything is picked", () => {
+    render(<ActivityScreen activity={timed} />);
+
+    expect(screen.getByRole("button", { name: /Worked/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /They loved it/ })).toBeInTheDocument();
+    expect(screen.queryByText(/Noted/)).not.toBeInTheDocument();
+  });
+
+  it("collapses to just the acknowledgement once a rating is picked", async () => {
+    render(<ActivityScreen activity={timed} />);
+
+    await userEvent.click(screen.getByRole("button", { name: /They loved it/ }));
+
+    expect(screen.queryByRole("button", { name: /Worked/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Didn.t work/ })).not.toBeInTheDocument();
+    expect(screen.getByText("Noted — we'll send you more like this.")).toBeInTheDocument();
+  });
+
+  it("brings the options back if the acknowledgement itself is tapped, for a misfire", async () => {
+    render(<ActivityScreen activity={timed} />);
+
+    await userEvent.click(screen.getByRole("button", { name: /Fine/ }));
+    expect(screen.getByText("Fair enough. Noted.")).toBeInTheDocument();
+
+    await userEvent.click(screen.getByText("Fair enough. Noted."));
+
+    expect(screen.getByRole("button", { name: /Fine/ })).toBeInTheDocument();
+    expect(screen.queryByText("Fair enough. Noted.")).not.toBeInTheDocument();
   });
 });

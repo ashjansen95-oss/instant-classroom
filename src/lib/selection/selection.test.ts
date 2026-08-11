@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { ACTIVITIES } from "@/data/activities";
 import { studentAgeForLevel, suitsLevel } from "@/lib/i18n";
-import { EMPTY_FILTERS, type FilterState, type HistoryEntry, type Need } from "@/lib/types";
+import { EMPTY_FILTERS, type Activity, type FilterState, type HistoryEntry, type Need } from "@/lib/types";
 import { applyFilters, durationBucketOf, matchesFilters } from "./filter";
 import { pushHistory, HISTORY_LIMIT } from "./history";
-import { pickActivity, similarActivities } from "./pick";
+import { pickActivity, pickSimilarActivities, similarActivities } from "./pick";
 import { ageFit, scoreForNeed, similarityTo } from "./score";
 
 const filters = (overrides: Partial<FilterState> = {}): FilterState => ({
@@ -470,5 +470,61 @@ describe("similar activities", () => {
     expect(
       similar.every((a) => a.categories.some((c) => activity.categories.includes(c))),
     ).toBe(true);
+  });
+});
+
+describe("pickSimilarActivities — More Like This", () => {
+  const seed = ACTIVITIES.find((a) => a.id === "box-breathing")!;
+
+  it("returns the requested count, all distinct, none the seed itself", () => {
+    const results = pickSimilarActivities(seed, 3, { rng: seeded(1) });
+
+    expect(results).toHaveLength(3);
+    expect(new Set(results.map((a) => a.id)).size).toBe(3);
+    expect(results.map((a) => a.id)).not.toContain(seed.id);
+  });
+
+  it("resembles the seed more closely than a plain sample of the library", () => {
+    const results = pickSimilarActivities(seed, 3, { rng: seeded(2) });
+    const baseline = ACTIVITIES.slice(0, 3);
+
+    const average = (list: Activity[]) =>
+      list.reduce((sum, a) => sum + similarityTo(a, seed), 0) / list.length;
+
+    expect(average(results)).toBeGreaterThan(average(baseline));
+  });
+
+  it("never suggests something the wrong age for the active class", () => {
+    // Box Breathing suits everyone; pick a seed with a genuinely narrow band
+    // so an age violation would be obvious if the hard constraint slipped.
+    const narrow = ACTIVITIES.find((a) => a.id === "animal-moves")!; // ages 4–8
+
+    for (const s of [3, 11, 27]) {
+      const results = pickSimilarActivities(narrow, 3, {
+        country: "AU",
+        level: 11,
+        rng: seeded(s),
+      });
+      for (const activity of results) {
+        expect(
+          suitsLevel(activity.ageRange, "AU", 11),
+          `${activity.id} is wrong for a Year 11 class`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("still returns as many as it can when the library can't fill the count", () => {
+    const results = pickSimilarActivities(seed, 3, {
+      activities: [seed, ACTIVITIES[1]],
+      rng: seeded(1),
+    });
+    expect(results.length).toBeLessThanOrEqual(1);
+  });
+
+  it("is deterministic for a given seed", () => {
+    const a = pickSimilarActivities(seed, 3, { rng: seeded(5) }).map((x) => x.id);
+    const b = pickSimilarActivities(seed, 3, { rng: seeded(5) }).map((x) => x.id);
+    expect(a).toEqual(b);
   });
 });
