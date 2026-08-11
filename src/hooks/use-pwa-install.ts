@@ -25,6 +25,23 @@ function isIos(): boolean {
   return /iPad|iPhone|iPod/.test(ua) || (ua.includes("Macintosh") && navigator.maxTouchPoints > 1);
 }
 
+export type IosBrowser = "safari" | "chrome" | "other";
+
+/**
+ * Every iOS browser is stuck the same way (see below), but the *exact taps*
+ * to reach "Add to Home Screen" genuinely differ enough between them to be
+ * worth telling apart — confirmed against real devices, not assumed:
+ * Safari's toolbar now tucks Share behind a "•••" button first; Chrome
+ * doesn't need that, but both need an extra "View More" tap inside the
+ * share sheet before "Add to Home Screen" appears at all.
+ */
+function iosBrowser(): IosBrowser {
+  const ua = navigator.userAgent;
+  if (/CriOS/.test(ua)) return "chrome";
+  if (/Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua)) return "safari";
+  return "other";
+}
+
 /**
  * "Add to home screen" support, which splits into two genuinely different
  * paths rather than one feature with two skins:
@@ -85,6 +102,8 @@ export function usePwaInstall() {
     installed,
     canPromptNatively,
     needsManualIosSteps,
+    /** Which exact steps to show — only meaningful when needsManualIosSteps is true. */
+    iosBrowser: needsManualIosSteps ? iosBrowser() : null,
     /** Whether there's anything at all worth showing a teacher. */
     installable: hydrated && !installed && (canPromptNatively || needsManualIosSteps),
     promptInstall,

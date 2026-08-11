@@ -7,12 +7,26 @@
  * caching, not a build-time manifest and a dependency.
  *
  * Strategy per request type:
- *   /_next/static/*  cache-first     — immutable, content-hashed filenames
- *   navigations      network-first   — fresh pages when online, cache when not
- *   other same-origin GETs           stale-while-revalidate
+ *   /_next/static/*     cache-first     — immutable, content-hashed filenames
+ *   navigations + RSC   network-first   — fresh pages when online, cache when not
+ *   other same-origin GETs              stale-while-revalidate
+ *
+ * The RSC case is easy to miss and worth spelling out: clicking a <Link> for
+ * client-side navigation doesn't reload the document (request.mode stays
+ * "cors", never "navigate"), so those fetches would otherwise fall into the
+ * stale-while-revalidate catch-all below — which serves whatever's *already
+ * cached* first, before checking the network. A route visited once would
+ * then keep showing that same stale snapshot on every future in-app tap,
+ * across every future deploy, until the cache version below happened to
+ * change. Next tags every one of these fetches with an `rsc` header, so
+ * they're routed to networkFirst instead, same as a full navigation.
  */
 
-const VERSION = "v1";
+// Bump this on any deploy that should invalidate what's already cached on a
+// returning teacher's device — otherwise the *only* thing that clears a
+// stale cache is a version change here, since caches.match happily serves
+// content from ten deploys ago forever otherwise.
+const VERSION = "v2";
 const SHELL_CACHE = `shell-${VERSION}`;
 const ASSET_CACHE = `assets-${VERSION}`;
 const PAGE_CACHE = `pages-${VERSION}`;
@@ -58,7 +72,11 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (request.mode === "navigate") {
+  // A real navigation (typed URL, hard reload, first load) or a client-side
+  // route transition (Next's own router, tagged with this header) — both are
+  // "the teacher wants a specific page's current content," not a static
+  // asset, so both get the same freshness-first treatment.
+  if (request.mode === "navigate" || request.headers.has("rsc")) {
     event.respondWith(networkFirst(request));
     return;
   }

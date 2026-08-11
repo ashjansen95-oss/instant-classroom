@@ -19,7 +19,12 @@ export function BottomNav() {
     <nav
       aria-label="Main"
       className={cn(
-        "sticky bottom-0 z-30 border-t-2 border-line bg-paper/95 backdrop-blur",
+        // A plain flex sibling of the scrolling content now, not part of it
+        // (see layout.tsx) — `sticky` made sense when the whole document
+        // scrolled and this had to pin itself to the bottom of that flow.
+        // Now it never moves in the first place, and content never scrolls
+        // underneath it, so it no longer needs to be.
+        "shrink-0 border-t-2 border-line bg-paper",
         "pb-[env(safe-area-inset-bottom)]",
       )}
     >

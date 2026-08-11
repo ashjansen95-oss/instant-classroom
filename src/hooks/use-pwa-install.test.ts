@@ -66,6 +66,7 @@ describe("usePwaInstall", () => {
     expect(result.current.needsManualIosSteps).toBe(true);
     expect(result.current.canPromptNatively).toBe(false);
     expect(result.current.installable).toBe(true);
+    expect(result.current.iosBrowser).toBe("safari");
   });
 
   it("also offers the manual steps to Chrome on iPhone, not just Safari", () => {
@@ -81,6 +82,19 @@ describe("usePwaInstall", () => {
 
     expect(result.current.needsManualIosSteps).toBe(true);
     expect(result.current.installable).toBe(true);
+    // Confirmed against a real device: Chrome's own steps genuinely differ
+    // from Safari's (no "•••" tap first), so the two must stay distinguishable.
+    expect(result.current.iosBrowser).toBe("chrome");
+  });
+
+  it("falls back to a general hint for other iOS browsers, not a guess", () => {
+    setUserAgent(
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/120.0 Mobile/15E148 Safari/604.1",
+    );
+    const { result } = renderHook(() => usePwaInstall());
+
+    expect(result.current.needsManualIosSteps).toBe(true);
+    expect(result.current.iosBrowser).toBe("other");
   });
 
   it("shows nothing once already installed", () => {

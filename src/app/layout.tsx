@@ -62,15 +62,22 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-AU" className={`${inter.variable} ${display.variable} h-full`}>
+    <html lang="en-AU" className={`${inter.variable} ${display.variable} h-dvh overflow-hidden`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
-      <body className="flex min-h-full flex-col">
+      <body className="flex h-full flex-col overflow-hidden">
         <a href="#main" className="sr-focusable bg-primary px-4 py-2 text-primary-ink">
           Skip to content
         </a>
-        {children}
+        {/* The only scrolling element on the page — <html>/<body> are pinned
+            to the viewport instead. Without this, they're the ones that
+            scroll, which drags the bottom nav (a flow sibling, not a
+            separate layer) along for the ride during an iOS rubber-band
+            bounce. `overscroll-contain` keeps the bounce here rather than
+            chaining into the browser's own gestures, the same trick the
+            filter sheet already uses for its own scroll area. */}
+        <div className="flex flex-1 flex-col overflow-y-auto overscroll-contain">{children}</div>
         <BottomNav />
         <ServiceWorker />
         <ThemeSync />

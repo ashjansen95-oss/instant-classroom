@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Download, Share } from "lucide-react";
+import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
+import { IosInstallSteps } from "@/components/pwa/ios-install-steps";
 import { Page, PageHeader } from "@/components/ui/page";
 import { TeachingSettings } from "@/components/settings/teaching-settings";
 import { usePreferences, type ShakeSensitivity, type ThemePreference } from "@/hooks/use-preferences";
@@ -127,10 +128,9 @@ export function SettingsScreen() {
           >
             Add to home screen
           </h2>
-          {install.needsManualIosSteps ? (
+          {install.needsManualIosSteps && install.iosBrowser ? (
             <p className="mt-3 text-[0.9375rem] text-ink-muted text-pretty">
-              Tap <Share aria-hidden className="inline size-4 -translate-y-0.5" strokeWidth={2.5} />
-              {" then “Add to Home Screen” "}— opens straight to this, no browser bar.
+              <IosInstallSteps browser={install.iosBrowser} />
             </p>
           ) : (
             <>

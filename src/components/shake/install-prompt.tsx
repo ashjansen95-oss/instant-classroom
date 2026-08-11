@@ -1,7 +1,8 @@
 "use client";
 
-import { Download, Share, X } from "lucide-react";
+import { Download, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { IosInstallSteps } from "@/components/pwa/ios-install-steps";
 import { usePwaInstall } from "@/hooks/use-pwa-install";
 import { useStoredState } from "@/hooks/use-stored-state";
 import { KEYS } from "@/lib/storage";
@@ -18,6 +19,7 @@ export function InstallPrompt() {
     installed,
     canPromptNatively,
     needsManualIosSteps,
+    iosBrowser,
     promptInstall,
     dismissed,
     dismiss,
@@ -35,11 +37,9 @@ export function InstallPrompt() {
       <div className="min-w-0 flex-1">
         <p className="font-display font-bold">Put this on your home screen</p>
 
-        {needsManualIosSteps ? (
+        {needsManualIosSteps && iosBrowser ? (
           <p className="mt-1 text-sm text-ink-muted text-pretty">
-            Tap <Share aria-hidden className="inline size-4 -translate-y-0.5" strokeWidth={2.5} />
-            {" then “Add to Home Screen” "}
-            — opens straight to this, no browser bar, no typing a URL.
+            <IosInstallSteps browser={iosBrowser} />
           </p>
         ) : (
           <>

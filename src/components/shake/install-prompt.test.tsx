@@ -42,7 +42,7 @@ describe("InstallPrompt", () => {
     expect(screen.getByRole("button", { name: /Add to Home Screen/ })).toBeInTheDocument();
   });
 
-  it("gives manual steps on iOS, with no button to press", () => {
+  it("gives manual steps on Safari, with no button to press", () => {
     vi.stubGlobal("navigator", {
       ...navigator,
       userAgent:
@@ -52,6 +52,25 @@ describe("InstallPrompt", () => {
     writeKey(KEYS.stats, true);
     render(<InstallPrompt />);
 
+    // Safari's toolbar tucks Share behind "•••" first — Chrome doesn't need
+    // that tap, confirmed against a real device, so the two copies must
+    // genuinely differ rather than sharing one generic instruction.
+    expect(screen.getByText(/View More/)).toBeInTheDocument();
+    expect(screen.getByText(/Add to Home Screen/)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Add to Home Screen/ })).not.toBeInTheDocument();
+  });
+
+  it("gives Chrome its own, shorter steps on iOS", () => {
+    vi.stubGlobal("navigator", {
+      ...navigator,
+      userAgent:
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/120.0 Mobile/15E148 Safari/604.1",
+      maxTouchPoints: 5,
+    });
+    writeKey(KEYS.stats, true);
+    render(<InstallPrompt />);
+
+    expect(screen.getByText(/View More/)).toBeInTheDocument();
     expect(screen.getByText(/Add to Home Screen/)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Add to Home Screen/ })).not.toBeInTheDocument();
   });

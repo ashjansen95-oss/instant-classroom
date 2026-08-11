@@ -195,14 +195,10 @@
 
 html {
   background: var(--paper);
-  /* Stops an overscroll at the top or bottom from chaining into the browser's
-     own gestures (pull-to-refresh, URL bar reveal) — that's what could make
-     the sticky bottom nav glitch. `contain` rather than `none`: `none` also
-     kills the page's own native rubber-band bounce, which just reads as
-     broken on a real phone — every other scrollable surface in the app (the
-     filter sheet, a separate scroll container this rule never reached) still
-     bounces, so the plain page should too. */
-  overscroll-behavior-y: contain;
+  /* <html>/<body> are pinned to the viewport (see layout.tsx) rather than
+     being the scrolling element themselves — the actual scroll region is a
+     dedicated inner wrapper, which is what lets the bottom nav sit outside
+     it entirely instead of riding along with an iOS rubber-band bounce. */
 }
 
 body {
