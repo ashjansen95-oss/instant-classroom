@@ -14,8 +14,10 @@ import { ActivityScreen } from "./activity-screen";
  *     of which button the teacher happened to press.
  */
 
+const routerPush = vi.fn();
+const routerBack = vi.fn();
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn(), prefetch: vi.fn() }),
+  useRouter: () => ({ push: routerPush, back: routerBack, prefetch: vi.fn() }),
   useSearchParams: () => ({ get: () => null }),
 }));
 
@@ -50,6 +52,33 @@ vi.mock("@/hooks/use-activity-picker", () => ({
 // (last statue standing) and carries selfEnding: true.
 const timed = getActivity("box-breathing")!;
 const selfEnding = getActivity("statue-contest")!;
+
+describe("ActivityScreen back button", () => {
+  beforeEach(() => {
+    routerPush.mockClear();
+    routerBack.mockClear();
+  });
+
+  it("goes back through history rather than a fixed href, so Explore's scroll position survives", async () => {
+    vi.spyOn(window.history, "length", "get").mockReturnValue(3);
+    render(<ActivityScreen activity={timed} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Back" }));
+
+    expect(routerBack).toHaveBeenCalledOnce();
+    expect(routerPush).not.toHaveBeenCalled();
+  });
+
+  it("falls back to Home only when there is genuinely nowhere to go back to", async () => {
+    vi.spyOn(window.history, "length", "get").mockReturnValue(1);
+    render(<ActivityScreen activity={timed} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Back" }));
+
+    expect(routerPush).toHaveBeenCalledWith("/");
+    expect(routerBack).not.toHaveBeenCalled();
+  });
+});
 
 describe("ActivityScreen action buttons", () => {
   beforeEach(() => pick.mockClear());

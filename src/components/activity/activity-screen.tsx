@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Heart, RefreshCw, Timer } from "lucide-react";
 import { ActivityMeta } from "@/components/activity/activity-meta";
@@ -32,6 +31,7 @@ function needFrom(value: string | null): Need {
 }
 
 export function ActivityScreen({ activity }: { activity: Activity }) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const need = needFrom(searchParams.get("need"));
 
@@ -62,6 +62,17 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
     setLastActivityId(activity.id);
     setTimerOpen(false);
   }
+
+  const goBack = () => {
+    // A real back navigation (not a fixed href to "/") is what lets the
+    // browser restore Explore's scroll position and land on Favourites,
+    // another activity via "More like this", or wherever they actually came
+    // from — a Link to "/" always went Home regardless. `history.length <= 1`
+    // means this tab has no prior page at all (a direct or shared link), the
+    // one case where there's genuinely nothing to go back to.
+    if (typeof window !== "undefined" && window.history.length > 1) router.back();
+    else router.push("/");
+  };
 
   const another = () => {
     setTimerOpen(false);
@@ -126,13 +137,14 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
 
       <Page>
         <div className="flex items-center justify-between">
-          <Link
-            href="/"
+          <button
+            type="button"
+            onClick={goBack}
             className="-ml-2 inline-flex min-h-11 items-center gap-1.5 rounded-full px-2 text-sm font-bold text-ink-muted hover:text-ink"
           >
             <ArrowLeft aria-hidden className="size-5" />
             Back
-          </Link>
+          </button>
 
           <button
             type="button"
