@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { ACTIVITIES } from "@/data/activities";
 import { ActivityList } from "@/components/explore/activity-list";
@@ -9,6 +9,7 @@ import { FilterSheet } from "@/components/explore/filter-sheet";
 import { Button } from "@/components/ui/button";
 import { Page, PageHeader } from "@/components/ui/page";
 import { useCountry } from "@/hooks/use-country";
+import { useExploreFilters } from "@/hooks/use-explore-filters";
 import { useTeaching } from "@/hooks/use-teaching";
 import { track } from "@/lib/analytics";
 import { applyFilters, countActiveFilters } from "@/lib/selection";
@@ -18,10 +19,14 @@ export function ExploreScreen() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category");
 
-  const [filters, setFilters] = useState<FilterState>(() =>
-    CATEGORIES.includes(initialCategory as Category)
-      ? { ...EMPTY_FILTERS, categories: [initialCategory as Category] }
-      : EMPTY_FILTERS,
+  const { storedFilters, setFilters: setStoredFilters } = useExploreFilters();
+  const filters: FilterState = useMemo(
+    () =>
+      storedFilters ??
+      (CATEGORIES.includes(initialCategory as Category)
+        ? { ...EMPTY_FILTERS, categories: [initialCategory as Category] }
+        : EMPTY_FILTERS),
+    [storedFilters, initialCategory],
   );
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -38,21 +43,21 @@ export function ExploreScreen() {
   // so a Year 8/9 teacher lands on activities that actually suit Year 8/9
   // rather than the whole library, Prep included. `teachingLevels` reads as
   // empty until localStorage has hydrated, so this can't be a plain lazy
-  // initial state — it has to wait for that value to actually arrive. Any
-  // filter change from here, by the teacher or by this effect, disables it
-  // for the rest of the visit so it never fights a deliberate choice.
-  const defaultingDone = useRef(false);
+  // initial state — it has to wait for that value to actually arrive.
+  // `storedFilters` being non-null — whether from this effect, a deliberate
+  // choice, or a Back navigation that restored an earlier one — means this
+  // has already run or been overtaken, so it never fights a real choice.
   useEffect(() => {
-    if (defaultingDone.current || teachingLevels.length === 0) return;
-    defaultingDone.current = true;
-    setFilters((current) =>
-      current.levels.length > 0 ? current : { ...current, levels: teachingLevels },
-    );
-  }, [teachingLevels]);
+    if (storedFilters !== null || teachingLevels.length === 0) return;
+    setStoredFilters({ ...filters, levels: teachingLevels });
+    // `filters` intentionally excluded: it's derived from `storedFilters`,
+    // which is already a dependency, and including it would re-run this on
+    // every filter change instead of just the one time it's meant to fire.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storedFilters, teachingLevels, setStoredFilters]);
 
   const updateFilters = (next: FilterState) => {
-    defaultingDone.current = true;
-    setFilters(next);
+    setStoredFilters(next);
     if (countActiveFilters(next) > 0) track("filter_used", { count: countActiveFilters(next) });
   };
 

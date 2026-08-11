@@ -27,6 +27,38 @@ import {
 
 type Group = Exclude<keyof FilterState, "levels">;
 
+/**
+ * Per-option emoji, scoped to this sheet only — the shared label maps in
+ * @/lib/labels feed several other components (activity meta, favourites,
+ * recommendations) that already have their own icon treatment, so the emoji
+ * live here rather than on the labels themselves. Duration and year level
+ * are deliberately left plain.
+ */
+const GROUP_EMOJI: Partial<Record<Group, Record<string, string>>> = {
+  energy: { calm: "😌", low: "🐢", medium: "🙂", high: "🔥" },
+  noise: { quiet: "🤫", moderate: "🔉", loud: "📢" },
+  formats: {
+    individual: "🙋",
+    pairs: "🧑‍🤝‍🧑",
+    "small-groups": "👥",
+    "whole-class": "🏫",
+  },
+  movement: { seated: "🪑", standing: "🧍", movement: "🏃" },
+  equipment: { none: "🚫", paper: "📄", whiteboard: "🖍️", timer: "⏱️", other: "🧰" },
+  categories: {
+    "brain-break": "🧠",
+    "wake-them-up": "⚡",
+    "calm-down": "🧘",
+    "kill-time": "⏳",
+    "get-moving": "🏃",
+    "think-fast": "🤔",
+    "pair-activities": "🤝",
+    competitive: "🏆",
+    creative: "🎨",
+    curriculum: "📚",
+  },
+};
+
 /** Every filter group, as data, so the sheet is one loop rather than eight blocks. */
 const GROUPS: {
   key: Group;
@@ -122,15 +154,24 @@ export function FilterSheet({
               {group.label}
             </legend>
             <div className="flex flex-wrap gap-2">
-              {group.options.map((option) => (
-                <Chip
-                  key={option}
-                  selected={(filters[group.key] as string[]).includes(option)}
-                  onClick={() => toggle(group.key, option)}
-                >
-                  {group.labels[option]}
-                </Chip>
-              ))}
+              {group.options.map((option) => {
+                const emoji = GROUP_EMOJI[group.key]?.[option];
+                return (
+                  <Chip
+                    key={option}
+                    selected={(filters[group.key] as string[]).includes(option)}
+                    onClick={() => toggle(group.key, option)}
+                  >
+                    {emoji ? (
+                      <>
+                        <span aria-hidden>{emoji}</span> {group.labels[option]}
+                      </>
+                    ) : (
+                      group.labels[option]
+                    )}
+                  </Chip>
+                );
+              })}
             </div>
           </fieldset>
         ))}

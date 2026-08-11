@@ -26,6 +26,8 @@ export const KEYS = {
   teaching: "teaching",
   /** Session-scoped: which class they're teaching right now. */
   activeLevel: "active-level",
+  /** Session-scoped: Explore's filters, so they survive a look at an activity. */
+  exploreFilters: "explore-filters",
 } as const;
 
 export type StorageKey = (typeof KEYS)[keyof typeof KEYS];
