@@ -90,17 +90,63 @@ async function networkFirst(request) {
     const cached = await caches.match(request);
     if (cached) return cached;
 
-    // Any page is better than the browser's dinosaur — the generator on "/"
-    // works with no network at all.
-    const fallback = await caches.match(OFFLINE_FALLBACK);
-    if (fallback) return fallback;
-
-    return new Response("You're offline, and this page hasn't been opened before.", {
-      status: 503,
-      headers: { "Content-Type": "text/plain" },
-    });
+    // No cached copy of *this* page exists — a teacher tapping an activity
+    // that's never been opened before, right as school wifi drops. This used
+    // to silently serve the cached "/" document here instead: the browser
+    // kept the activity's URL in the address bar, but every byte on screen
+    // was Home's, hydrated against Home's own data. No error, no clue
+    // anything had gone wrong — just "I tapped an activity and it took me
+    // back to Home". Fixed pages (the shell itself) still recover via the
+    // cache lookup above; only this never-seen-before case needs honesty
+    // instead of a silent substitution.
+    return offlineFallbackResponse();
   }
 }
+
+function offlineFallbackResponse() {
+  return new Response(OFFLINE_HTML, {
+    status: 503,
+    headers: { "Content-Type": "text/html; charset=utf-8" },
+  });
+}
+
+const OFFLINE_HTML = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Offline &middot; Instant Classroom</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    margin: 0; min-height: 100dvh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 2rem 1.5rem; gap: 0.75rem; box-sizing: border-box;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: #fdf8f0; color: #1c1a17;
+  }
+  @media (prefers-color-scheme: dark) { body { background: #1c1a17; color: #fdf8f0; } }
+  p.emoji { font-size: 3rem; margin: 0; }
+  h1 { font-size: 1.5rem; margin: 0; }
+  p.sub { margin: 0; opacity: 0.7; max-width: 32ch; }
+  .row { display: flex; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap; justify-content: center; }
+  button, a {
+    font: inherit; font-weight: 700; padding: 0.75rem 1.5rem; border-radius: 999px;
+    border: 2px solid currentColor; background: transparent; color: inherit;
+    text-decoration: none; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<p class="emoji" aria-hidden="true">📡</p>
+<h1>Couldn&rsquo;t load that page</h1>
+<p class="sub">No connection right now, and this one hasn&rsquo;t been opened before on this device.</p>
+<div class="row">
+  <button type="button" onclick="location.reload()">Try again</button>
+  <a href="/">Go to the generator</a>
+</div>
+</body>
+</html>`;
 
 async function staleWhileRevalidate(request, cacheName) {
   const cached = await caches.match(request);

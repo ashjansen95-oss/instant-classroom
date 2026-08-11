@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { RotateCcw, ArrowRight } from "lucide-react";
 import { usePreferences } from "@/hooks/use-preferences";
+import { useHydrated } from "@/hooks/use-stored-state";
 import { vibrate } from "@/lib/haptics";
 import type { PromptBank } from "@/data/prompts";
 
@@ -25,8 +26,25 @@ function shuffle<T>(items: T[]): T[] {
 
 export function PromptDeck({ bank }: { bank: PromptBank }) {
   const { preferences } = usePreferences();
-  const [order, setOrder] = useState(() => shuffle(bank.items));
   const [index, setIndex] = useState(0);
+  // Set directly by "Shuffle and go again" — a real click, not an effect —
+  // and takes over from the hydration-gated order below once it exists.
+  const [manualOrder, setManualOrder] = useState<string[] | null>(null);
+
+  // Every activity page is statically pre-rendered, so a shuffle picked
+  // during the very first render would bake one order into the static HTML
+  // and draw a different one on the client's hydration pass — a near-certain
+  // hydration mismatch (1-in-n! odds of matching), which is exactly what was
+  // sending teachers back to Home: React discards the mismatched tree, and
+  // whatever recovers from that is indistinguishable from just landing on
+  // the wrong page. Order stays deterministic — the bank's own order,
+  // identical on server and client — until hydration is confirmed live.
+  const hydrated = useHydrated();
+  const initialOrder = useMemo(
+    () => (hydrated ? shuffle(bank.items) : bank.items),
+    [hydrated, bank],
+  );
+  const order = manualOrder ?? initialOrder;
 
   const atEnd = index >= order.length - 1;
 
@@ -34,7 +52,7 @@ export function PromptDeck({ bank }: { bank: PromptBank }) {
     vibrate("tap", preferences.haptics);
     if (atEnd) {
       // Reshuffle rather than dead-ending — the teacher is mid-activity.
-      setOrder(shuffle(bank.items));
+      setManualOrder(shuffle(bank.items));
       setIndex(0);
     } else {
       setIndex((current) => current + 1);
