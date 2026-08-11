@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { ACTIVITIES } from "@/data/activities";
 import { ActivityList } from "@/components/explore/activity-list";
@@ -9,6 +9,7 @@ import { FilterSheet } from "@/components/explore/filter-sheet";
 import { Button } from "@/components/ui/button";
 import { Page, PageHeader } from "@/components/ui/page";
 import { useCountry } from "@/hooks/use-country";
+import { useTeaching } from "@/hooks/use-teaching";
 import { track } from "@/lib/analytics";
 import { applyFilters, countActiveFilters } from "@/lib/selection";
 import { CATEGORIES, EMPTY_FILTERS, type Category, type FilterState } from "@/lib/types";
@@ -25,6 +26,7 @@ export function ExploreScreen() {
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const { country } = useCountry();
+  const { teachingLevels } = useTeaching();
   const results = useMemo(() => applyFilters(ACTIVITIES, filters, country), [filters, country]);
   const activeCount = countActiveFilters(filters);
 
@@ -32,7 +34,24 @@ export function ExploreScreen() {
     track("page_view", { path: "/explore" });
   }, []);
 
+  // Once, the first time the teacher's own levels are known: pre-select them,
+  // so a Year 8/9 teacher lands on activities that actually suit Year 8/9
+  // rather than the whole library, Prep included. `teachingLevels` reads as
+  // empty until localStorage has hydrated, so this can't be a plain lazy
+  // initial state — it has to wait for that value to actually arrive. Any
+  // filter change from here, by the teacher or by this effect, disables it
+  // for the rest of the visit so it never fights a deliberate choice.
+  const defaultingDone = useRef(false);
+  useEffect(() => {
+    if (defaultingDone.current || teachingLevels.length === 0) return;
+    defaultingDone.current = true;
+    setFilters((current) =>
+      current.levels.length > 0 ? current : { ...current, levels: teachingLevels },
+    );
+  }, [teachingLevels]);
+
   const updateFilters = (next: FilterState) => {
+    defaultingDone.current = true;
     setFilters(next);
     if (countActiveFilters(next) > 0) track("filter_used", { count: countActiveFilters(next) });
   };
@@ -71,7 +90,7 @@ export function ExploreScreen() {
           <p className="mt-2 text-ink-muted text-pretty">
             Nothing matches all of that. Try loosening one of your filters.
           </p>
-          <Button size="lg" className="mt-6" onClick={() => setFilters(EMPTY_FILTERS)}>
+          <Button size="lg" className="mt-6" onClick={() => updateFilters(EMPTY_FILTERS)}>
             Clear filters
           </Button>
         </div>
