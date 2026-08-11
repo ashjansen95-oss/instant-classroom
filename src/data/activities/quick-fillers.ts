@@ -159,6 +159,7 @@ export const quickFillers: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 7, max: 13 },
+    selfEnding: true,
     categories: ["kill-time", "think-fast", "curriculum"],
     tags: ["maths", "strategy", "no-prep", "quick"],
   },

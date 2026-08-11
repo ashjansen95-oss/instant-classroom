@@ -83,6 +83,17 @@ The rubric is judgement. The 👍/👎 on every activity card is evidence. Right
 on each device — see `FUTURE.md`. Once it aggregates, cut anything with a consistently poor
 ratio rather than defending it because it looked good on paper.
 
+## Timer or no timer
+
+Most activities are time-boxed — the clock is the constraint, or it's what tells an open
+discussion to stop. For those, keep the default: `Start timer` leads, `Give me another` is
+secondary.
+
+A small set end on their own condition instead — a champion, a correct guess, five points —
+and a countdown hitting zero mid-elimination fights the mechanic rather than supporting it.
+Mark these `selfEnding: true`. It doesn't remove the timer (a teacher may still want a rough
+cap), it just stops the app insisting a clock is the point when it isn't.
+
 ## Adding an activity
 
 1. Write it, then apply the four gates honestly.

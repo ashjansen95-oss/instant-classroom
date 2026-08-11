@@ -65,6 +65,14 @@ export interface Activity {
   ageRange: AgeRange;
   categories: Category[];
   tags: string[];
+  /**
+   * True when the activity ends on its own condition — a champion, a correct
+   * guess, five points — rather than a clock. A countdown that hits zero
+   * mid-elimination fights the mechanic instead of supporting it, so these
+   * demote the timer to a secondary action rather than removing it outright —
+   * a teacher may still want a rough cap on how long it runs.
+   */
+  selfEnding?: boolean;
 }
 
 /** The six things a teacher picks on the home screen. */

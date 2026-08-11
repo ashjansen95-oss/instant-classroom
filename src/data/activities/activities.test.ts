@@ -164,6 +164,29 @@ describe("activity library", () => {
     }
   });
 
+  it("only marks activities selfEnding when they end on a game condition, not a clock", () => {
+    // The known set. If this list drifts, someone added or removed the flag —
+    // worth a second look either way, since it decides which button leads.
+    const flagged = ACTIVITIES.filter((a) => a.selfEnding).map((a) => a.id).sort();
+    expect(flagged).toEqual(
+      [
+        "beat-the-teacher",
+        "count-to-twenty",
+        "guess-my-number",
+        "last-one-standing-quiz",
+        "one-two-three-look",
+        "rock-paper-scissors-champion",
+        "statue-contest",
+        "twenty-questions",
+      ].sort(),
+    );
+  });
+
+  it("keeps selfEnding rare — most activities genuinely benefit from a timer", () => {
+    const flagged = ACTIVITIES.filter((a) => a.selfEnding);
+    expect(flagged.length / ACTIVITIES.length).toBeLessThan(0.1);
+  });
+
   it("is mostly equipment-free, because that's the whole point", () => {
     const noEquipment = ACTIVITIES.filter((a) => a.equipment.includes("none"));
     expect(noEquipment.length / ACTIVITIES.length).toBeGreaterThan(0.5);

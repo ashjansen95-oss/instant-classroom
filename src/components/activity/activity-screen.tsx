@@ -36,6 +36,9 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
   const need = needFrom(searchParams.get("need"));
 
   const [timerOpen, setTimerOpen] = useState(false);
+  // Whether they've actually run this one, as opposed to glancing and
+  // rejecting it — decides what "give me another" means. See the button below.
+  const [hasStartedTimer, setHasStartedTimer] = useState(false);
   const { isFavourite, toggle } = useFavourites();
   const { feedback, submit } = useFeedback();
   const { preferences } = usePreferences();
@@ -54,13 +57,56 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
     prefetch(need);
   }, [need, prefetch]);
 
+  // A fresh activity is a fresh decision. Adjusted during render rather than in
+  // an effect — React's documented way to reset state on a prop change — since
+  // this component isn't guaranteed to remount between routes.
+  const [lastActivityId, setLastActivityId] = useState(activity.id);
+  if (lastActivityId !== activity.id) {
+    setLastActivityId(activity.id);
+    setTimerOpen(false);
+    setHasStartedTimer(false);
+  }
+
+  const startTimer = () => {
+    setHasStartedTimer(true);
+    setTimerOpen(true);
+  };
+
   const another = () => {
     setTimerOpen(false);
     track("activity_skipped", { id: activity.id });
-    // Steer towards this one's shape — the teacher liked the format enough to
-    // ask for another, they just want different specifics.
-    pick(need, "button", undefined, activity);
+    // Rejected on sight, before they've run it: no similarity bias — a bad
+    // first impression isn't evidence the *shape* was right. Actually ran it:
+    // steer towards its shape, since now we know it worked.
+    pick(need, "button", undefined, hasStartedTimer ? activity : undefined);
   };
+
+  const timerButton = (
+    <Button
+      key="timer"
+      size={activity.selfEnding ? "lg" : "xl"}
+      variant={activity.selfEnding ? "secondary" : "primary"}
+      fullWidth
+      onClick={startTimer}
+    >
+      <Timer aria-hidden className="size-6" />
+      Start timer
+    </Button>
+  );
+
+  const anotherButton = (
+    <Button
+      key="another"
+      variant={activity.selfEnding ? "primary" : "secondary"}
+      size={activity.selfEnding ? "xl" : "lg"}
+      fullWidth
+      onClick={another}
+      disabled={busy}
+    >
+      <RefreshCw aria-hidden className={cn("size-5", busy && "animate-spin")} />
+      {busy ? "Finding…" : hasStartedTimer ? "Give me another like this" : "Give me another"}
+    </Button>
+  );
 
   const onFeedback = (rating: Feedback) => {
     submit(activity.id, rating);
@@ -148,16 +194,11 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
         {/* Only the activities that would otherwise leave a teacher improvising. */}
         {prompts && <PromptDeck bank={prompts} />}
 
+        {/* Self-ending activities (a champion, a correct guess, five points)
+            finish on their own — a countdown fights that, so it's demoted to
+            a secondary, optional cap rather than leading. */}
         <div className="mt-8 space-y-3">
-          <Button size="xl" fullWidth onClick={() => setTimerOpen(true)}>
-            <Timer aria-hidden className="size-6" />
-            Start timer
-          </Button>
-
-          <Button variant="secondary" size="lg" fullWidth onClick={another} disabled={busy}>
-            <RefreshCw aria-hidden className={cn("size-5", busy && "animate-spin")} />
-            {busy ? "Finding…" : "Give me another like this"}
-          </Button>
+          {activity.selfEnding ? [anotherButton, timerButton] : [timerButton, anotherButton]}
         </div>
 
         <section aria-labelledby="feedback-heading" className="mt-9">

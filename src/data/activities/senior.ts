@@ -169,6 +169,7 @@ export const senior: Activity[] = [
     movement: "standing",
     equipment: ["none"],
     ageRange: { min: 13, max: 18 },
+    selfEnding: true,
     categories: ["wake-them-up", "competitive", "curriculum", "think-fast"],
     tags: ["revision", "quiz", "standing", "adaptable"],
   },
