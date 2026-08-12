@@ -30,6 +30,8 @@ export const KEYS = {
   exploreFilters: "explore-filters",
   /** Closed the "add to home screen" banner — Settings keeps a permanent way in. */
   installPromptDismissed: "install-prompt-dismissed",
+  /** Where a new teacher is in the guided tour, or absent once it's done. */
+  walkthroughStep: "walkthrough-step",
 } as const;
 
 export type StorageKey = (typeof KEYS)[keyof typeof KEYS];

@@ -38,6 +38,7 @@ export function ShakePad({
         type="button"
         onClick={onTrigger}
         disabled={busy}
+        data-walkthrough="surprise"
         aria-label={canShake ? "Shake your phone or tap for a surprise activity" : "Surprise me with an activity"}
         className={cn(
           "relative flex w-full flex-col items-center justify-center gap-2 rounded-3xl",

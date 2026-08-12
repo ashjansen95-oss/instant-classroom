@@ -16,11 +16,11 @@ import { cn } from "@/lib/utils";
  *
  * Two questions, then straight into the app. No account, no email, no school,
  * no subject — the only things asked are the two that change what activities
- * a teacher is shown. The close of step 3 *is* the demo: it hands off to
- * `onComplete`, which the home screen wires to one real tap of its own intent
- * grid — so the very first thing a new teacher sees, the instant this dialog
- * clears, is the actual interaction working (a tile → the real reel → an
- * activity), not a description of one.
+ * a teacher is shown. Step 3's finish button hands off to `onComplete`, which
+ * the home screen wires to starting the guided tour (see use-walkthrough.ts)
+ * rather than firing an activity itself — the actual "how this works" lesson
+ * is the tour spotlighting the real tiles a moment later, not anything said
+ * in here.
  */
 export function Onboarding({ onComplete }: { onComplete?: () => void }) {
   const [onboarded, setOnboarded, hydrated] = useStoredState<boolean>(KEYS.onboarded, false);
@@ -126,10 +126,7 @@ export function Onboarding({ onComplete }: { onComplete?: () => void }) {
         )}
 
         {step === 3 && (
-          <Step
-            title="You're all set."
-            intro="Tap what your class needs and you'll get an activity instantly — no extra step. Or shake your phone, or tap Surprise me, for something unexpected."
-          >
+          <Step title="You're all set." intro="One last thing — a 30-second look at how it works.">
             {/* Only worth asking when there's an actual choice to make. */}
             {teachingLevels.length > 1 && (
               <div className="mt-6">
@@ -160,13 +157,14 @@ export function Onboarding({ onComplete }: { onComplete?: () => void }) {
                 autoFocus
                 onClick={() => {
                   // Order matters: this dialog needs to be gone from the tree
-                  // before the reel it's handing off to renders, or the two
-                  // full-screen overlays stack for a frame.
+                  // before the tour it's handing off to renders its first
+                  // spotlight, or the two full-screen overlays stack for a
+                  // frame.
                   setOnboarded(true);
                   onComplete?.();
                 }}
               >
-                🎲 Give me my first activity
+                Show me around →
               </Button>
               <Button variant="ghost" size="md" fullWidth onClick={() => setStep(2)}>
                 Back

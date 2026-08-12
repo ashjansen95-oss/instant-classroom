@@ -4,11 +4,11 @@ import { describe, expect, it, vi } from "vitest";
 import { Onboarding } from "./onboarding";
 
 /**
- * Step 3's finish button is the walkthrough's actual demo, not just an
- * explanation: it dismisses the dialog and hands off to `onComplete`, which
- * the home screen wires straight to its own Surprise Me. Covering the wiring
- * here; the reel itself is exercised by home-screen.test.tsx and
- * activity-reel's own tests.
+ * Step 3's finish button no longer fires an activity itself — it hands off
+ * to `onComplete`, which the home screen wires to starting the guided tour.
+ * The tour's own content (spotlighting the real tiles) is covered in
+ * home-screen.test.tsx and activity-screen.test.tsx; this file only covers
+ * the handoff and the three-step wizard itself.
  */
 async function completeSteps1And2() {
   await userEvent.click(screen.getByRole("button", { name: /Australia/ }));
@@ -17,12 +17,12 @@ async function completeSteps1And2() {
 }
 
 describe("Onboarding", () => {
-  it("hands off to onComplete the moment the walkthrough finishes", async () => {
+  it("hands off to onComplete the moment the wizard finishes", async () => {
     const onComplete = vi.fn();
     render(<Onboarding onComplete={onComplete} />);
 
     await completeSteps1And2();
-    await userEvent.click(screen.getByRole("button", { name: /Give me my first activity/ }));
+    await userEvent.click(screen.getByRole("button", { name: /Show me around/ }));
 
     expect(onComplete).toHaveBeenCalledOnce();
   });
@@ -32,7 +32,7 @@ describe("Onboarding", () => {
     render(<Onboarding onComplete={onComplete} />);
 
     await completeSteps1And2();
-    await userEvent.click(screen.getByRole("button", { name: /Give me my first activity/ }));
+    await userEvent.click(screen.getByRole("button", { name: /Show me around/ }));
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
@@ -42,14 +42,7 @@ describe("Onboarding", () => {
 
     await completeSteps1And2();
     await expect(
-      userEvent.click(screen.getByRole("button", { name: /Give me my first activity/ })),
+      userEvent.click(screen.getByRole("button", { name: /Show me around/ })),
     ).resolves.not.toThrow();
-  });
-
-  it("teaches the new tap-to-generate model, not the old filter-then-press one", async () => {
-    render(<Onboarding onComplete={vi.fn()} />);
-    await completeSteps1And2();
-
-    expect(screen.getByText(/instantly/i)).toBeInTheDocument();
   });
 });

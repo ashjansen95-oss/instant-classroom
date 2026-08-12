@@ -7,6 +7,7 @@ import { ActivityMeta } from "@/components/activity/activity-meta";
 import { MoreLikeThis } from "@/components/activity/more-like-this";
 import { PromptDeck } from "@/components/activity/prompt-deck";
 import { ActivityReel } from "@/components/shake/activity-reel";
+import { Spotlight } from "@/components/walkthrough/spotlight";
 import { getPrompts } from "@/data/prompts";
 import { TimerButton } from "@/components/timer/timer-button";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import { useActivityPicker } from "@/hooks/use-activity-picker";
 import { useFavourites } from "@/hooks/use-favourites";
 import { useFeedback } from "@/hooks/use-activity-history";
 import { usePreferences } from "@/hooks/use-preferences";
+import { useWalkthrough } from "@/hooks/use-walkthrough";
 import { track } from "@/lib/analytics";
 import { vibrate } from "@/lib/haptics";
 import {
@@ -40,6 +42,7 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
   const { feedback, submit } = useFeedback();
   const { preferences } = usePreferences();
   const { pick, prefetch, complete, pending, busy } = useActivityPicker();
+  const walkthrough = useWalkthrough();
 
   const favourited = isFavourite(activity.id);
   const currentFeedback = feedback[activity.id];
@@ -108,6 +111,7 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
       fullWidth
       onClick={another}
       disabled={busy}
+      data-walkthrough="another"
     >
       <RefreshCw aria-hidden className={cn("size-5", busy && "animate-spin")} />
       {busy ? "Finding…" : "Give me another"}
@@ -148,6 +152,7 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
 
           <button
             type="button"
+            data-walkthrough="save"
             onClick={() => {
               toggle(activity.id);
               vibrate("tap", preferences.haptics);
@@ -205,7 +210,7 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
           {activity.selfEnding ? [anotherButton, timerSlot] : [timerSlot, anotherButton]}
         </div>
 
-        <section aria-labelledby="feedback-heading" className="mt-9">
+        <section aria-labelledby="feedback-heading" data-walkthrough="feedback" className="mt-9">
           {currentFeedback ? (
             // Once a rating's in, the chips have done their job — showing them
             // alongside the confirmation just invites a second, redundant tap.
@@ -236,6 +241,41 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
 
         <MoreLikeThis activity={activity} />
       </Page>
+
+      {/* The last three stops of the guided tour started on Home — see
+          use-walkthrough.ts. This is the very first activity a new teacher
+          has ever generated, so it's the one honest place to show how the
+          card itself works. */}
+      {walkthrough.step === "another" && (
+        <Spotlight
+          key="another"
+          selector="[data-walkthrough='another']"
+          title="Not the right fit?"
+          description="Give me another swaps it out for a different activity, still matched to the same need."
+          onNext={walkthrough.next}
+          onSkip={walkthrough.finish}
+        />
+      )}
+      {walkthrough.step === "feedback" && (
+        <Spotlight
+          key="feedback"
+          selector="[data-walkthrough='feedback']"
+          title="Tell us how it went"
+          description="A quick tap here helps us show you more of what actually works for your class."
+          onNext={walkthrough.next}
+          onSkip={walkthrough.finish}
+        />
+      )}
+      {walkthrough.step === "save" && (
+        <Spotlight
+          key="save"
+          selector="[data-walkthrough='save']"
+          title="Want to keep this one?"
+          description="Save it and it'll be sitting in Favourites, ready whenever you need it again."
+          onNext={walkthrough.finish}
+          nextLabel="Got it"
+        />
+      )}
     </>
   );
 }

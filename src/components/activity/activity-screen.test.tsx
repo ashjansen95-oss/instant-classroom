@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getActivity } from "@/data/activities";
+import { KEYS } from "@/lib/storage";
+import { readKey, writeKey } from "@/lib/storage/store";
 import { ActivityScreen } from "./activity-screen";
 
 /**
@@ -196,5 +198,49 @@ describe("ActivityScreen feedback", () => {
 
     expect(screen.getByRole("button", { name: /Fine/ })).toBeInTheDocument();
     expect(screen.queryByText("Fair enough. Noted.")).not.toBeInTheDocument();
+  });
+});
+
+describe("ActivityScreen guided tour", () => {
+  it("shows nothing by default", () => {
+    render(<ActivityScreen activity={timed} />);
+    expect(screen.queryByText("Not the right fit?")).not.toBeInTheDocument();
+  });
+
+  it("picks up the tour on Give me another when that's where it left off on Home", () => {
+    writeKey(KEYS.walkthroughStep, "another");
+    render(<ActivityScreen activity={timed} />);
+
+    expect(screen.getByText("Not the right fit?")).toBeInTheDocument();
+  });
+
+  it("Next walks another → feedback → save", async () => {
+    writeKey(KEYS.walkthroughStep, "another");
+    render(<ActivityScreen activity={timed} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Next →" }));
+    expect(screen.getByText("Tell us how it went")).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Next →" }));
+    expect(screen.getByText("Want to keep this one?")).toBeInTheDocument();
+  });
+
+  it("save is the last stop — Got it ends the tour rather than advancing further", async () => {
+    writeKey(KEYS.walkthroughStep, "save");
+    render(<ActivityScreen activity={timed} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Got it" }));
+
+    expect(readKey(KEYS.walkthroughStep, null)).toBeNull();
+    expect(screen.queryByText("Want to keep this one?")).not.toBeInTheDocument();
+  });
+
+  it("Skip tour ends it immediately from any stop", async () => {
+    writeKey(KEYS.walkthroughStep, "feedback");
+    render(<ActivityScreen activity={timed} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Skip tour" }));
+
+    expect(readKey(KEYS.walkthroughStep, null)).toBeNull();
   });
 });

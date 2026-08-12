@@ -107,19 +107,67 @@ describe("HomeScreen", () => {
     expect(pick).not.toHaveBeenCalled();
   });
 
-  it("demos a real intent tile on first launch, not the Surprise Me fallback", async () => {
-    // Not onboarded this time — exercising the actual first-launch path.
-    // The grid, not the shake pad, was what confused the real teacher this
-    // whole change is fixing, so the walkthrough's one demo needs to be of
-    // that specific interaction, not of Surprise Me.
-    writeKey(KEYS.onboarded, false);
-    render(<HomeScreen />);
+  describe("the guided tour", () => {
+    async function finishOnboarding() {
+      render(<HomeScreen />);
+      await userEvent.click(screen.getByRole("button", { name: /Australia/ }));
+      await userEvent.click(screen.getByRole("button", { name: "Prep" }));
+      await userEvent.click(screen.getByRole("button", { name: "Continue →" }));
+      await userEvent.click(screen.getByRole("button", { name: /Show me around/ }));
+    }
 
-    await userEvent.click(screen.getByRole("button", { name: /Australia/ }));
-    await userEvent.click(screen.getByRole("button", { name: "Prep" }));
-    await userEvent.click(screen.getByRole("button", { name: "Continue →" }));
-    await userEvent.click(screen.getByRole("button", { name: /Give me my first activity/ }));
+    beforeEach(() => {
+      // Exercising the actual first-launch path for this block.
+      writeKey(KEYS.onboarded, false);
+    });
 
-    expect(pick).toHaveBeenCalledExactlyOnceWith("reset", "button");
+    it("starts the tour on the first tile, without firing an activity", async () => {
+      await finishOnboarding();
+
+      expect(screen.getByText("Tap what you need")).toBeInTheDocument();
+      expect(pick).not.toHaveBeenCalled();
+    });
+
+    it("Next walks from the tile to More to Surprise Me", async () => {
+      await finishOnboarding();
+
+      await userEvent.click(screen.getByRole("button", { name: "Next →" }));
+      expect(screen.getByText("Want something specific?")).toBeInTheDocument();
+
+      await userEvent.click(screen.getByRole("button", { name: "Next →" }));
+      expect(screen.getByText("Or just say surprise me")).toBeInTheDocument();
+      // The final home stop has nothing left to narrate — no Next button,
+      // just the real element waiting to be tapped.
+      expect(screen.queryByRole("button", { name: "Next →" })).not.toBeInTheDocument();
+    });
+
+    it("a real tap mid-narration fires the activity and skips the rest of the home tour", async () => {
+      await finishOnboarding();
+      // Still on the "tile" stop — tapping the real tile directly, without
+      // ever pressing Next through "more" and "surprise" first.
+
+      await userEvent.click(screen.getByRole("button", { name: "Wake them up" }));
+
+      expect(pick).toHaveBeenCalledExactlyOnceWith("wake", "button");
+      expect(screen.queryByText("Tap what you need")).not.toBeInTheDocument();
+      expect(screen.queryByText("Want something specific?")).not.toBeInTheDocument();
+    });
+
+    it("Skip tour ends it without ever firing an activity", async () => {
+      await finishOnboarding();
+
+      await userEvent.click(screen.getByRole("button", { name: "Skip tour" }));
+
+      expect(screen.queryByText("Tap what you need")).not.toBeInTheDocument();
+      expect(pick).not.toHaveBeenCalled();
+    });
+
+    it("resumes an interrupted tour on a later visit rather than restarting it", async () => {
+      writeKey(KEYS.walkthroughStep, "more");
+      writeKey(KEYS.onboarded, true);
+      render(<HomeScreen />);
+
+      expect(screen.getByText("Want something specific?")).toBeInTheDocument();
+    });
   });
 });

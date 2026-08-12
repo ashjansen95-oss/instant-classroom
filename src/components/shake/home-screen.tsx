@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { Spotlight } from "@/components/walkthrough/spotlight";
 import { useActivityPicker } from "@/hooks/use-activity-picker";
 import { useFavourites } from "@/hooks/use-favourites";
 import { usePreferences } from "@/hooks/use-preferences";
 import { useShake } from "@/hooks/use-shake";
+import { isHomeStep, useWalkthrough } from "@/hooks/use-walkthrough";
 import { track } from "@/lib/analytics";
 import { Page } from "@/components/ui/page";
 import { Button } from "@/components/ui/button";
@@ -32,9 +34,21 @@ export function HomeScreen() {
   const { pick, prefetch, complete, pending, busy } = useActivityPicker();
   const { ids: favouriteIds } = useFavourites();
   const [moreOpen, setMoreOpen] = useState(false);
+  const walkthrough = useWalkthrough();
+
+  // A real tap anywhere the tour hasn't reached yet — a tile, a More
+  // category, Surprise Me, even a real shake — means they've already worked
+  // it out. Jump straight to the activity-screen stops rather than making
+  // them sit through whatever narration is left.
+  const advanceIfTouring = () => {
+    if (isHomeStep(walkthrough.step)) walkthrough.skipToActivity();
+  };
 
   const { status, shaking, requestPermission } = useShake({
-    onShake: () => pick("surprise", "shake"),
+    onShake: () => {
+      advanceIfTouring();
+      pick("surprise", "shake");
+    },
     enabled: preferences.shakeEnabled && !busy,
     sensitivity: preferences.shakeSensitivity,
   });
@@ -72,17 +86,13 @@ export function HomeScreen() {
 
   const onMoreSelect = (category: Category) => {
     setMoreOpen(false);
+    advanceIfTouring();
     pick("surprise", "button", { ...EMPTY_FILTERS, categories: [category] });
   };
 
   return (
     <>
-      {/* "reset" rather than "surprise": the tile grid — not the shake pad —
-          was what actually confused the teacher this redesign is fixing, so
-          the one demo onboarding gets should exercise a tile, not the
-          fallback button. Any of the six would do; this one's first in the
-          grid and fits after almost any lesson transition. */}
-      <Onboarding onComplete={() => pick("reset", "button")} />
+      <Onboarding onComplete={walkthrough.start} />
       {pending && <ActivityReel activity={pending.activity} onLand={complete} />}
 
       <Page className="flex flex-col">
@@ -99,12 +109,19 @@ export function HomeScreen() {
         </header>
 
         <div className="mt-5">
-          <IntentGrid onSelect={(need) => pick(need, "button")} busy={busy} />
+          <IntentGrid
+            onSelect={(need) => {
+              advanceIfTouring();
+              pick(need, "button");
+            }}
+            busy={busy}
+          />
         </div>
 
         <p className="mt-3 text-center">
           <button
             type="button"
+            data-walkthrough="more"
             onClick={() => setMoreOpen(true)}
             disabled={busy}
             className="min-h-11 px-2 text-sm font-semibold text-ink-muted underline underline-offset-4 hover:text-ink disabled:opacity-60"
@@ -115,7 +132,10 @@ export function HomeScreen() {
 
         <div className="mt-6">
           <ShakePad
-            onTrigger={() => pick("surprise", "button")}
+            onTrigger={() => {
+              advanceIfTouring();
+              pick("surprise", "button");
+            }}
             status={status}
             shaking={shaking}
             busy={busy}
@@ -163,6 +183,39 @@ export function HomeScreen() {
       </Page>
 
       <MoreSheet open={moreOpen} onClose={() => setMoreOpen(false)} onSelect={onMoreSelect} />
+
+      {/* Suppressed while the More sheet itself is open — a highlighted
+          "More" button behind an already-open sheet just reads as confused,
+          not helpful. */}
+      {!moreOpen && walkthrough.step === "tile" && (
+        <Spotlight
+          key="tile"
+          selector="[data-walkthrough='tile']"
+          title="Tap what you need"
+          description="Each tile is a shortcut — tap one and you'll get a matching activity straight away, no extra step."
+          onNext={walkthrough.next}
+          onSkip={walkthrough.finish}
+        />
+      )}
+      {!moreOpen && walkthrough.step === "more" && (
+        <Spotlight
+          key="more"
+          selector="[data-walkthrough='more']"
+          title="Want something specific?"
+          description="More has extra categories — movement, art, games, partner activities."
+          onNext={walkthrough.next}
+          onSkip={walkthrough.finish}
+        />
+      )}
+      {!moreOpen && walkthrough.step === "surprise" && (
+        <Spotlight
+          key="surprise"
+          selector="[data-walkthrough='surprise']"
+          title="Or just say surprise me"
+          description="Tap Surprise Me for something good, automatically matched to your class. Go on — give one of these a try above."
+          onSkip={walkthrough.finish}
+        />
+      )}
     </>
   );
 }

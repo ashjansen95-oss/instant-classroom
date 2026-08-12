@@ -27,7 +27,7 @@ export function IntentGrid({
 
   return (
     <div aria-label="What do you need?" className="grid grid-cols-2 gap-3">
-      {INTENT_OPTIONS.map(({ need, emoji, label, hue }) => (
+      {INTENT_OPTIONS.map(({ need, emoji, label, hue }, index) => (
         <button
           key={need}
           type="button"
@@ -36,6 +36,10 @@ export function IntentGrid({
             setPressed(need);
             onSelect(need);
           }}
+          // The walkthrough spotlights the first tile as a stand-in for all
+          // six — picked by position, not by need, so it stays correct even
+          // if INTENT_OPTIONS gets reordered later.
+          {...(index === 0 ? { "data-walkthrough": "tile" } : {})}
           style={{ "--tile": hue } as React.CSSProperties}
           className={cn(
             "tile-surface flex min-h-[5.25rem] flex-col items-start justify-center gap-1 rounded-2xl px-4 py-3",
