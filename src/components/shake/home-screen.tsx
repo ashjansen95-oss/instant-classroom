@@ -77,7 +77,12 @@ export function HomeScreen() {
 
   return (
     <>
-      <Onboarding onComplete={() => pick("surprise", "button")} />
+      {/* "reset" rather than "surprise": the tile grid — not the shake pad —
+          was what actually confused the teacher this redesign is fixing, so
+          the one demo onboarding gets should exercise a tile, not the
+          fallback button. Any of the six would do; this one's first in the
+          grid and fits after almost any lesson transition. */}
+      <Onboarding onComplete={() => pick("reset", "button")} />
       {pending && <ActivityReel activity={pending.activity} onLand={complete} />}
 
       <Page className="flex flex-col">

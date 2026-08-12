@@ -106,4 +106,20 @@ describe("HomeScreen", () => {
 
     expect(pick).not.toHaveBeenCalled();
   });
+
+  it("demos a real intent tile on first launch, not the Surprise Me fallback", async () => {
+    // Not onboarded this time — exercising the actual first-launch path.
+    // The grid, not the shake pad, was what confused the real teacher this
+    // whole change is fixing, so the walkthrough's one demo needs to be of
+    // that specific interaction, not of Surprise Me.
+    writeKey(KEYS.onboarded, false);
+    render(<HomeScreen />);
+
+    await userEvent.click(screen.getByRole("button", { name: /Australia/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Prep" }));
+    await userEvent.click(screen.getByRole("button", { name: "Continue →" }));
+    await userEvent.click(screen.getByRole("button", { name: /Give me my first activity/ }));
+
+    expect(pick).toHaveBeenCalledExactlyOnceWith("reset", "button");
+  });
 });

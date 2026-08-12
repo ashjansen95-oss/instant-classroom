@@ -17,9 +17,10 @@ import { cn } from "@/lib/utils";
  * Two questions, then straight into the app. No account, no email, no school,
  * no subject — the only things asked are the two that change what activities
  * a teacher is shown. The close of step 3 *is* the demo: it hands off to
- * `onComplete`, which the home screen wires to its own Surprise Me — so the
- * very first thing a new teacher sees, the instant this dialog clears, is the
- * real reel spinning up an activity, not a description of one.
+ * `onComplete`, which the home screen wires to one real tap of its own intent
+ * grid — so the very first thing a new teacher sees, the instant this dialog
+ * clears, is the actual interaction working (a tile → the real reel → an
+ * activity), not a description of one.
  */
 export function Onboarding({ onComplete }: { onComplete?: () => void }) {
   const [onboarded, setOnboarded, hydrated] = useStoredState<boolean>(KEYS.onboarded, false);
