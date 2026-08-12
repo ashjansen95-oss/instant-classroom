@@ -76,8 +76,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             separate layer) along for the ride during an iOS rubber-band
             bounce. `overscroll-contain` keeps the bounce here rather than
             chaining into the browser's own gestures, the same trick the
-            filter sheet already uses for its own scroll area. */}
-        <div className="flex flex-1 flex-col overflow-y-auto overscroll-contain">{children}</div>
+            filter sheet already uses for its own scroll area.
+
+            `data-scroll-container` also means it's the only thing with a
+            real scroll position — the browser's native back/forward scroll
+            restoration and Next's own "maintain scroll position" both key
+            off window/document, which never move here, so a page that needs
+            its scroll offset to survive a round trip (see Explore) has to
+            find this element by hand and restore it itself. */}
+        <div
+          data-scroll-container
+          className="flex flex-1 flex-col overflow-y-auto overscroll-contain"
+        >
+          {children}
+        </div>
         <BottomNav />
         <ServiceWorker />
         <ThemeSync />

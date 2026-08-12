@@ -28,6 +28,8 @@ export const KEYS = {
   activeLevel: "active-level",
   /** Session-scoped: Explore's filters, so they survive a look at an activity. */
   exploreFilters: "explore-filters",
+  /** Session-scoped: Explore's scroll offset, for the same round trip. */
+  exploreScroll: "explore-scroll",
   /** Closed the "add to home screen" banner — Settings keeps a permanent way in. */
   installPromptDismissed: "install-prompt-dismissed",
   /** Where a new teacher is in the guided tour, or absent once it's done. */

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Page, PageHeader } from "@/components/ui/page";
 import { useCountry } from "@/hooks/use-country";
 import { useExploreFilters } from "@/hooks/use-explore-filters";
+import { useExploreScroll } from "@/hooks/use-explore-scroll";
 import { useTeaching } from "@/hooks/use-teaching";
 import { track } from "@/lib/analytics";
 import { applyFilters, countActiveFilters } from "@/lib/selection";
@@ -34,6 +35,8 @@ export function ExploreScreen() {
   const { teachingLevels } = useTeaching();
   const results = useMemo(() => applyFilters(ACTIVITIES, filters, country), [filters, country]);
   const activeCount = countActiveFilters(filters);
+
+  useExploreScroll();
 
   useEffect(() => {
     track("page_view", { path: "/explore" });
