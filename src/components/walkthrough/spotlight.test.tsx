@@ -91,4 +91,21 @@ describe("Spotlight", () => {
     const target = screen.getByRole("button", { name: "Real target" });
     expect(target).toBeEnabled();
   });
+
+  it("advances on a tap outside the card too, not just the Next button", async () => {
+    const onNext = vi.fn();
+    renderWithTarget(
+      <Spotlight selector="[data-walkthrough='target']" title="T" description="D" onNext={onNext} onSkip={vi.fn()} />,
+    );
+
+    await userEvent.click(screen.getAllByTestId("spotlight-scrim")[0]);
+    expect(onNext).toHaveBeenCalledOnce();
+  });
+
+  it("renders no outside-tap scrim on the 'now you try' stop, so a stray tap can't skip it", () => {
+    renderWithTarget(
+      <Spotlight selector="[data-walkthrough='target']" title="T" description="D" onSkip={vi.fn()} />,
+    );
+    expect(screen.queryAllByTestId("spotlight-scrim")).toHaveLength(0);
+  });
 });
