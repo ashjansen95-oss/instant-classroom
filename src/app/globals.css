@@ -37,7 +37,7 @@
   --hue-calm: #0e6f96;
   --hue-time: #0f7d52;
   --hue-fun: #b62d63;
-  --hue-surprise: #15121f;
+  --hue-think: #15121f;
 
   --tile-tint: 10%;
   --shadow-press: 0 2px 0 0 var(--line-strong);
@@ -82,7 +82,7 @@
     --hue-calm: #6ec9ec;
     --hue-time: #5fd6a4;
     --hue-fun: #ff85b0;
-    --hue-surprise: #f6f3ec;
+    --hue-think: #f6f3ec;
 
     --tile-tint: 16%;
   }
@@ -116,7 +116,7 @@
   --hue-calm: #6ec9ec;
   --hue-time: #5fd6a4;
   --hue-fun: #ff85b0;
-  --hue-surprise: #f6f3ec;
+  --hue-think: #f6f3ec;
 
   --tile-tint: 16%;
 }

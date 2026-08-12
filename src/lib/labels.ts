@@ -69,9 +69,14 @@ export const DURATION_LABELS = Object.fromEntries(
   Object.entries(DURATION_BUCKETS).map(([key, value]) => [key, value.label]),
 ) as Record<DurationBucket, string>;
 
-/** The six home-screen options, in display order. */
-export const NEED_OPTIONS: {
-  need: Need;
+/**
+ * The home screen's intent tiles, in display order. Tapping one *is* the
+ * request — there's no separate "now press generate" step — so these read as
+ * actions ("Wake them up"), not filter labels. "surprise" isn't here: it has
+ * no tile, it *is* the big shake pad below the grid.
+ */
+export const INTENT_OPTIONS: {
+  need: Exclude<Need, "surprise">;
   emoji: string;
   label: string;
   hue: string;
@@ -80,13 +85,26 @@ export const NEED_OPTIONS: {
   { need: "wake", emoji: "⚡", label: "Wake them up", hue: "var(--hue-wake)" },
   { need: "calm", emoji: "🤫", label: "Calm them down", hue: "var(--hue-calm)" },
   { need: "kill-time", emoji: "⏰", label: "Kill 2 minutes", hue: "var(--hue-time)" },
-  { need: "fun", emoji: "🎯", label: "Make learning fun", hue: "var(--hue-fun)" },
-  { need: "surprise", emoji: "🎲", label: "Surprise me", hue: "var(--hue-surprise)" },
+  { need: "fun", emoji: "🎯", label: "Have some fun", hue: "var(--hue-fun)" },
+  { need: "think", emoji: "💭", label: "Make them think", hue: "var(--hue-think)" },
 ];
 
 export const NEED_LABELS = Object.fromEntries(
-  NEED_OPTIONS.map(({ need, label }) => [need, label]),
+  [...INTENT_OPTIONS.map(({ need, label }) => [need, label] as const), ["surprise", "Surprise me"]],
 ) as Record<Need, string>;
+
+/**
+ * "More" — additional specificity, secondary to the intent tiles above.
+ * Deliberately a handful of real, well-backed `Category` values rather than
+ * invented moods: a category with only a few activities behind it would make
+ * "More" a trap, returning the same one or two things on every tap.
+ */
+export const MORE_OPTIONS: { category: Category; emoji: string; label: string }[] = [
+  { category: "get-moving", emoji: "🏃", label: "Movement" },
+  { category: "creative", emoji: "🎨", label: "Art" },
+  { category: "competitive", emoji: "🏆", label: "Games" },
+  { category: "pair-activities", emoji: "🤝", label: "Partner up" },
+];
 
 export function equipmentSummary(equipment: Equipment[]): string {
   if (equipment.length === 0 || (equipment.length === 1 && equipment[0] === "none")) {

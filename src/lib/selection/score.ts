@@ -45,11 +45,19 @@ const NEED_PROFILES: Record<Exclude<Need, "surprise">, NeedProfile> = {
     categories: ["kill-time"],
     duration: [30, 150],
   },
-  // Still learning, but make it enjoyable.
+  // Still learning, but make it enjoyable — the game/performance/art side,
+  // not the puzzle side. Overlapped with "think" before this need existed,
+  // which meant the two intent tiles could return the same activity.
   fun: {
     energy: ["medium", "high"],
-    categories: ["creative", "competitive", "think-fast", "curriculum"],
+    categories: ["creative", "competitive"],
     duration: [60, 330],
+  },
+  // A puzzle, a debate, a "why" — cognitive rather than physical or social.
+  think: {
+    energy: ["low", "medium"],
+    categories: ["think-fast", "curriculum", "pair-activities"],
+    duration: [90, 330],
   },
 };
 

@@ -16,9 +16,12 @@ import { cn } from "@/lib/utils";
  *
  * Two questions, then straight into the app. No account, no email, no school,
  * no subject — the only things asked are the two that change what activities
- * a teacher is shown.
+ * a teacher is shown. The close of step 3 *is* the demo: it hands off to
+ * `onComplete`, which the home screen wires to its own Surprise Me — so the
+ * very first thing a new teacher sees, the instant this dialog clears, is the
+ * real reel spinning up an activity, not a description of one.
  */
-export function Onboarding() {
+export function Onboarding({ onComplete }: { onComplete?: () => void }) {
   const [onboarded, setOnboarded, hydrated] = useStoredState<boolean>(KEYS.onboarded, false);
   const { country, setCountry, terminology, label, shortLabel, levels } = useCountry();
   const {
@@ -124,7 +127,7 @@ export function Onboarding() {
         {step === 3 && (
           <Step
             title="You're all set."
-            intro="We'll use your year levels to make sure the activities actually fit your students."
+            intro="Tap what your class needs and you'll get an activity instantly — no extra step. Or shake your phone, or tap Surprise me, for something unexpected."
           >
             {/* Only worth asking when there's an actual choice to make. */}
             {teachingLevels.length > 1 && (
@@ -150,7 +153,18 @@ export function Onboarding() {
             )}
 
             <div className="mt-auto space-y-3 pt-8">
-              <Button size="xl" fullWidth onClick={() => setOnboarded(true)} autoFocus>
+              <Button
+                size="xl"
+                fullWidth
+                autoFocus
+                onClick={() => {
+                  // Order matters: this dialog needs to be gone from the tree
+                  // before the reel it's handing off to renders, or the two
+                  // full-screen overlays stack for a frame.
+                  setOnboarded(true);
+                  onComplete?.();
+                }}
+              >
                 🎲 Give me my first activity
               </Button>
               <Button variant="ghost" size="md" fullWidth onClick={() => setStep(2)}>

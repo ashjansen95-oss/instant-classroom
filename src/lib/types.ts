@@ -75,8 +75,16 @@ export interface Activity {
   selfEnding?: boolean;
 }
 
-/** The six things a teacher picks on the home screen. */
-export const NEEDS = ["reset", "wake", "calm", "kill-time", "fun", "surprise"] as const;
+/**
+ * What a teacher tells us they need.
+ *
+ * The first six are the home screen's intent tiles — tapping one *is* the
+ * request, not a filter to configure before pressing something else. "surprise"
+ * is the odd one out: it has no profile in `scoreForNeed` (it scores flat, so
+ * variety alone decides) and no tile, because it belongs to the big
+ * shake pad — the universal "just give me something good".
+ */
+export const NEEDS = ["reset", "wake", "calm", "kill-time", "fun", "think", "surprise"] as const;
 export type Need = (typeof NEEDS)[number];
 
 /** Duration buckets, in seconds, matching the Explore filter labels. */

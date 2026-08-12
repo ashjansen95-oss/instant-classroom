@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { useActivityPicker } from "@/hooks/use-activity-picker";
 import { useFavourites } from "@/hooks/use-favourites";
 import { usePreferences } from "@/hooks/use-preferences";
@@ -10,27 +10,31 @@ import { useShake } from "@/hooks/use-shake";
 import { track } from "@/lib/analytics";
 import { Page } from "@/components/ui/page";
 import { Button } from "@/components/ui/button";
-import { NEEDS, type Need } from "@/lib/types";
+import { EMPTY_FILTERS, NEEDS, type Category, type Need } from "@/lib/types";
 import { ActivityReel } from "./activity-reel";
 import { InstallPrompt } from "./install-prompt";
+import { IntentGrid } from "./intent-grid";
 import { LevelSwitcher } from "./level-switcher";
-import { NeedGrid } from "./need-grid";
+import { MoreSheet } from "./more-sheet";
 import { Onboarding } from "./onboarding";
 import { Recommendations } from "./recommendations";
 import { ShakePad } from "./shake-pad";
 
+/**
+ * The whole home screen, and the one interaction that matters:
+ * tap what you need → the existing reel plays → an activity lands. There is
+ * no intermediate "selected" state and no separate generate step — the six
+ * intent tiles, "More", and the Surprise Me pad all funnel through this one
+ * `pick()` call, exactly like the shake gesture always has.
+ */
 export function HomeScreen() {
-  // Home-screen shortcuts on an installed PWA land here with a need preselected.
-  const requested = useSearchParams().get("need");
-  const [need, setNeed] = useState<Need>(
-    NEEDS.includes(requested as Need) ? (requested as Need) : "surprise",
-  );
   const { preferences } = usePreferences();
   const { pick, prefetch, complete, pending, busy } = useActivityPicker();
   const { ids: favouriteIds } = useFavourites();
+  const [moreOpen, setMoreOpen] = useState(false);
 
   const { status, shaking, requestPermission } = useShake({
-    onShake: () => pick(need, "shake"),
+    onShake: () => pick("surprise", "shake"),
     enabled: preferences.shakeEnabled && !busy,
     sensitivity: preferences.shakeSensitivity,
   });
@@ -39,15 +43,41 @@ export function HomeScreen() {
     track("page_view", { path: "/" });
   }, []);
 
-  // Warm the routes this need could land on, so the reel lands on a page that
-  // is already here — including when the wifi isn't.
+  // Every candidate a tap could land on is worth warming — there's no single
+  // "current" need to prefetch around any more, and the routes are static, so
+  // this is cheap. Keeps the core promise ("works when the wifi doesn't")
+  // even now that the first tap fires generation immediately.
   useEffect(() => {
-    prefetch(need);
-  }, [need, prefetch]);
+    for (const need of NEEDS) prefetch(need);
+  }, [prefetch]);
+
+  // Home-screen shortcuts on an installed PWA (see manifest.ts — "Surprise
+  // me", "Calm them down", "Wake them up") land here with `?need=` set. With
+  // the old filter-then-press model that just preselected a tile; now that a
+  // tap *is* the request, the equivalent is firing the pick immediately. The
+  // ref guards against StrictMode's double-invoke firing this twice, and the
+  // URL is cleaned up straight after so Back or a refresh can't replay it.
+  const router = useRouter();
+  const requested = useSearchParams().get("need");
+  const firedShortcut = useRef(false);
+  useEffect(() => {
+    if (firedShortcut.current || !requested || !NEEDS.includes(requested as Need)) return;
+    firedShortcut.current = true;
+    pick(requested as Need, "button");
+    router.replace("/");
+    // Deliberately once, off the URL param present at mount — not every
+    // render, and not re-armed by anything pick/router themselves do.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requested]);
+
+  const onMoreSelect = (category: Category) => {
+    setMoreOpen(false);
+    pick("surprise", "button", { ...EMPTY_FILTERS, categories: [category] });
+  };
 
   return (
     <>
-      <Onboarding />
+      <Onboarding onComplete={() => pick("surprise", "button")} />
       {pending && <ActivityReel activity={pending.activity} onLand={complete} />}
 
       <Page className="flex flex-col">
@@ -64,12 +94,23 @@ export function HomeScreen() {
         </header>
 
         <div className="mt-5">
-          <NeedGrid value={need} onChange={setNeed} />
+          <IntentGrid onSelect={(need) => pick(need, "button")} busy={busy} />
         </div>
 
-        <div className="mt-7">
+        <p className="mt-3 text-center">
+          <button
+            type="button"
+            onClick={() => setMoreOpen(true)}
+            disabled={busy}
+            className="min-h-11 px-2 text-sm font-semibold text-ink-muted underline underline-offset-4 hover:text-ink disabled:opacity-60"
+          >
+            More…
+          </button>
+        </p>
+
+        <div className="mt-6">
           <ShakePad
-            onTrigger={() => pick(need, "button")}
+            onTrigger={() => pick("surprise", "button")}
             status={status}
             shaking={shaking}
             busy={busy}
@@ -115,6 +156,8 @@ export function HomeScreen() {
           if you&rsquo;d rather choose yourself.
         </p>
       </Page>
+
+      <MoreSheet open={moreOpen} onClose={() => setMoreOpen(false)} onSelect={onMoreSelect} />
     </>
   );
 }

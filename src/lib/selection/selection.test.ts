@@ -146,8 +146,18 @@ describe("need scoring", () => {
     expect(scores.size).toBe(1);
   });
 
+  it("scores a thinking activity higher than a physical one for the think need", () => {
+    // Added alongside the home-screen "Make them think" tile — think and fun
+    // used to share one profile (categories: think-fast + curriculum both
+    // lived under "fun"), which meant the two tiles could hand back the exact
+    // same activity. They're disjoint now.
+    const puzzle = ACTIVITIES.find((a) => a.id === "twenty-questions")!;
+    const physical = ACTIVITIES.find((a) => a.id === "shake-it-out")!;
+    expect(scoreForNeed(puzzle, "think")).toBeGreaterThan(scoreForNeed(physical, "think"));
+  });
+
   it("keeps every score between 0 and 1", () => {
-    const needs: Need[] = ["reset", "wake", "calm", "kill-time", "fun", "surprise"];
+    const needs: Need[] = ["reset", "wake", "calm", "kill-time", "fun", "think", "surprise"];
     for (const need of needs) {
       for (const activity of ACTIVITIES) {
         const score = scoreForNeed(activity, need);
