@@ -92,6 +92,7 @@ export const drama: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 9, max: 16 },
+    timerless: true,
     categories: ["drama", "silly", "creative"],
     tags: ["performance", "improvisation", "volunteer", "funny"],
     modifications: [

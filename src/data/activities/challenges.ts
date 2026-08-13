@@ -19,6 +19,7 @@ export const challenges: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 8, max: 14 },
+    timerless: true,
     categories: ["challenges", "think-fast", "competitive"],
     tags: ["spelling", "no-prep", "quick", "volunteer"],
     modifications: [
@@ -67,6 +68,7 @@ export const challenges: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 7, max: 14 },
+    timerless: true,
     categories: ["challenges", "think-fast", "competitive"],
     tags: ["categories", "elimination", "quick", "no-prep"],
     modifications: [

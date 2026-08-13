@@ -65,6 +65,7 @@ export const partyGames: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 8, max: 18 },
+    timerless: true,
     categories: ["kill-time", "brain-break", "icebreakers"],
     tags: ["reflection", "private", "funny", "school-life"],
     modifications: [
@@ -128,6 +129,7 @@ export const partyGames: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 9, max: 18 },
+    timerless: true,
     categories: ["wake-them-up", "kill-time"],
     tags: ["class-culture", "positive", "ritual", "no-prep"],
   },

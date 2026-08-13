@@ -119,6 +119,7 @@ export const wakeThemUp: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 8, max: 16 },
+    timerless: true,
     categories: ["wake-them-up", "brain-break", "competitive"],
     tags: ["observation", "classic", "no-prep", "volunteer"],
   },

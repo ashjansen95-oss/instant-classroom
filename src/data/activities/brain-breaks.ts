@@ -19,6 +19,7 @@ export const brainBreaks: Activity[] = [
     movement: "movement",
     equipment: ["none"],
     ageRange: { min: 5, max: 16 },
+    timerless: true,
     categories: ["brain-break", "wake-them-up", "get-moving", "icebreakers"],
     tags: ["choices", "voting", "no-prep", "classic"],
     modifications: [
@@ -67,6 +68,7 @@ export const brainBreaks: Activity[] = [
     movement: "standing",
     equipment: ["none"],
     ageRange: { min: 4, max: 15 },
+    timerless: true,
     categories: ["brain-break", "wake-them-up", "icebreakers"],
     tags: ["no-prep", "whole-class", "quick"],
   },
@@ -112,6 +114,7 @@ export const brainBreaks: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 4, max: 11 },
+    timerless: true,
     categories: ["brain-break", "wake-them-up", "kill-time"],
     tags: ["rhythm", "attention-getter", "no-prep", "quick"],
     modifications: [
@@ -136,6 +139,7 @@ export const brainBreaks: Activity[] = [
     movement: "standing",
     equipment: ["none"],
     ageRange: { min: 4, max: 11 },
+    timerless: true,
     categories: ["brain-break", "calm-down", "drama"],
     tags: ["focus", "silent", "movement", "settling"],
   },
@@ -156,6 +160,7 @@ export const brainBreaks: Activity[] = [
     movement: "standing",
     equipment: ["none"],
     ageRange: { min: 5, max: 12 },
+    timerless: true,
     categories: ["brain-break", "wake-them-up", "think-fast"],
     tags: ["listening", "no-prep", "quick", "funny"],
     modifications: [
@@ -384,6 +389,7 @@ export const brainBreaks: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 6, max: 16 },
+    timerless: true,
     categories: ["brain-break", "competitive", "creative"],
     tags: ["music", "guessing", "teams", "no-prep"],
     modifications: [
@@ -408,6 +414,7 @@ export const brainBreaks: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 5, max: 18 },
+    timerless: true,
     categories: ["brain-break", "kill-time", "think-fast", "icebreakers"],
     tags: ["rapid-fire", "quiet", "no-prep", "quick"],
   },

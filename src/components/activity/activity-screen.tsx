@@ -214,7 +214,11 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
         {prompts && <PromptDeck bank={prompts} />}
 
         <div className="mt-8 space-y-3">
-          {activity.selfEnding ? [anotherButton, timerSlot] : [timerSlot, anotherButton]}
+          {activity.timerless
+            ? [anotherButton]
+            : activity.selfEnding
+              ? [anotherButton, timerSlot]
+              : [timerSlot, anotherButton]}
         </div>
 
         <section aria-labelledby="feedback-heading" data-walkthrough="feedback" className="mt-9">

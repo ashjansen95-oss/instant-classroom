@@ -139,6 +139,7 @@ export const storytelling: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 7, max: 14 },
+    timerless: true,
     categories: ["storytelling", "drama", "brain-break"],
     tags: ["improvisation", "collaborative", "no-prep", "funny"],
     modifications: [

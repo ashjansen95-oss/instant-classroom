@@ -44,6 +44,7 @@ export const silly: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 8, max: 16 },
+    timerless: true,
     categories: ["silly", "writing", "creative"],
     tags: ["vocabulary", "funny", "no-prep", "quick"],
     modifications: [
@@ -68,6 +69,7 @@ export const silly: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 7, max: 14 },
+    timerless: true,
     categories: ["silly", "drama", "storytelling"],
     tags: ["improvisation", "funny", "volunteer", "no-prep"],
     modifications: [
@@ -92,6 +94,7 @@ export const silly: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 8, max: 16 },
+    timerless: true,
     categories: ["silly", "drama"],
     tags: ["performance", "funny", "volunteer", "no-prep"],
     modifications: [
@@ -116,6 +119,7 @@ export const silly: Activity[] = [
     movement: "movement",
     equipment: ["none"],
     ageRange: { min: 5, max: 12 },
+    timerless: true,
     categories: ["silly", "wake-them-up", "get-moving", "drama"],
     tags: ["movement", "funny", "physical", "no-prep"],
     modifications: [
@@ -140,6 +144,7 @@ export const silly: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 9, max: 16 },
+    timerless: true,
     categories: ["silly", "drama", "creative"],
     tags: ["performance", "funny", "volunteer", "no-prep"],
     modifications: [

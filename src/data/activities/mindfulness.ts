@@ -19,6 +19,7 @@ export const mindfulness: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 6, max: 16 },
+    timerless: true,
     categories: ["mindfulness", "calm-down"],
     tags: ["reflection", "quiet", "no-prep", "settling"],
     modifications: [
