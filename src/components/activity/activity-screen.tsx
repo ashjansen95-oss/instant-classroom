@@ -173,35 +173,37 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
           </button>
         </div>
 
-        <h1 className="mt-3 font-display text-[2.25rem] leading-[1.05] font-extrabold tracking-tight text-balance uppercase">
-          {activity.title}
-        </h1>
+        <div data-walkthrough="card">
+          <h1 className="mt-3 font-display text-[2.25rem] leading-[1.05] font-extrabold tracking-tight text-balance uppercase">
+            {activity.title}
+          </h1>
 
-        <p className="mt-3 text-xl text-ink-muted text-pretty">{activity.description}</p>
+          <p className="mt-3 text-xl text-ink-muted text-pretty">{activity.description}</p>
 
-        <ActivityMeta activity={activity} className="mt-5" />
+          <ActivityMeta activity={activity} className="mt-5" />
 
-        <section aria-labelledby="how-heading" className="mt-7">
-          <h2
-            id="how-heading"
-            className="font-display text-sm font-bold tracking-wide text-ink-muted uppercase"
-          >
-            How to run it
-          </h2>
-          <ol className="mt-3 space-y-3">
-            {activity.instructions.map((step, index) => (
-              <li key={step} className="flex gap-3.5">
-                <span
-                  aria-hidden
-                  className="grid size-8 shrink-0 place-items-center rounded-full bg-primary-soft font-display text-sm font-extrabold text-primary"
-                >
-                  {index + 1}
-                </span>
-                <span className="pt-1 text-[1.0625rem] leading-snug text-pretty">{step}</span>
-              </li>
-            ))}
-          </ol>
-        </section>
+          <section aria-labelledby="how-heading" className="mt-7">
+            <h2
+              id="how-heading"
+              className="font-display text-sm font-bold tracking-wide text-ink-muted uppercase"
+            >
+              How to run it
+            </h2>
+            <ol className="mt-3 space-y-3">
+              {activity.instructions.map((step, index) => (
+                <li key={step} className="flex gap-3.5">
+                  <span
+                    aria-hidden
+                    className="grid size-8 shrink-0 place-items-center rounded-full bg-primary-soft font-display text-sm font-extrabold text-primary"
+                  >
+                    {index + 1}
+                  </span>
+                  <span className="pt-1 text-[1.0625rem] leading-snug text-pretty">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+        </div>
 
         {/* Only the activities that would otherwise leave a teacher improvising. */}
         {prompts && <PromptDeck bank={prompts} />}
@@ -242,10 +244,20 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
         <MoreLikeThis activity={activity} />
       </Page>
 
-      {/* The last three stops of the guided tour started on Home — see
+      {/* The last four stops of the guided tour started on Home — see
           use-walkthrough.ts. This is the very first activity a new teacher
           has ever generated, so it's the one honest place to show how the
           card itself works. */}
+      {walkthrough.step === "card" && (
+        <Spotlight
+          key="card"
+          selector="[data-walkthrough='card']"
+          title="Here's your activity"
+          description="Everything you need in one place — what to do, how to run it, and how long it takes. Read it, run it, done."
+          onNext={walkthrough.next}
+          onSkip={walkthrough.finish}
+        />
+      )}
       {walkthrough.step === "another" && (
         <Spotlight
           key="another"

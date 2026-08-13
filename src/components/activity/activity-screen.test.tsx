@@ -204,19 +204,23 @@ describe("ActivityScreen feedback", () => {
 describe("ActivityScreen guided tour", () => {
   it("shows nothing by default", () => {
     render(<ActivityScreen activity={timed} />);
+    expect(screen.queryByText("Here's your activity")).not.toBeInTheDocument();
     expect(screen.queryByText("Not the right fit?")).not.toBeInTheDocument();
   });
 
-  it("picks up the tour on Give me another when that's where it left off on Home", () => {
-    writeKey(KEYS.walkthroughStep, "another");
+  it("picks up the tour on the activity card when that's where it left off on Home", () => {
+    writeKey(KEYS.walkthroughStep, "card");
     render(<ActivityScreen activity={timed} />);
 
-    expect(screen.getByText("Not the right fit?")).toBeInTheDocument();
+    expect(screen.getByText("Here's your activity")).toBeInTheDocument();
   });
 
-  it("Next walks another → feedback → save", async () => {
-    writeKey(KEYS.walkthroughStep, "another");
+  it("Next walks card → another → feedback → save", async () => {
+    writeKey(KEYS.walkthroughStep, "card");
     render(<ActivityScreen activity={timed} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Next →" }));
+    expect(screen.getByText("Not the right fit?")).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "Next →" }));
     expect(screen.getByText("Tell us how it went")).toBeInTheDocument();

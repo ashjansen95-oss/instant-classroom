@@ -6,10 +6,10 @@ import { useStoredState } from "./use-stored-state";
 
 /**
  * The guided tour that replaces onboarding's old "fire an activity and hope
- * that was self-explanatory" finish. Two screens, six stops:
+ * that was self-explanatory" finish. Two screens, seven stops:
  *
  *   Home:      tile → more → surprise  (narrated, then "now you try")
- *   Activity:  another → feedback → save
+ *   Activity:  card → another → feedback → save
  *
  * Persisted (not session-scoped) so a teacher who gets interrupted mid-tour
  * and reopens the app later resumes exactly where they left off, rather than
@@ -17,9 +17,9 @@ import { useStoredState } from "./use-stored-state";
  * gets. `null` covers both "never started" and "finished/skipped"; nothing
  * downstream needs to tell those apart; both just mean "show nothing".
  */
-export type WalkthroughStep = "tile" | "more" | "surprise" | "another" | "feedback" | "save" | null;
+export type WalkthroughStep = "tile" | "more" | "surprise" | "card" | "another" | "feedback" | "save" | null;
 
-const ORDER: Exclude<WalkthroughStep, null>[] = ["tile", "more", "surprise", "another", "feedback", "save"];
+const ORDER: Exclude<WalkthroughStep, null>[] = ["tile", "more", "surprise", "card", "another", "feedback", "save"];
 
 /** True for the three home-screen stops — the ones a real tap anywhere skips past. */
 export function isHomeStep(step: WalkthroughStep): boolean {
@@ -43,7 +43,7 @@ export function useWalkthrough() {
    *  straight past any remaining narration to the activity-screen stops —
    *  they've already worked out the interaction, so the tour shouldn't make
    *  them sit through "Next, Next, Next" first. */
-  const skipToActivity = useCallback(() => setStep("another"), [setStep]);
+  const skipToActivity = useCallback(() => setStep("card"), [setStep]);
 
   const finish = useCallback(() => setStep(null), [setStep]);
 

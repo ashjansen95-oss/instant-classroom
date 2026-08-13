@@ -214,7 +214,7 @@ export function HomeScreen() {
           key="surprise"
           selector="[data-walkthrough='surprise']"
           title="Or just say surprise me"
-          description="Tap Surprise Me for something good, automatically matched to your class. Go on — give one of these a try above."
+          description="Tap Surprise Me for something good, automatically matched to your class. Go on — give it a try!"
           onSkip={walkthrough.finish}
         />
       )}

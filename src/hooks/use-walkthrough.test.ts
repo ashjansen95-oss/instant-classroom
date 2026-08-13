@@ -18,7 +18,7 @@ describe("useWalkthrough", () => {
     const { result } = renderHook(() => useWalkthrough());
     act(() => result.current.start());
 
-    const expected = ["more", "surprise", "another", "feedback", "save", null];
+    const expected = ["more", "surprise", "card", "another", "feedback", "save", null];
     for (const step of expected) {
       act(() => result.current.next());
       expect(result.current.step).toBe(step);
@@ -35,7 +35,7 @@ describe("useWalkthrough", () => {
     const { result } = renderHook(() => useWalkthrough());
     act(() => result.current.start());
     act(() => result.current.skipToActivity());
-    expect(result.current.step).toBe("another");
+    expect(result.current.step).toBe("card");
   });
 
   it("finish() ends the tour from anywhere", () => {
@@ -65,6 +65,7 @@ describe("isHomeStep", () => {
   });
 
   it("is false for the activity-screen stops and for null", () => {
+    expect(isHomeStep("card")).toBe(false);
     expect(isHomeStep("another")).toBe(false);
     expect(isHomeStep("feedback")).toBe(false);
     expect(isHomeStep("save")).toBe(false);
