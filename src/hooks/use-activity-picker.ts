@@ -38,8 +38,11 @@ export function useActivityPicker() {
 
   const go = useCallback(
     ({ activity, need }: PendingPick) => {
-      setPending(null);
+      // Navigate first, then clear pending after the router has committed.
+      // Clearing before the push exposed the home screen for a frame while
+      // the new page was still mounting.
       router.push(`/activity/${activity.id}?need=${need}`);
+      requestAnimationFrame(() => setPending(null));
     },
     [router],
   );

@@ -1,6 +1,6 @@
 import { ACTIVITIES } from "@/data/activities";
 import { DEFAULT_COUNTRY, studentAgeForLevel, type CountryCode } from "@/lib/i18n";
-import type { Activity, EducationLevel, FilterState, HistoryEntry, Need } from "@/lib/types";
+import type { Activity, Category, EducationLevel, FilterState, HistoryEntry, Need } from "@/lib/types";
 import { EMPTY_FILTERS } from "@/lib/types";
 import { applyFilters } from "./filter";
 import { ageFit, scoreForNeed, similarityTo, varietyPenalty } from "./score";
@@ -80,18 +80,28 @@ export function scoreCandidates({
   const filtered = applyFilters(ageAppropriate, filters, country);
   if (filtered.length === 0) return [];
 
-  // 3. Drop what they've just seen — but only while enough choice remains.
+  // 3. Surprise Me skips activities that need lesson context or a deliberate
+  //    mood choice — recap needs a lesson, curriculum needs subject content,
+  //    mindfulness is too intentional, and icebreakers are a start-of-term pick.
+  const SURPRISE_EXCLUDED: Category[] = ["recap", "curriculum", "mindfulness", "icebreakers"];
+  const contextFree =
+    need === "surprise"
+      ? filtered.filter((a) => !a.categories.some((c) => SURPRISE_EXCLUDED.includes(c)))
+      : filtered;
+  if (contextFree.length === 0) return [];
+
+  // 5. Drop what they've just seen — but only while enough choice remains.
   const recentIds = history.slice(0, RECENT_EXCLUSION).map((entry) => entry.id);
-  let pool = filtered;
+  let pool = contextFree;
   for (let excluded = recentIds.length; excluded > 0; excluded--) {
-    const candidate = filtered.filter((a) => !recentIds.slice(0, excluded).includes(a.id));
-    if (candidate.length >= Math.min(MIN_POOL, filtered.length)) {
+    const candidate = contextFree.filter((a) => !recentIds.slice(0, excluded).includes(a.id));
+    if (candidate.length >= Math.min(MIN_POOL, contextFree.length)) {
       pool = candidate;
       break;
     }
   }
 
-  // 4. Score: how squarely it fits the age, then how well it meets the need,
+  // 6. Score: how squarely it fits the age, then how well it meets the need,
   //    then penalise anything too similar to what they just saw.
   return pool
     .filter((activity) => activity.id !== like?.id)

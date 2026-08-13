@@ -36,7 +36,7 @@ describe("useActivityPicker", () => {
     expect(push).not.toHaveBeenCalled();
   });
 
-  it("navigates when the reel lands, carrying the need", () => {
+  it("navigates when the reel lands, carrying the need", async () => {
     const { result } = renderHook(() => useActivityPicker());
 
     act(() => result.current.pick("calm", "button"));
@@ -44,6 +44,11 @@ describe("useActivityPicker", () => {
     act(() => result.current.complete());
 
     expect(push).toHaveBeenCalledWith(`/activity/${chosen.id}?need=calm`);
+    // pending clears after a rAF so the reel overlay covers the home screen
+    // until the router transition has committed.
+    await act(async () => {
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    });
     expect(result.current.pending).toBeNull();
   });
 
@@ -128,12 +133,16 @@ describe("useActivityPicker", () => {
     }
   });
 
-  it("remembers what it showed, so the next pick differs", () => {
+  it("remembers what it showed, so the next pick differs", async () => {
     const { result } = renderHook(() => useActivityPicker());
 
     act(() => result.current.pick("surprise", "button"));
     const first = result.current.pending!.activity.id;
     act(() => result.current.complete());
+    // Wait for rAF to clear pending so the next pick isn't guarded.
+    await act(async () => {
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    });
     act(() => result.current.pick("surprise", "button"));
 
     expect(result.current.pending!.activity.id).not.toBe(first);

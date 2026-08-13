@@ -279,7 +279,9 @@ describe("picking", () => {
       at: index,
     }));
 
-    const result = pickActivity({ need: "surprise", filters: narrow, history });
+    // Uses "fun" rather than "surprise" because surprise excludes curriculum/
+    // recap/mindfulness/icebreakers, and the 5–10 min bucket is mostly those.
+    const result = pickActivity({ need: "fun", filters: narrow, history });
     expect(result).not.toBeNull();
     expect(pool.map((a) => a.id)).toContain(result!.id);
   });
