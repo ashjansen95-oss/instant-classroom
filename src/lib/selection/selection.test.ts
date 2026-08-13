@@ -157,7 +157,7 @@ describe("need scoring", () => {
   });
 
   it("keeps every score between 0 and 1", () => {
-    const needs: Need[] = ["reset", "wake", "calm", "kill-time", "fun", "think", "surprise"];
+    const needs: Need[] = ["reset", "wake", "calm", "move", "fun", "think", "surprise"];
     for (const need of needs) {
       for (const activity of ACTIVITIES) {
         const score = scoreForNeed(activity, need);
@@ -207,7 +207,7 @@ describe("picking", () => {
     const rng = seeded(11);
     for (let i = 0; i < 30; i++) {
       const activity = pickActivity({
-        need: "kill-time",
+        need: "move",
         filters: filters({ durations: ["2-min"] }),
         rng,
       })!;

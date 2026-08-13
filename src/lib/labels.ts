@@ -85,7 +85,7 @@ export const INTENT_OPTIONS: {
   { need: "reset", emoji: "🧠", label: "Reset the room", hue: "var(--hue-reset)" },
   { need: "wake", emoji: "⚡", label: "Wake them up", hue: "var(--hue-wake)" },
   { need: "calm", emoji: "🤫", label: "Calm them down", hue: "var(--hue-calm)" },
-  { need: "kill-time", emoji: "⏰", label: "Kill 2 minutes", hue: "var(--hue-time)" },
+  { need: "move", emoji: "🏃", label: "Get them moving", hue: "var(--hue-move)" },
   { need: "fun", emoji: "🎯", label: "Have some fun", hue: "var(--hue-fun)" },
   { need: "think", emoji: "💭", label: "Make them think", hue: "var(--hue-think)" },
 ];
@@ -101,7 +101,6 @@ export const NEED_LABELS = Object.fromEntries(
  * "More" a trap, returning the same one or two things on every tap.
  */
 export const MORE_OPTIONS: { category: Category; emoji: string; label: string }[] = [
-  { category: "get-moving", emoji: "🏃", label: "Movement" },
   { category: "creative", emoji: "🎨", label: "Art" },
   { category: "competitive", emoji: "🏆", label: "Games" },
   { category: "pair-activities", emoji: "🤝", label: "Partner up" },

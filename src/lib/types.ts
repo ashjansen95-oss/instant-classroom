@@ -87,7 +87,7 @@ export interface Activity {
  * variety alone decides) and no tile, because it belongs to the big
  * shake pad — the universal "just give me something good".
  */
-export const NEEDS = ["reset", "wake", "calm", "kill-time", "fun", "think", "surprise"] as const;
+export const NEEDS = ["reset", "wake", "calm", "move", "fun", "think", "surprise"] as const;
 export type Need = (typeof NEEDS)[number];
 
 /** Duration buckets, in seconds, matching the Explore filter labels. */

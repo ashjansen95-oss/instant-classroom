@@ -84,11 +84,11 @@ describe("HomeScreen", () => {
     render(<HomeScreen />);
 
     await userEvent.click(screen.getByRole("button", { name: "More…" }));
-    await userEvent.click(await screen.findByRole("button", { name: "Movement" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Art" }));
 
     expect(pick).toHaveBeenCalledExactlyOnceWith("surprise", "button", {
       ...EMPTY_FILTERS,
-      categories: ["get-moving"],
+      categories: ["creative"],
     });
   });
 

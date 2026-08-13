@@ -17,13 +17,13 @@ describe("MoreSheet", () => {
     const onSelect = vi.fn();
     render(<MoreSheet open onClose={vi.fn()} onSelect={onSelect} />);
 
-    await userEvent.click(screen.getByRole("button", { name: "Movement" }));
+    await userEvent.click(screen.getByRole("button", { name: "Art" }));
 
-    expect(onSelect).toHaveBeenCalledExactlyOnceWith("get-moving");
+    expect(onSelect).toHaveBeenCalledExactlyOnceWith("creative");
   });
 
   it("stays out of the accessibility tree when closed", () => {
     render(<MoreSheet open={false} onClose={vi.fn()} onSelect={vi.fn()} />);
-    expect(screen.queryByRole("button", { name: "Movement" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Art" })).not.toBeInTheDocument();
   });
 });

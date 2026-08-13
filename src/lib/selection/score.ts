@@ -39,11 +39,12 @@ const NEED_PROFILES: Record<Exclude<Need, "surprise">, NeedProfile> = {
     movement: ["seated"],
     duration: [45, 180],
   },
-  // There are two minutes before the bell.
-  "kill-time": {
-    energy: ["low", "medium"],
-    categories: ["kill-time"],
-    duration: [30, 150],
+  // Get them out of their seats and moving.
+  move: {
+    energy: ["medium", "high"],
+    categories: ["get-moving", "wake-them-up"],
+    movement: ["standing", "movement"],
+    duration: [30, 180],
   },
   // Still learning, but make it enjoyable — the game/performance/art side,
   // not the puzzle side. Overlapped with "think" before this need existed,

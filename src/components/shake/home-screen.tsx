@@ -216,7 +216,7 @@ export function HomeScreen() {
           key="more"
           selector="[data-walkthrough='more']"
           title="Want something specific?"
-          description="More has extra categories — movement, art, games, partner activities."
+          description="More has extra categories — art, games, partner activities, recap."
           onNext={walkthrough.next}
           onSkip={walkthrough.finish}
         />
