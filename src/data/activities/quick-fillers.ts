@@ -3,26 +3,6 @@ import type { Activity } from "@/lib/types";
 /** 30 seconds to 2 minutes. For the gap before the bell that's too short to start anything. */
 export const quickFillers: Activity[] = [
   {
-    id: "odd-one-out",
-    title: "Odd One Out",
-    description: "Name three things and ask which doesn't belong and why.",
-    instructions: [
-      "Read out the three things below.",
-      "Which is the odd one out? Take a few answers.",
-      "The trick: accept any answer with a good reason. There's more than one right answer.",
-      "Three or four rounds, harder each time.",
-    ],
-    duration: 90,
-    energy: "low",
-    noise: "moderate",
-    format: "whole-class",
-    movement: "seated",
-    equipment: ["none"],
-    ageRange: { min: 6, max: 18 },
-    categories: ["kill-time", "think-fast", "curriculum"],
-    tags: ["reasoning", "no-prep", "quick", "adaptable"],
-  },
-  {
     id: "five-second-rule",
     title: "Five Second Rule",
     description: "Name three things in a category before five seconds runs out.",

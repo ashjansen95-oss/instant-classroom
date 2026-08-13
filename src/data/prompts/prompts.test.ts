@@ -18,7 +18,6 @@ const NEEDS_CONTENT = [
   "this-or-that",
   "stand-if",
   "finish-the-sentence",
-  "odd-one-out",
   "rank-these-three",
   // Categories
   "five-second-rule",
@@ -29,7 +28,6 @@ const NEEDS_CONTENT = [
   "thirty-second-ten",
   "memory-chain",
   "letters-only",
-  "speed-sort",
   // Thinking
   "twenty-questions",
   "word-association",
@@ -61,7 +59,6 @@ const HIGH_TRAFFIC = [
   "this-or-that",
   "stand-if",
   "finish-the-sentence",
-  "odd-one-out",
   "rank-these-three",
   "five-second-rule",
   "categories-elimination",

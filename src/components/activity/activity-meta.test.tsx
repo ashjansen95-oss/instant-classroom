@@ -54,7 +54,13 @@ describe("ActivityMeta level display", () => {
   });
 
   it("says 'any' in the local word when an activity really does suit everyone", () => {
-    const everyone = getActivity("biggest-stretch")!;
+    // Synthetic activity covering the full age range (4–18) — no real activity
+    // is classified this broadly, but the label path still needs testing.
+    const everyone = {
+      ...activity,
+      id: "test-everyone",
+      ageRange: { min: 4, max: 18 },
+    };
 
     withCountry("AU");
     const { unmount } = render(<ActivityMeta activity={everyone} />);

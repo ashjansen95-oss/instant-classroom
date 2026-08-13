@@ -106,32 +106,6 @@ export const choicePrompts: PromptBanks = {
     ],
   },
 
-  "odd-one-out": {
-    label: "Which is the odd one out, and why?",
-    items: [
-      "Dog, cat, whale.",
-      "Triangle, square, circle.",
-      "Apple, carrot, banana.",
-      "Sydney, Melbourne, New Zealand.",
-      "Piano, guitar, drums.",
-      "Rain, snow, wind.",
-      "Two, four, seven.",
-      "Shoe, sock, glove.",
-      "Bicycle, bus, train.",
-      "Red, blue, dark.",
-      "Spider, ant, bee.",
-      "Book, film, painting.",
-      "Sun, moon, lamp.",
-      "Swimming, running, chess.",
-      "Milk, water, orange juice.",
-      "Doctor, teacher, student.",
-      "Fork, spoon, chopsticks.",
-      "Monday, July, Friday.",
-      "Iron, wood, plastic.",
-      "Laugh, cry, sneeze.",
-    ],
-  },
-
   "rank-these-three": {
     label: "Put these in order — best to worst",
     items: [

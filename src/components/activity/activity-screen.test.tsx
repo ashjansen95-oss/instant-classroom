@@ -50,9 +50,9 @@ vi.mock("@/hooks/use-activity-picker", () => ({
   }),
 }));
 
-// box-breathing ends on the clock; statue-contest ends on its own condition
+// take-five-breathing ends on the clock; statue-contest ends on its own condition
 // (last statue standing) and carries selfEnding: true.
-const timed = getActivity("box-breathing")!;
+const timed = getActivity("take-five-breathing")!;
 const selfEnding = getActivity("statue-contest")!;
 
 describe("ActivityScreen back button", () => {

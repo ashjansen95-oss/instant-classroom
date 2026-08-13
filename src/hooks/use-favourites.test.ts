@@ -40,11 +40,11 @@ describe("useFavourites", () => {
 
   it("survives a remount", () => {
     const first = renderHook(() => useFavourites());
-    act(() => void first.result.current.toggle("box-breathing"));
+    act(() => void first.result.current.toggle("five-four-three-two-one"));
     first.unmount();
 
     const second = renderHook(() => useFavourites());
-    expect(second.result.current.ids).toEqual(["box-breathing"]);
+    expect(second.result.current.ids).toEqual(["five-four-three-two-one"]);
   });
 
   it("keeps every component in sync", () => {

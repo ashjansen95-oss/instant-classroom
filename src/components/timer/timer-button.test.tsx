@@ -9,7 +9,7 @@ import { TimerButton } from "./timer-button";
  * pause without a dedicated button, and it shakes exactly once it finishes.
  */
 
-const activity = getActivity("box-breathing")!; // 90 seconds
+const activity = getActivity("take-five-breathing")!; // 90 seconds
 
 function fill(container: HTMLElement): HTMLElement {
   const button = container.querySelector("button")!;

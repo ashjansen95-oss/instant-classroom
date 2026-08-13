@@ -130,13 +130,13 @@ describe("filters", () => {
 
 describe("need scoring", () => {
   it("scores a calm activity higher than a high-energy one for the calm need", () => {
-    const calm = ACTIVITIES.find((a) => a.id === "box-breathing")!;
+    const calm = ACTIVITIES.find((a) => a.id === "five-four-three-two-one")!;
     const loud = ACTIVITIES.find((a) => a.id === "shake-it-out")!;
     expect(scoreForNeed(calm, "calm")).toBeGreaterThan(scoreForNeed(loud, "calm"));
   });
 
   it("scores a high-energy activity higher for the wake need", () => {
-    const calm = ACTIVITIES.find((a) => a.id === "box-breathing")!;
+    const calm = ACTIVITIES.find((a) => a.id === "five-four-three-two-one")!;
     const loud = ACTIVITIES.find((a) => a.id === "shake-it-out")!;
     expect(scoreForNeed(loud, "wake")).toBeGreaterThan(scoreForNeed(calm, "wake"));
   });
@@ -384,7 +384,7 @@ describe("teaching level shapes recommendations", () => {
 });
 
 describe("give me another like this", () => {
-  const seed = ACTIVITIES.find((a) => a.id === "box-breathing")!;
+  const seed = ACTIVITIES.find((a) => a.id === "five-four-three-two-one")!;
 
   it("never returns the activity you were already looking at", () => {
     const rng = seeded(4);
@@ -401,7 +401,7 @@ describe("give me another like this", () => {
       () => pickActivity({ need: "surprise", like: seed, rng })!,
     );
 
-    // Box Breathing is calm, quiet, seated, individual. Its neighbours should be too.
+    // 5-4-3-2-1 is calm, quiet, seated, individual. Its neighbours should be too.
     const alike = drawn.filter(
       (a) => a.categories.some((c) => seed.categories.includes(c)) && a.noise === seed.noise,
     );
@@ -474,7 +474,7 @@ describe("history", () => {
 
 describe("similar activities", () => {
   it("returns other activities that share categories", () => {
-    const activity = ACTIVITIES.find((a) => a.id === "box-breathing")!;
+    const activity = ACTIVITIES.find((a) => a.id === "five-four-three-two-one")!;
     const similar = similarActivities(activity, 3);
 
     expect(similar).toHaveLength(3);
@@ -486,7 +486,7 @@ describe("similar activities", () => {
 });
 
 describe("pickSimilarActivities — More Like This", () => {
-  const seed = ACTIVITIES.find((a) => a.id === "box-breathing")!;
+  const seed = ACTIVITIES.find((a) => a.id === "five-four-three-two-one")!;
 
   it("returns the requested count, all distinct, none the seed itself", () => {
     const results = pickSimilarActivities(seed, 3, { rng: seeded(1) });
@@ -507,7 +507,7 @@ describe("pickSimilarActivities — More Like This", () => {
   });
 
   it("never suggests something the wrong age for the active class", () => {
-    // Box Breathing suits everyone; pick a seed with a genuinely narrow band
+    // Pick a seed with a genuinely narrow band
     // so an age violation would be obvious if the hard constraint slipped.
     const narrow = ACTIVITIES.find((a) => a.id === "animal-moves")!; // ages 4–8
 

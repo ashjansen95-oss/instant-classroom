@@ -155,19 +155,4 @@ export const categoryPrompts: PromptBanks = {
     ],
   },
 
-  "speed-sort": {
-    label: "Left hand or right hand?",
-    items: [
-      "Alive or not alive — tree, rock, spider, cloud, coral, river.",
-      "Sinks or floats — apple, coin, cork, paperclip, banana, brick.",
-      "Fruit or vegetable — tomato, carrot, cucumber, potato, avocado, pea.",
-      "Wild or domestic — wolf, sheep, pigeon, camel, cat, deer.",
-      "Solid or liquid — honey, ice, steam, glass, milk, sand.",
-      "Man-made or natural — diamond, plastic, cotton, brick, wool, glass.",
-      "Hot or cold country — Norway, Egypt, Iceland, Brazil, Canada, Kenya.",
-      "Odd or even — 7, 12, 33, 40, 59, 68.",
-      "Land or water — crocodile, dolphin, penguin, turtle, camel, otter.",
-      "Before or after lunch — breakfast, dinner, recess, homework, sunrise, sunset.",
-    ],
-  },
 };
