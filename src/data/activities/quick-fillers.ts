@@ -180,7 +180,7 @@ export const quickFillers: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 10, max: 18 },
-    categories: ["kill-time", "curriculum", "creative"],
+    categories: ["kill-time", "curriculum", "creative", "recap"],
     tags: ["summarising", "no-prep", "quick", "reflection"],
   },
   {
@@ -400,7 +400,7 @@ export const quickFillers: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 5, max: 16 },
-    categories: ["kill-time", "curriculum", "think-fast"],
+    categories: ["kill-time", "curriculum", "think-fast", "recap"],
     tags: ["retrieval", "revision", "no-prep", "quick"],
   },
 ];

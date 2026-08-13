@@ -56,6 +56,7 @@ const GROUP_EMOJI: Partial<Record<Group, Record<string, string>>> = {
     competitive: "🏆",
     creative: "🎨",
     curriculum: "📚",
+    recap: "🔁",
   },
 };
 

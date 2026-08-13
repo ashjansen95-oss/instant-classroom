@@ -240,7 +240,7 @@ export const brainBreaks: Activity[] = [
     movement: "seated",
     equipment: ["paper"],
     ageRange: { min: 9, max: 18 },
-    categories: ["brain-break", "curriculum", "calm-down"],
+    categories: ["brain-break", "curriculum", "calm-down", "recap"],
     tags: ["retrieval", "revision", "writing", "quiet"],
   },
   {

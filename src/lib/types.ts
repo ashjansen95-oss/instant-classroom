@@ -29,6 +29,7 @@ export const CATEGORIES = [
   "competitive",
   "creative",
   "curriculum",
+  "recap",
 ] as const;
 export type Category = (typeof CATEGORIES)[number];
 

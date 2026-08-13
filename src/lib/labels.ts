@@ -63,6 +63,7 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   competitive: "Competitive",
   creative: "Creative",
   curriculum: "Curriculum",
+  recap: "Recap",
 };
 
 export const DURATION_LABELS = Object.fromEntries(
@@ -104,6 +105,7 @@ export const MORE_OPTIONS: { category: Category; emoji: string; label: string }[
   { category: "creative", emoji: "🎨", label: "Art" },
   { category: "competitive", emoji: "🏆", label: "Games" },
   { category: "pair-activities", emoji: "🤝", label: "Partner up" },
+  { category: "recap", emoji: "🔁", label: "Recap" },
 ];
 
 export function equipmentSummary(equipment: Equipment[]): string {

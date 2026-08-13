@@ -39,7 +39,7 @@ export const pairsAndCurriculum: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 9, max: 18 },
-    categories: ["pair-activities", "curriculum"],
+    categories: ["pair-activities", "curriculum", "recap"],
     tags: ["revision", "explaining", "collaborative", "adaptable"],
   },
   {
@@ -59,7 +59,7 @@ export const pairsAndCurriculum: Activity[] = [
     movement: "seated",
     equipment: ["paper"],
     ageRange: { min: 9, max: 18 },
-    categories: ["pair-activities", "curriculum"],
+    categories: ["pair-activities", "curriculum", "recap"],
     tags: ["revision", "retrieval", "collaborative", "adaptable"],
   },
   {
@@ -119,7 +119,7 @@ export const pairsAndCurriculum: Activity[] = [
     movement: "seated",
     equipment: ["paper"],
     ageRange: { min: 8, max: 18 },
-    categories: ["curriculum", "calm-down", "kill-time"],
+    categories: ["curriculum", "calm-down", "kill-time", "recap"],
     tags: ["assessment", "reflection", "quiet", "transition"],
   },
   {
@@ -159,7 +159,7 @@ export const pairsAndCurriculum: Activity[] = [
     movement: "seated",
     equipment: ["paper"],
     ageRange: { min: 9, max: 18 },
-    categories: ["curriculum", "calm-down"],
+    categories: ["curriculum", "calm-down", "recap"],
     tags: ["anonymous", "questioning", "assessment", "quiet"],
   },
   {
@@ -179,7 +179,7 @@ export const pairsAndCurriculum: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 10, max: 18 },
-    categories: ["curriculum", "pair-activities"],
+    categories: ["curriculum", "pair-activities", "recap"],
     tags: ["reflection", "assessment", "discussion", "adaptable"],
   },
   {
@@ -219,7 +219,7 @@ export const pairsAndCurriculum: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 10, max: 18 },
-    categories: ["pair-activities", "curriculum"],
+    categories: ["pair-activities", "curriculum", "recap"],
     tags: ["explaining", "revision", "discussion", "adaptable"],
   },
   {
@@ -259,7 +259,7 @@ export const pairsAndCurriculum: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 10, max: 18 },
-    categories: ["curriculum", "think-fast"],
+    categories: ["curriculum", "think-fast", "recap"],
     tags: ["revision", "summarising", "volunteer", "speaking"],
   },
   {
@@ -359,7 +359,7 @@ export const pairsAndCurriculum: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 9, max: 18 },
-    categories: ["curriculum", "kill-time"],
+    categories: ["curriculum", "kill-time", "recap"],
     tags: ["reflection", "prediction", "discussion", "adaptable"],
   },
   {
@@ -379,7 +379,7 @@ export const pairsAndCurriculum: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 9, max: 18 },
-    categories: ["curriculum", "creative", "think-fast"],
+    categories: ["curriculum", "creative", "think-fast", "recap"],
     tags: ["writing", "english", "collaborative", "adaptable"],
   },
   {

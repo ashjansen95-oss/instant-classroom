@@ -199,7 +199,7 @@ export const creative: Activity[] = [
     movement: "seated",
     equipment: ["paper"],
     ageRange: { min: 9, max: 18 },
-    categories: ["creative", "curriculum", "pair-activities"],
+    categories: ["creative", "curriculum", "pair-activities", "recap"],
     tags: ["summarising", "revision", "visual", "quick"],
   },
   {
