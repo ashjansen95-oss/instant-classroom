@@ -64,6 +64,16 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   creative: "Creative",
   curriculum: "Curriculum",
   recap: "Recap",
+  writing: "Writing",
+  drama: "Drama",
+  riddles: "Riddles",
+  storytelling: "Storytelling",
+  challenges: "Challenges",
+  memory: "Memory",
+  silly: "Silly",
+  "team-building": "Team building",
+  icebreakers: "Icebreakers",
+  mindfulness: "Mindfulness",
 };
 
 export const DURATION_LABELS = Object.fromEntries(
@@ -105,6 +115,16 @@ export const MORE_OPTIONS: { category: Category; emoji: string; label: string }[
   { category: "competitive", emoji: "🏆", label: "Games" },
   { category: "pair-activities", emoji: "🤝", label: "Partner up" },
   { category: "recap", emoji: "🔁", label: "Recap" },
+  { category: "writing", emoji: "✍️", label: "Writing" },
+  { category: "drama", emoji: "🎭", label: "Drama" },
+  { category: "riddles", emoji: "🧩", label: "Riddles" },
+  { category: "storytelling", emoji: "📖", label: "Storytelling" },
+  { category: "challenges", emoji: "💪", label: "Challenges" },
+  { category: "memory", emoji: "🧠", label: "Memory" },
+  { category: "silly", emoji: "🤪", label: "Silly" },
+  { category: "team-building", emoji: "🫱🏼‍🫲🏽", label: "Team building" },
+  { category: "icebreakers", emoji: "👋", label: "Icebreakers" },
+  { category: "mindfulness", emoji: "🧘", label: "Mindfulness" },
 ];
 
 export function equipmentSummary(equipment: Equipment[]): string {

@@ -19,7 +19,7 @@ export const brainBreaks: Activity[] = [
     movement: "movement",
     equipment: ["none"],
     ageRange: { min: 5, max: 16 },
-    categories: ["brain-break", "wake-them-up", "get-moving"],
+    categories: ["brain-break", "wake-them-up", "get-moving", "icebreakers"],
     tags: ["choices", "voting", "no-prep", "classic"],
     modifications: [
       { label: "Defend Your Choice", description: "After choosing a side, students have 20 seconds to convince someone on the opposite side to switch. Give them a second vote afterwards." },
@@ -43,7 +43,7 @@ export const brainBreaks: Activity[] = [
     movement: "movement",
     equipment: ["none"],
     ageRange: { min: 7, max: 16 },
-    categories: ["brain-break", "get-moving", "competitive"],
+    categories: ["brain-break", "get-moving", "competitive", "team-building"],
     tags: ["silent", "teamwork", "problem-solving", "no-prep"],
     modifications: [
       { label: "Change the Order", description: "Instead of birthdays, line up by height, alphabetical by first name, or number of pets. No talking, same rules." },
@@ -67,7 +67,7 @@ export const brainBreaks: Activity[] = [
     movement: "standing",
     equipment: ["none"],
     ageRange: { min: 4, max: 15 },
-    categories: ["brain-break", "wake-them-up"],
+    categories: ["brain-break", "wake-them-up", "icebreakers"],
     tags: ["no-prep", "whole-class", "quick"],
   },
   {
@@ -88,7 +88,7 @@ export const brainBreaks: Activity[] = [
     equipment: ["none"],
     ageRange: { min: 9, max: 18 },
     selfEnding: true,
-    categories: ["brain-break", "calm-down"],
+    categories: ["brain-break", "calm-down", "team-building"],
     tags: ["focus", "listening", "teamwork", "silent"],
     modifications: [
       { label: "Alphabet or Months", description: "Count through the alphabet or months of the year instead of numbers. Same collision rule — two voices at once and you restart." },
@@ -136,7 +136,7 @@ export const brainBreaks: Activity[] = [
     movement: "standing",
     equipment: ["none"],
     ageRange: { min: 4, max: 11 },
-    categories: ["brain-break", "calm-down"],
+    categories: ["brain-break", "calm-down", "drama"],
     tags: ["focus", "silent", "movement", "settling"],
   },
   {
@@ -244,7 +244,7 @@ export const brainBreaks: Activity[] = [
     movement: "movement",
     equipment: ["none"],
     ageRange: { min: 6, max: 18 },
-    categories: ["brain-break", "get-moving", "curriculum"],
+    categories: ["brain-break", "get-moving", "curriculum", "icebreakers"],
     tags: ["opinion", "adaptable", "no-prep", "discussion"],
     modifications: [
       { label: "Defend and Recruit", description: "After everyone has picked a corner, each group gets 30 seconds to argue their case. Students can switch corners after hearing the arguments." },
@@ -317,7 +317,7 @@ export const brainBreaks: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 4, max: 11 },
-    categories: ["brain-break", "competitive", "kill-time"],
+    categories: ["brain-break", "competitive", "kill-time", "team-building"],
     tags: ["timing", "teamwork", "no-prep", "focus"],
     modifications: [
       { label: "Reverse", description: "At any point, a student can double-clap to reverse the direction. Keeps everyone on their toes." },
@@ -364,7 +364,7 @@ export const brainBreaks: Activity[] = [
     movement: "seated",
     equipment: ["timer"],
     ageRange: { min: 6, max: 16 },
-    categories: ["brain-break", "calm-down", "kill-time"],
+    categories: ["brain-break", "calm-down", "kill-time", "memory"],
     tags: ["silent", "settling", "focus", "quiet"],
   },
   {
@@ -408,7 +408,7 @@ export const brainBreaks: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 5, max: 18 },
-    categories: ["brain-break", "kill-time", "think-fast"],
+    categories: ["brain-break", "kill-time", "think-fast", "icebreakers"],
     tags: ["rapid-fire", "quiet", "no-prep", "quick"],
   },
   {
@@ -428,11 +428,36 @@ export const brainBreaks: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 6, max: 13 },
-    categories: ["brain-break", "think-fast", "kill-time"],
+    categories: ["brain-break", "think-fast", "kill-time", "memory"],
     tags: ["observation", "memory", "no-prep", "paired"],
     modifications: [
       { label: "Swap Two People", description: "Instead of small changes, two students swap seats while eyes are closed. The other side has to spot who moved." },
       { label: "Three Changes", description: "Each person makes three changes instead of one. The spotters get sixty seconds and have to find as many as possible." },
+    ],
+  },
+  {
+    id: "oogly-boogly-bop",
+    title: "Oogly Boogly Bop",
+    description: "A reaction game where speed and silliness collide — say the word before the caller finishes the phrase.",
+    instructions: [
+      "One student stands at the front and points at someone.",
+      "They say 'Oogly boogly bop'. The pointed-at student must say 'bop' before the caller finishes.",
+      "If they don't say it in time, they swap places and become the new caller.",
+      "The twist: the caller can also just say 'bop' — if the student responds to that, they're also out.",
+    ],
+    duration: 120,
+    energy: "medium",
+    noise: "moderate",
+    format: "whole-class",
+    movement: "standing",
+    equipment: ["none"],
+    ageRange: { min: 5, max: 14 },
+    selfEnding: true,
+    categories: ["brain-break", "competitive", "kill-time"],
+    tags: ["reflexes", "listening", "no-prep", "classic"],
+    modifications: [
+      { label: "Add Actions", description: "The caller adds a physical action — touch your nose, spin around — that the student must do WHILE saying bop. Miss the action and you're out." },
+      { label: "Speed Up", description: "Each round the caller has to say the phrase faster. By round five they're practically tripping over their own words." },
     ],
   },
 ];

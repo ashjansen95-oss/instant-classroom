@@ -30,6 +30,16 @@ export const CATEGORIES = [
   "creative",
   "curriculum",
   "recap",
+  "writing",
+  "drama",
+  "riddles",
+  "storytelling",
+  "challenges",
+  "memory",
+  "silly",
+  "team-building",
+  "icebreakers",
+  "mindfulness",
 ] as const;
 export type Category = (typeof CATEGORIES)[number];
 

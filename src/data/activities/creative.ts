@@ -103,7 +103,7 @@ export const creative: Activity[] = [
     movement: "seated",
     equipment: ["paper"],
     ageRange: { min: 11, max: 18 },
-    categories: ["creative", "curriculum", "calm-down"],
+    categories: ["creative", "curriculum", "calm-down", "writing"],
     tags: ["writing", "english", "quiet", "concise"],
   },
   {
@@ -123,7 +123,7 @@ export const creative: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 4, max: 11 },
-    categories: ["creative", "wake-them-up"],
+    categories: ["creative", "wake-them-up", "drama"],
     tags: ["storytelling", "loud", "performance", "no-prep"],
   },
   {
@@ -183,7 +183,7 @@ export const creative: Activity[] = [
     movement: "seated",
     equipment: ["paper"],
     ageRange: { min: 10, max: 18 },
-    categories: ["creative", "curriculum"],
+    categories: ["creative", "curriculum", "writing"],
     tags: ["writing", "english", "narrative", "quiet"],
   },
   {
@@ -263,7 +263,7 @@ export const creative: Activity[] = [
     movement: "standing",
     equipment: ["none"],
     ageRange: { min: 9, max: 18 },
-    categories: ["creative", "curriculum", "competitive"],
+    categories: ["creative", "curriculum", "competitive", "drama"],
     tags: ["revision", "performance", "volunteer", "adaptable"],
   },
   {
@@ -343,7 +343,7 @@ export const creative: Activity[] = [
     movement: "seated",
     equipment: ["whiteboard"],
     ageRange: { min: 11, max: 18 },
-    categories: ["creative", "curriculum", "think-fast"],
+    categories: ["creative", "curriculum", "think-fast", "writing"],
     tags: ["funny", "revision", "misconceptions", "discussion"],
   },
   {
@@ -406,7 +406,7 @@ export const creative: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 8, max: 18 },
-    categories: ["creative", "think-fast", "kill-time"],
+    categories: ["creative", "think-fast", "kill-time", "storytelling"],
     tags: ["storytelling", "improvisation", "volunteer", "no-prep"],
   },
   {

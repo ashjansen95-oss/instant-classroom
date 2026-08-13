@@ -19,7 +19,7 @@ export const thinkFast: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 7, max: 16 },
-    categories: ["think-fast", "competitive", "kill-time", "curriculum"],
+    categories: ["think-fast", "competitive", "kill-time", "curriculum", "challenges"],
     tags: ["classic", "vocabulary", "adaptable", "no-prep"],
     modifications: [
       { label: "Lightning Round", description: "Cut the time between answers to three seconds instead of five. The pace forces instinct over thinking." },

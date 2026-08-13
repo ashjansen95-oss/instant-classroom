@@ -155,7 +155,7 @@ export function PromptDeck({ bank }: { bank: PromptBank }) {
           </button>
 
           <p className="text-xs font-semibold text-primary/60">
-            Swipe to browse
+            Tap to browse
           </p>
 
           <button

@@ -19,7 +19,7 @@ export const quickFillers: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 6, max: 16 },
-    categories: ["kill-time", "think-fast", "competitive"],
+    categories: ["kill-time", "think-fast", "competitive", "challenges"],
     tags: ["rapid-fire", "no-prep", "classic", "adaptable"],
     modifications: [
       { label: "Chain Challenge", description: "The student who answers has to nominate the next person and choose their category. Keeps the pressure moving around the room." },
@@ -42,7 +42,7 @@ export const quickFillers: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 6, max: 16 },
-    categories: ["kill-time", "creative", "think-fast"],
+    categories: ["kill-time", "creative", "think-fast", "storytelling"],
     tags: ["storytelling", "no-prep", "classic", "funny"],
   },
   {
@@ -62,7 +62,7 @@ export const quickFillers: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 6, max: 14 },
-    categories: ["kill-time", "think-fast", "competitive"],
+    categories: ["kill-time", "think-fast", "competitive", "memory"],
     tags: ["memory", "no-prep", "classic", "listening"],
     modifications: [
       { label: "Elimination", description: "If a student forgets or gets an item wrong, they're out. Keep going until one memory champion remains." },
@@ -125,7 +125,7 @@ export const quickFillers: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 6, max: 16 },
-    categories: ["kill-time", "creative", "think-fast"],
+    categories: ["kill-time", "creative", "think-fast", "writing"],
     tags: ["no-prep", "funny", "quick", "discussion"],
   },
   {
@@ -289,7 +289,7 @@ export const quickFillers: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 6, max: 13 },
-    categories: ["kill-time", "curriculum", "think-fast"],
+    categories: ["kill-time", "curriculum", "think-fast", "challenges"],
     tags: ["spelling", "loud", "no-prep", "adaptable"],
   },
   {
@@ -309,7 +309,7 @@ export const quickFillers: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 9, max: 16 },
-    categories: ["kill-time", "think-fast", "curriculum", "competitive"],
+    categories: ["kill-time", "think-fast", "curriculum", "competitive", "challenges"],
     tags: ["maths", "multiples", "classic", "no-prep"],
   },
   {

@@ -171,15 +171,23 @@ describe("activity library", () => {
     expect(flagged).toEqual(
       [
         "beat-the-teacher",
+        "changed-game",
         "count-to-twenty",
+        "freeze-frame",
         "guess-my-number",
+        "guess-whos-speaking",
+        "heads-down-thumbs-up",
+        "human-bingo",
         "last-one-standing-quiz",
         "one-two-three-look",
+        "oogly-boogly-bop",
         "rock-paper-scissors-champion",
+        "serious-face",
         "statue-contest",
         "twenty-questions",
         "what-did-we-move",
         "warmer-warmer",
+        "wink-murder",
       ].sort(),
     );
   });

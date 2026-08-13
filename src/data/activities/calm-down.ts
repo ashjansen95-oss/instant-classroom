@@ -19,7 +19,7 @@ export const calmDown: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 6, max: 18 },
-    categories: ["calm-down", "brain-break"],
+    categories: ["calm-down", "brain-break", "mindfulness"],
     tags: ["mindfulness", "silent", "settling", "no-prep"],
   },
   {
@@ -39,7 +39,7 @@ export const calmDown: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 4, max: 11 },
-    categories: ["calm-down"],
+    categories: ["calm-down", "mindfulness"],
     tags: ["breathing", "mindfulness", "silent", "primary"],
   },
   {
@@ -59,7 +59,7 @@ export const calmDown: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 9, max: 18 },
-    categories: ["calm-down"],
+    categories: ["calm-down", "mindfulness"],
     tags: ["mindfulness", "silent", "regulating", "settling"],
   },
   {
@@ -79,7 +79,7 @@ export const calmDown: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 6, max: 18 },
-    categories: ["calm-down", "brain-break"],
+    categories: ["calm-down", "brain-break", "mindfulness"],
     tags: ["regulating", "physical", "silent", "settling"],
   },
   {
@@ -99,7 +99,7 @@ export const calmDown: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 4, max: 12 },
-    categories: ["calm-down", "brain-break"],
+    categories: ["calm-down", "brain-break", "mindfulness"],
     tags: ["breathing", "settling", "transition", "no-prep"],
   },
   {
@@ -119,7 +119,7 @@ export const calmDown: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 9, max: 18 },
-    categories: ["calm-down", "brain-break"],
+    categories: ["calm-down", "brain-break", "mindfulness"],
     tags: ["stretch", "seated", "quick", "quiet"],
   },
   {

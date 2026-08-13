@@ -1,0 +1,78 @@
+import type { Activity } from "@/lib/types";
+
+/** Remember it, recall it, spot what changed. */
+export const memoryGames: Activity[] = [
+  {
+    id: "word-recall",
+    title: "Word Recall",
+    description: "Ten words read aloud, one shot to remember — write down as many as you can.",
+    instructions: [
+      "Read the list of ten words below, once, at a steady pace.",
+      "Students write down every word they can remember, in any order.",
+      "Ask who got seven or more.",
+      "Read out the full list so they can check.",
+    ],
+    duration: 120,
+    energy: "low",
+    noise: "quiet",
+    format: "individual",
+    movement: "seated",
+    equipment: ["paper"],
+    ageRange: { min: 7, max: 14 },
+    categories: ["memory", "think-fast", "challenges"],
+    tags: ["recall", "listening", "quiet", "quick"],
+    modifications: [
+      { label: "Story Link", description: "Before writing, students invent a story connecting all ten words to help remember them." },
+      { label: "Reverse Order", description: "Students must write the words down in reverse order from how they were read." },
+    ],
+  },
+  {
+    id: "picture-memory",
+    title: "Picture Memory",
+    description: "The teacher describes a detailed scene — students draw what they remember.",
+    instructions: [
+      "Describe a detailed scene out loud, once, without repeating yourself.",
+      "Students listen only — no drawing while you talk.",
+      "Give them ninety seconds to draw everything they remember.",
+      "Compare a few drawings and see what got missed.",
+    ],
+    duration: 120,
+    energy: "low",
+    noise: "quiet",
+    format: "individual",
+    movement: "seated",
+    equipment: ["paper"],
+    ageRange: { min: 6, max: 12 },
+    categories: ["memory", "creative", "calm-down"],
+    tags: ["drawing", "listening", "quiet", "recall"],
+    modifications: [
+      { label: "Telephone Recall", description: "Teacher tells one student the scene, who tells another, and the last student draws it." },
+      { label: "Detail Hunt", description: "After drawing, the teacher reveals the details everyone missed." },
+    ],
+  },
+  {
+    id: "changed-game",
+    title: "Changed!",
+    description: "One student steps out, changes one thing about their appearance, and the class spots what's different.",
+    instructions: [
+      "A volunteer stands at the front while the class looks carefully.",
+      "They step outside and change one thing — untuck a shirt, swap shoes, roll a sleeve.",
+      "They come back in and the class guesses the change.",
+      "Pick a new volunteer and go again.",
+    ],
+    duration: 120,
+    energy: "low",
+    noise: "moderate",
+    format: "whole-class",
+    movement: "standing",
+    equipment: ["none"],
+    ageRange: { min: 5, max: 14 },
+    selfEnding: true,
+    categories: ["memory", "brain-break", "silly"],
+    tags: ["observation", "volunteer", "no-prep", "classic"],
+    modifications: [
+      { label: "Three Changes", description: "The volunteer changes three things instead of one — much harder to spot." },
+      { label: "Pair Up", description: "Two students both change something at once — the class has to guess both." },
+    ],
+  },
+];

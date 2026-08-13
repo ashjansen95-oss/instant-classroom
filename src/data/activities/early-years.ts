@@ -128,7 +128,7 @@ export const earlyYears: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 4, max: 9 },
-    categories: ["pair-activities", "think-fast", "kill-time"],
+    categories: ["pair-activities", "think-fast", "kill-time", "memory"],
     tags: ["memory", "observation", "partner", "quiet"],
     modifications: [
       { label: "Add More", description: "Start with three things, then four, then five. See how many items they can track before it gets too tricky." },
@@ -315,7 +315,7 @@ export const earlyYears: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 5, max: 9 },
-    categories: ["creative", "kill-time", "think-fast"],
+    categories: ["creative", "kill-time", "think-fast", "silly"],
     tags: ["language", "funny", "no-prep", "whole-class"],
     modifications: [
       { label: "Whisper Voice", description: "Build the whole sentence in whispers. Read the final thing back in the loudest voice possible." },

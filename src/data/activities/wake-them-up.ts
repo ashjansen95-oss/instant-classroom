@@ -139,7 +139,7 @@ export const wakeThemUp: Activity[] = [
     movement: "standing",
     equipment: ["none"],
     ageRange: { min: 4, max: 8 },
-    categories: ["wake-them-up", "get-moving"],
+    categories: ["wake-them-up", "get-moving", "silly"],
     tags: ["physical", "primary", "funny", "no-prep"],
   },
   {
@@ -381,5 +381,29 @@ export const wakeThemUp: Activity[] = [
     ageRange: { min: 10, max: 18 },
     categories: ["wake-them-up", "get-moving"],
     tags: ["class-culture", "positive", "quick", "no-prep"],
+  },
+  {
+    id: "crazy-train",
+    title: "Crazy Train",
+    description: "The class forms a train and follows ridiculous commands — fast, slow, reverse, freeze — for two minutes of controlled chaos.",
+    instructions: [
+      "Everyone lines up behind you, hands on the shoulders of the person in front.",
+      "Call out commands: 'fast', 'slow', 'slow motion', 'stop', 'reverse'.",
+      "The train has to respond together. If the chain breaks, start again.",
+      "Throw in surprises — 'tiny steps', 'giant steps', 'dance mode'.",
+    ],
+    duration: 120,
+    energy: "high",
+    noise: "loud",
+    format: "whole-class",
+    movement: "movement",
+    equipment: ["none"],
+    ageRange: { min: 4, max: 10 },
+    categories: ["wake-them-up", "get-moving"],
+    tags: ["energiser", "teamwork", "physical", "no-prep"],
+    modifications: [
+      { label: "Student Driver", description: "Hand the front of the train to a student. They choose the commands — and discover that leading is harder than following." },
+      { label: "Two Trains", description: "Split the class into two trains. Both follow the same commands but have to avoid crashing into each other." },
+    ],
   },
 ];

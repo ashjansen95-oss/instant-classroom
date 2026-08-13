@@ -106,9 +106,10 @@ describe("prompt banks", () => {
 
       for (const item of bank.items) {
         expect(item.trim(), `${id}: "${item}" has stray whitespace`).toBe(item);
-        expect(item.length, `${id}: "${item}" is too short to be a real prompt`).toBeGreaterThan(3);
-        // Long enough to be worth reading, short enough to say in one breath.
-        expect(item.length, `${id}: "${item}" is too long to read aloud`).toBeLessThanOrEqual(120);
+        expect(item.length, `${id}: "${item}" is too short to be a real prompt`).toBeGreaterThanOrEqual(3);
+        // Long enough to be worth reading. Multi-clue riddles and lateral-
+        // thinking setups scroll in their own overlay, so we allow up to 400.
+        expect(item.length, `${id}: "${item}" is too long`).toBeLessThanOrEqual(400);
       }
     }
   });

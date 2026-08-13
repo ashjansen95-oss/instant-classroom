@@ -1,8 +1,16 @@
 import { categoryPrompts } from "./categories";
+import { challengesPrompts } from "./challenges";
 import { choicePrompts } from "./choices";
 import { creativePrompts } from "./creative";
+import { dramaPrompts } from "./drama";
+import { icebreakersPrompts } from "./icebreakers-prompts";
+import { memoryPrompts } from "./memory";
 import { partyPrompts } from "./party";
+import { riddlesPrompts } from "./riddles-prompts";
+import { sillyPrompts } from "./silly";
+import { storytellingPrompts } from "./storytelling-prompts";
 import { thinkingPrompts } from "./thinking";
+import { writingPrompts } from "./writing";
 import type { PromptBank, PromptBanks } from "./types";
 
 export type { PromptBank, PromptBanks } from "./types";
@@ -18,6 +26,14 @@ export const PROMPTS: PromptBanks = {
   ...thinkingPrompts,
   ...creativePrompts,
   ...partyPrompts,
+  ...writingPrompts,
+  ...dramaPrompts,
+  ...riddlesPrompts,
+  ...storytellingPrompts,
+  ...challengesPrompts,
+  ...memoryPrompts,
+  ...sillyPrompts,
+  ...icebreakersPrompts,
 };
 
 export function getPrompts(activityId: string): PromptBank | undefined {

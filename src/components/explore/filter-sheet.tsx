@@ -57,6 +57,16 @@ const GROUP_EMOJI: Partial<Record<Group, Record<string, string>>> = {
     creative: "🎨",
     curriculum: "📚",
     recap: "🔁",
+    writing: "✍️",
+    drama: "🎭",
+    riddles: "🧩",
+    storytelling: "📖",
+    challenges: "💪",
+    memory: "🧠",
+    silly: "🤪",
+    "team-building": "🫱🏼‍🫲🏽",
+    icebreakers: "👋",
+    mindfulness: "🧘",
   },
 };
 

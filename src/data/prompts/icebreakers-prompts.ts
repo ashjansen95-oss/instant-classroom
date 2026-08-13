@@ -1,0 +1,40 @@
+import type { PromptBanks } from "./types";
+
+/** Prompt bank for Human Bingo — traits to fill the grid with. */
+export const icebreakersPrompts: PromptBanks = {
+  "human-bingo": {
+    label: "Find someone who:",
+    items: [
+      "Has a pet",
+      "Has been on a plane",
+      "Can whistle",
+      "Speaks more than one language",
+      "Has the same favourite colour as you",
+      "Has a birthday in the same month as you",
+      "Can touch their toes",
+      "Has been to another country",
+      "Plays a musical instrument",
+      "Has more than one sibling",
+      "Can name three types of dinosaur",
+      "Has never broken a bone",
+      "Likes the same sport as you",
+      "Has a nickname",
+      "Can do a cartwheel",
+      "Has read a book this month",
+      "Has the same shoe size as you",
+      "Can name five countries",
+      "Has been camping",
+      "Can juggle",
+      "Has a favourite food starting with the same letter as their name",
+      "Walked to school today",
+      "Has curly hair",
+      "Can hold a plank for ten seconds",
+      "Has met someone famous",
+      "Likes pineapple on pizza",
+      "Has the same favourite season as you",
+      "Can say hello in three languages",
+      "Has been on a boat",
+      "Has a pet with an unusual name",
+    ],
+  },
+};

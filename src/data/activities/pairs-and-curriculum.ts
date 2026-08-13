@@ -19,7 +19,7 @@ export const pairsAndCurriculum: Activity[] = [
     movement: "seated",
     equipment: ["none"],
     ageRange: { min: 6, max: 18 },
-    categories: ["pair-activities", "curriculum"],
+    categories: ["pair-activities", "curriculum", "team-building"],
     tags: ["discussion", "classic", "adaptable", "listening"],
     modifications: [
       { label: "Report Your Partner's Idea", description: "When sharing with the class, students must report their partner's idea instead of their own. Forces genuine listening." },
@@ -469,7 +469,7 @@ export const pairsAndCurriculum: Activity[] = [
     movement: "movement",
     equipment: ["none"],
     ageRange: { min: 6, max: 13 },
-    categories: ["curriculum", "get-moving", "competitive"],
+    categories: ["curriculum", "get-moving", "competitive", "team-building"],
     tags: ["data", "maths", "movement", "adaptable"],
   },
   {
@@ -490,7 +490,7 @@ export const pairsAndCurriculum: Activity[] = [
     movement: "movement",
     equipment: ["none"],
     ageRange: { min: 11, max: 18 },
-    categories: ["curriculum", "pair-activities", "get-moving"],
+    categories: ["curriculum", "pair-activities", "get-moving", "team-building"],
     tags: ["revision", "teaching", "collaborative", "adaptable"],
   },
   {
@@ -510,7 +510,7 @@ export const pairsAndCurriculum: Activity[] = [
     movement: "movement",
     equipment: ["paper"],
     ageRange: { min: 8, max: 16 },
-    categories: ["curriculum", "get-moving", "pair-activities"],
+    categories: ["curriculum", "get-moving", "pair-activities", "icebreakers"],
     tags: ["revision", "movement", "collaborative", "adaptable"],
   },
 ];
