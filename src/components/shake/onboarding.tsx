@@ -5,6 +5,7 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { useCountry } from "@/hooks/use-country";
+import { useName } from "@/hooks/use-name";
 import { useStoredState } from "@/hooks/use-stored-state";
 import { useTeaching } from "@/hooks/use-teaching";
 import { COUNTRY_LIST, type EducationLevel } from "@/lib/i18n";
@@ -12,18 +13,19 @@ import { KEYS } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 
 /**
- * First-launch setup: where do you teach, and who do you teach.
+ * First-launch setup: name, where do you teach, and who do you teach.
  *
- * Two questions, then straight into the app. No account, no email, no school,
- * no subject — the only things asked are the two that change what activities
- * a teacher is shown. Step 3's finish button hands off to `onComplete`, which
- * the home screen wires to starting the guided tour (see use-walkthrough.ts)
- * rather than firing an activity itself — the actual "how this works" lesson
- * is the tour spotlighting the real tiles a moment later, not anything said
- * in here.
+ * Three questions, then straight into the app. No account, no email, no
+ * school, no subject — the only things asked are a first name (for a
+ * personalised greeting) and the two that change what activities a teacher is
+ * shown. Step 4's finish button hands off to `onComplete`, which the home
+ * screen wires to starting the guided tour (see use-walkthrough.ts) rather
+ * than firing an activity itself — the actual "how this works" lesson is the
+ * tour spotlighting the real tiles a moment later, not anything said in here.
  */
 export function Onboarding({ onComplete }: { onComplete?: () => void }) {
   const [onboarded, setOnboarded, hydrated] = useStoredState<boolean>(KEYS.onboarded, false);
+  const { name, setName } = useName();
   const { country, setCountry, terminology, label, shortLabel, levels } = useCountry();
   const {
     teachingLevels,
@@ -32,7 +34,13 @@ export function Onboarding({ onComplete }: { onComplete?: () => void }) {
     setDefaultTeachingLevel,
   } = useTeaching();
 
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+
+  // Local draft so the stored value is only written once the teacher moves
+  // forward — no half-typed names leaking into the greeting on an abandoned
+  // onboarding.
+  const [draftName, setDraftName] = useState(name);
+  const nameIsValid = draftName.trim().length > 0;
 
   // Held back until hydration so returning teachers never see it flash past.
   if (!hydrated || onboarded) return null;
@@ -51,6 +59,43 @@ export function Onboarding({ onComplete }: { onComplete?: () => void }) {
 
         {step === 1 && (
           <Step
+            title="What's your first name?"
+            intro="Just so we can make the app feel a bit more personal."
+          >
+            <input
+              type="text"
+              autoFocus
+              autoComplete="given-name"
+              aria-label="First name"
+              value={draftName}
+              onChange={(e) => setDraftName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && nameIsValid) {
+                  setName(draftName);
+                  setStep(2);
+                }
+              }}
+              placeholder="e.g. Sarah"
+              className="mt-6 w-full rounded-2xl border-2 border-line bg-surface px-4 py-3.5 font-display text-lg font-bold tracking-tight text-ink placeholder:font-normal placeholder:text-ink-faint focus:border-primary focus:outline-none"
+            />
+            <div className="mt-auto space-y-3 pt-8">
+              <Button
+                size="xl"
+                fullWidth
+                disabled={!nameIsValid}
+                onClick={() => {
+                  setName(draftName);
+                  setStep(2);
+                }}
+              >
+                Continue →
+              </Button>
+            </div>
+          </Step>
+        )}
+
+        {step === 2 && (
+          <Step
             title="Where do you teach?"
             intro="Let's make sure we give you activities that fit your students."
           >
@@ -61,7 +106,7 @@ export function Onboarding({ onComplete }: { onComplete?: () => void }) {
                     type="button"
                     onClick={() => {
                       setCountry(option.code);
-                      setStep(2);
+                      setStep(3);
                     }}
                     aria-pressed={option.code === country}
                     className={cn(
@@ -82,10 +127,16 @@ export function Onboarding({ onComplete }: { onComplete?: () => void }) {
                 </li>
               ))}
             </ul>
+
+            <div className="mt-auto pt-8">
+              <Button variant="ghost" size="md" fullWidth onClick={() => setStep(1)}>
+                Back
+              </Button>
+            </div>
           </Step>
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <Step
             title={`Which ${terminology.levelNoun}s do you teach?`}
             intro="Pick as many as you like — most teachers have more than one."
@@ -114,18 +165,18 @@ export function Onboarding({ onComplete }: { onComplete?: () => void }) {
                 size="xl"
                 fullWidth
                 disabled={teachingLevels.length === 0}
-                onClick={() => setStep(3)}
+                onClick={() => setStep(4)}
               >
                 Continue →
               </Button>
-              <Button variant="ghost" size="md" fullWidth onClick={() => setStep(1)}>
+              <Button variant="ghost" size="md" fullWidth onClick={() => setStep(2)}>
                 Back
               </Button>
             </div>
           </Step>
         )}
 
-        {step === 3 && (
+        {step === 4 && (
           <Step title="You're all set." intro="One last thing — a 30-second look at how it works.">
             {/* Only worth asking when there's an actual choice to make. */}
             {teachingLevels.length > 1 && (
@@ -166,7 +217,7 @@ export function Onboarding({ onComplete }: { onComplete?: () => void }) {
               >
                 Show me around →
               </Button>
-              <Button variant="ghost" size="md" fullWidth onClick={() => setStep(2)}>
+              <Button variant="ghost" size="md" fullWidth onClick={() => setStep(3)}>
                 Back
               </Button>
             </div>

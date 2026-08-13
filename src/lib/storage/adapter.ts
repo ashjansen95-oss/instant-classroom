@@ -20,6 +20,8 @@ export const KEYS = {
   preferences: "preferences",
   stats: "stats",
   events: "events",
+  /** The teacher's first name, collected during onboarding. */
+  name: "name",
   onboarded: "onboarded",
   motionPermission: "motion-permission",
   country: "country",
@@ -30,6 +32,8 @@ export const KEYS = {
   exploreFilters: "explore-filters",
   /** Session-scoped: Explore's scroll offset, for the same round trip. */
   exploreScroll: "explore-scroll",
+  /** Session-scoped: the random greeting index shown on this visit's home screen. */
+  homeGreeting: "home-greeting",
   /** Closed the "add to home screen" banner — Settings keeps a permanent way in. */
   installPromptDismissed: "install-prompt-dismissed",
   /** Where a new teacher is in the guided tour, or absent once it's done. */

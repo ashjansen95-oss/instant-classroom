@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Spotlight } from "@/components/walkthrough/spotlight";
 import { useActivityPicker } from "@/hooks/use-activity-picker";
 import { useFavourites } from "@/hooks/use-favourites";
+import { useHomeGreeting } from "@/hooks/use-home-greeting";
 import { usePreferences } from "@/hooks/use-preferences";
 import { useShake } from "@/hooks/use-shake";
 import { isHomeStep, useWalkthrough } from "@/hooks/use-walkthrough";
@@ -35,6 +36,7 @@ export function HomeScreen() {
   const { ids: favouriteIds } = useFavourites();
   const [moreOpen, setMoreOpen] = useState(false);
   const walkthrough = useWalkthrough();
+  const greeting = useHomeGreeting();
 
   // A real tap anywhere the tour hasn't reached yet — a tile, a More
   // category, Surprise Me, even a real shake — means they've already worked
@@ -104,7 +106,7 @@ export function HomeScreen() {
             <LevelSwitcher />
           </div>
           <h1 className="mt-2 font-display text-[2rem] leading-[1.05] font-extrabold tracking-tight text-balance">
-            What do you need?
+            {greeting}
           </h1>
         </header>
 

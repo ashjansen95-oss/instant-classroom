@@ -110,9 +110,15 @@ describe("HomeScreen", () => {
   describe("the guided tour", () => {
     async function finishOnboarding() {
       render(<HomeScreen />);
+      // Step 1: name
+      await userEvent.type(screen.getByRole("textbox", { name: "First name" }), "Sarah");
+      await userEvent.click(screen.getByRole("button", { name: "Continue →" }));
+      // Step 2: country
       await userEvent.click(screen.getByRole("button", { name: /Australia/ }));
+      // Step 3: levels
       await userEvent.click(screen.getByRole("button", { name: "Prep" }));
       await userEvent.click(screen.getByRole("button", { name: "Continue →" }));
+      // Step 4: finish
       await userEvent.click(screen.getByRole("button", { name: /Show me around/ }));
     }
 
