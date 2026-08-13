@@ -200,7 +200,7 @@ export function Spotlight({
           left: hole.left,
           width: hole.width,
           height: hole.height,
-          boxShadow: "0 0 0 9999px rgba(15, 13, 20, 0.6)",
+          boxShadow: "0 0 0 9999px var(--spotlight-overlay)",
         }}
       />
 
