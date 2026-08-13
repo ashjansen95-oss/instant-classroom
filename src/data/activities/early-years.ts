@@ -27,6 +27,9 @@ export const earlyYears: Activity[] = [
     ageRange: { min: 4, max: 8 },
     categories: ["pair-activities", "brain-break", "calm-down"],
     tags: ["copying", "partner", "quiet", "no-prep"],
+    modifications: [
+      { label: "Add a Sound", description: "Each hand shape comes with a sound effect. Your partner has to copy the shape and the sound together." },
+    ],
   },
   {
     id: "show-me-a-number",
@@ -127,6 +130,9 @@ export const earlyYears: Activity[] = [
     ageRange: { min: 4, max: 9 },
     categories: ["pair-activities", "think-fast", "kill-time"],
     tags: ["memory", "observation", "partner", "quiet"],
+    modifications: [
+      { label: "Add More", description: "Start with three things, then four, then five. See how many items they can track before it gets too tricky." },
+    ],
   },
   {
     id: "same-and-different",
@@ -208,6 +214,9 @@ export const earlyYears: Activity[] = [
     selfEnding: true,
     categories: ["competitive", "calm-down", "get-moving"],
     tags: ["stillness", "settling", "funny", "no-prep"],
+    modifications: [
+      { label: "Theme Statues", description: "Call out a theme before they freeze — animals, superheroes, or things you find at the beach. Every pose has to match." },
+    ],
   },
   {
     id: "beat-the-clock-claps",
@@ -308,6 +317,9 @@ export const earlyYears: Activity[] = [
     ageRange: { min: 5, max: 9 },
     categories: ["creative", "kill-time", "think-fast"],
     tags: ["language", "funny", "no-prep", "whole-class"],
+    modifications: [
+      { label: "Whisper Voice", description: "Build the whole sentence in whispers. Read the final thing back in the loudest voice possible." },
+    ],
   },
   {
     id: "animal-parade",

@@ -17,6 +17,7 @@ const NEEDS_CONTENT = [
   "would-you-rather",
   "this-or-that",
   "stand-if",
+  "four-corners",
   "finish-the-sentence",
   "rank-these-three",
   // Categories
@@ -58,6 +59,7 @@ const HIGH_TRAFFIC = [
   "would-you-rather",
   "this-or-that",
   "stand-if",
+  "four-corners",
   "finish-the-sentence",
   "rank-these-three",
   "five-second-rule",

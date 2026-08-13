@@ -21,6 +21,9 @@ export const quickFillers: Activity[] = [
     ageRange: { min: 6, max: 16 },
     categories: ["kill-time", "think-fast", "competitive"],
     tags: ["rapid-fire", "no-prep", "classic", "adaptable"],
+    modifications: [
+      { label: "Chain Challenge", description: "The student who answers has to nominate the next person and choose their category. Keeps the pressure moving around the room." },
+    ],
   },
   {
     id: "one-word-story",
@@ -61,6 +64,9 @@ export const quickFillers: Activity[] = [
     ageRange: { min: 6, max: 14 },
     categories: ["kill-time", "think-fast", "competitive"],
     tags: ["memory", "no-prep", "classic", "listening"],
+    modifications: [
+      { label: "Elimination", description: "If a student forgets or gets an item wrong, they're out. Keep going until one memory champion remains." },
+    ],
   },
   {
     id: "alphabet-race",
@@ -202,6 +208,9 @@ export const quickFillers: Activity[] = [
     ageRange: { min: 6, max: 16 },
     categories: ["kill-time", "think-fast", "creative"],
     tags: ["vocabulary", "no-prep", "quick", "classic"],
+    modifications: [
+      { label: "Banned Words", description: "After three rounds, ban the three most common answers. Forces the class to think beyond the obvious connections." },
+    ],
   },
   {
     id: "what-happens-next",
@@ -342,6 +351,9 @@ export const quickFillers: Activity[] = [
     ageRange: { min: 6, max: 16 },
     categories: ["kill-time", "competitive", "creative", "curriculum"],
     tags: ["drawing", "teams", "loud", "adaptable"],
+    modifications: [
+      { label: "Eyes Closed", description: "The drawer closes their eyes. Their team has to guide them with words only — 'up, left, bigger, that's a circle not a square'." },
+    ],
   },
   {
     id: "name-three-now",

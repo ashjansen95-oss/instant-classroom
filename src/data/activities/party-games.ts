@@ -67,6 +67,9 @@ export const partyGames: Activity[] = [
     ageRange: { min: 8, max: 18 },
     categories: ["kill-time", "brain-break"],
     tags: ["reflection", "private", "funny", "school-life"],
+    modifications: [
+      { label: "Confession Round", description: "For the last three prompts, anyone who stands has to give a one-sentence story about when it happened. Keep it school-safe." },
+    ],
   },
   {
     id: "rhythm-categories",

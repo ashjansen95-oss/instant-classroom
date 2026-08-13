@@ -21,6 +21,10 @@ export const creative: Activity[] = [
     ageRange: { min: 4, max: 16 },
     categories: ["creative", "kill-time", "calm-down"],
     tags: ["drawing", "quiet", "quick", "no-prep"],
+    modifications: [
+      { label: "Blind Draw", description: "Same prompt, but they have to draw without looking at the page. Results are always terrible and always funny." },
+      { label: "Partner Completes", description: "After thirty seconds, swap pages. Your partner finishes your drawing. Neither of you planned for this." },
+    ],
   },
   {
     id: "fold-over-drawing",
@@ -381,6 +385,9 @@ export const creative: Activity[] = [
     ageRange: { min: 9, max: 18 },
     categories: ["creative", "competitive"],
     tags: ["design", "teams", "funny", "drawing"],
+    modifications: [
+      { label: "Pitch It", description: "After designing, students have to pitch their terrible product to the class as if it's genuinely amazing. Thirty seconds, straight face." },
+    ],
   },
   {
     id: "story-from-three-words",

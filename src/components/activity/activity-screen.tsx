@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Heart, RefreshCw, Timer } from "lucide-react";
 import { ActivityMeta } from "@/components/activity/activity-meta";
+import { MixItUp } from "@/components/activity/mix-it-up";
 import { MoreLikeThis } from "@/components/activity/more-like-this";
 import { PromptDeck } from "@/components/activity/prompt-deck";
 import { ActivityReel } from "@/components/shake/activity-reel";
@@ -207,6 +208,10 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
 
         {/* Only the activities that would otherwise leave a teacher improvising. */}
         {prompts && <PromptDeck bank={prompts} />}
+
+        {activity.modifications && activity.modifications.length > 0 && (
+          <MixItUp modifications={activity.modifications} />
+        )}
 
         <div className="mt-8 space-y-3">
           {activity.selfEnding ? [anotherButton, timerSlot] : [timerSlot, anotherButton]}

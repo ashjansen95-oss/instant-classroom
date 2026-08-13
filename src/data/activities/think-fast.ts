@@ -21,6 +21,9 @@ export const thinkFast: Activity[] = [
     ageRange: { min: 7, max: 16 },
     categories: ["think-fast", "competitive", "kill-time", "curriculum"],
     tags: ["classic", "vocabulary", "adaptable", "no-prep"],
+    modifications: [
+      { label: "Lightning Round", description: "Cut the time between answers to three seconds instead of five. The pace forces instinct over thinking." },
+    ],
   },
   {
     id: "last-letter-first",
@@ -82,6 +85,10 @@ export const thinkFast: Activity[] = [
     selfEnding: true,
     categories: ["think-fast", "kill-time", "curriculum"],
     tags: ["deduction", "classic", "no-prep", "questioning"],
+    modifications: [
+      { label: "Five Questions Only", description: "Cut it to five questions. Forces them to think strategically about what to ask instead of guessing randomly." },
+      { label: "Student Picks", description: "Instead of the teacher choosing the secret thing, a student picks. They have to keep a straight face while answering — which is its own challenge." },
+    ],
   },
   {
     id: "beat-the-teacher",
@@ -143,6 +150,9 @@ export const thinkFast: Activity[] = [
     ageRange: { min: 9, max: 18 },
     categories: ["think-fast", "creative", "competitive"],
     tags: ["divergent-thinking", "teams", "timed", "creative"],
+    modifications: [
+      { label: "Build on It", description: "Instead of individual answers, each new use has to build on or combine with the previous one. A brick becomes a doorstop, which becomes a weighted door alarm, and so on." },
+    ],
   },
   {
     id: "quick-maths-chain",
@@ -183,6 +193,9 @@ export const thinkFast: Activity[] = [
     ageRange: { min: 9, max: 18 },
     categories: ["think-fast", "get-moving", "curriculum"],
     tags: ["deduction", "logic", "movement", "no-prep"],
+    modifications: [
+      { label: "Student Rule Maker", description: "A student invents the secret rule instead of you. The class asks yes/no questions to work it out." },
+    ],
   },
   {
     id: "word-ladder",
@@ -263,6 +276,9 @@ export const thinkFast: Activity[] = [
     ageRange: { min: 13, max: 18 },
     categories: ["think-fast", "creative", "curriculum", "competitive"],
     tags: ["persuasion", "debate", "english", "volunteer"],
+    modifications: [
+      { label: "Debate Format", description: "Split the class — half must argue for, half against. Give each side 60 seconds to prepare, then alternate arguments." },
+    ],
   },
   {
     id: "secret-number",

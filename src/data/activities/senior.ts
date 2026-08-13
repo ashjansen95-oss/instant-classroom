@@ -30,6 +30,10 @@ export const senior: Activity[] = [
     ageRange: { min: 14, max: 18 },
     categories: ["wake-them-up", "get-moving", "competitive", "curriculum"],
     tags: ["debate", "movement", "persuasion", "adaptable"],
+    modifications: [
+      { label: "Silent Switch", description: "No speaking allowed during the persuasion phase. Students hold up written arguments on scraps of paper and people walk across silently." },
+      { label: "Devil's Advocate", description: "After the first round, everyone has to swap sides and argue the opposite position. The side that argues better the second time wins." },
+    ],
   },
   {
     id: "desk-push-reset",
@@ -172,6 +176,10 @@ export const senior: Activity[] = [
     selfEnding: true,
     categories: ["wake-them-up", "competitive", "curriculum", "think-fast"],
     tags: ["revision", "quiz", "standing", "adaptable"],
+    modifications: [
+      { label: "Lifeline", description: "Each student gets one lifeline — they can phone a seated friend for help. The friend stands back up if they get it right." },
+      { label: "Double or Nothing", description: "A standing student can wager their spot: answer a harder follow-up and earn a point for their row, or get it wrong and sit down." },
+    ],
   },
   {
     id: "one-minute-defence",
@@ -192,6 +200,9 @@ export const senior: Activity[] = [
     ageRange: { min: 14, max: 18 },
     categories: ["wake-them-up", "think-fast", "competitive", "curriculum"],
     tags: ["debate", "persuasion", "volunteer", "adaptable"],
+    modifications: [
+      { label: "Tag Team", description: "Two defenders instead of one. They can tag each other in mid-argument — keeps the pressure up and the ideas flowing." },
+    ],
   },
   {
     id: "stretch-and-swap",
@@ -293,6 +304,9 @@ export const senior: Activity[] = [
     ageRange: { min: 14, max: 18 },
     categories: ["curriculum", "competitive", "think-fast"],
     tags: ["revision", "questioning", "challenge", "adaptable"],
+    modifications: [
+      { label: "Blind Mark", description: "The author doesn't reveal the answer. The person who answered has to defend their response, and the class decides if it counts." },
+    ],
   },
   {
     id: "rank-and-defend-senior",
@@ -333,6 +347,9 @@ export const senior: Activity[] = [
     ageRange: { min: 15, max: 18 },
     categories: ["think-fast", "curriculum", "pair-activities"],
     tags: ["debate", "critical-thinking", "perspective", "adaptable"],
+    modifications: [
+      { label: "Written Steel Man", description: "Instead of speaking, pairs write the argument down. Swap papers and mark how convincing it reads without the vocal delivery." },
+    ],
   },
   {
     id: "exam-question-autopsy",

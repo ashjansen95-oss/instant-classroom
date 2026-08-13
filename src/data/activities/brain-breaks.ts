@@ -21,6 +21,10 @@ export const brainBreaks: Activity[] = [
     ageRange: { min: 5, max: 16 },
     categories: ["brain-break", "wake-them-up", "get-moving"],
     tags: ["choices", "voting", "no-prep", "classic"],
+    modifications: [
+      { label: "Defend Your Choice", description: "After choosing a side, students have 20 seconds to convince someone on the opposite side to switch. Give them a second vote afterwards." },
+      { label: "Move If You Change Your Mind", description: "Students can change sides at any point after hearing the arguments. Persuasion becomes part of the activity." },
+    ],
   },
   {
     id: "silent-line-up",
@@ -41,6 +45,10 @@ export const brainBreaks: Activity[] = [
     ageRange: { min: 7, max: 16 },
     categories: ["brain-break", "get-moving", "competitive"],
     tags: ["silent", "teamwork", "problem-solving", "no-prep"],
+    modifications: [
+      { label: "Change the Order", description: "Instead of birthdays, line up by height, alphabetical by first name, or number of pets. No talking, same rules." },
+      { label: "Beat the Clock", description: "Set a one-minute timer. If they're not in order by the time it goes, start again. Each round gets faster." },
+    ],
   },
   {
     id: "stand-if",
@@ -82,6 +90,10 @@ export const brainBreaks: Activity[] = [
     selfEnding: true,
     categories: ["brain-break", "calm-down"],
     tags: ["focus", "listening", "teamwork", "silent"],
+    modifications: [
+      { label: "Alphabet or Months", description: "Count through the alphabet or months of the year instead of numbers. Same collision rule — two voices at once and you restart." },
+      { label: "Elimination", description: "If two people speak simultaneously, they're both out. The rest continue with fewer numbers to cover. Last group standing wins." },
+    ],
   },
   {
     id: "clap-back",
@@ -102,6 +114,10 @@ export const brainBreaks: Activity[] = [
     ageRange: { min: 4, max: 11 },
     categories: ["brain-break", "wake-them-up", "kill-time"],
     tags: ["rhythm", "attention-getter", "no-prep", "quick"],
+    modifications: [
+      { label: "Student Leads", description: "Hand the lead to a student — they create the rhythm for the class to copy. Rotate the leader every two rounds." },
+      { label: "Add Stomps", description: "Layer in foot stomps alongside the claps. Left foot, right foot, clap — patterns get much trickier." },
+    ],
   },
   {
     id: "mirror-me",
@@ -142,6 +158,10 @@ export const brainBreaks: Activity[] = [
     ageRange: { min: 5, max: 12 },
     categories: ["brain-break", "wake-them-up", "think-fast"],
     tags: ["listening", "no-prep", "quick", "funny"],
+    modifications: [
+      { label: "Double Opposite", description: "Add a second layer: 'Simon says do the opposite.' Now they have to track both the Simon Says rule AND the opposite rule at the same time." },
+      { label: "Student Caller", description: "Hand the calling to a student. They have to think of instructions fast enough to keep the class moving — harder than it sounds." },
+    ],
   },
   {
     id: "cross-crawl",
@@ -202,6 +222,10 @@ export const brainBreaks: Activity[] = [
     ageRange: { min: 4, max: 11 },
     categories: ["brain-break", "wake-them-up", "kill-time"],
     tags: ["listening", "classic", "no-prep"],
+    modifications: [
+      { label: "Reverse Simon", description: "Drop 'Simon says' entirely — now they must only follow instructions that DON'T start with 'Simon says'. Flips the whole game." },
+      { label: "Student Simon", description: "A student takes over as Simon. They learn quickly that leading is harder than following." },
+    ],
   },
   {
     id: "four-corners",
@@ -222,6 +246,10 @@ export const brainBreaks: Activity[] = [
     ageRange: { min: 6, max: 18 },
     categories: ["brain-break", "get-moving", "curriculum"],
     tags: ["opinion", "adaptable", "no-prep", "discussion"],
+    modifications: [
+      { label: "Defend and Recruit", description: "After everyone has picked a corner, each group gets 30 seconds to argue their case. Students can switch corners after hearing the arguments." },
+      { label: "Shrinking Corners", description: "After each round, eliminate the corner with the fewest people. Students from that corner must redistribute. Last corner standing wins." },
+    ],
   },
   {
     id: "brain-dump",
@@ -242,6 +270,10 @@ export const brainBreaks: Activity[] = [
     ageRange: { min: 9, max: 18 },
     categories: ["brain-break", "curriculum", "calm-down", "recap"],
     tags: ["retrieval", "revision", "writing", "quiet"],
+    modifications: [
+      { label: "Compare and Steal", description: "After the dump, pairs compare lists. Anything on your partner's list that you missed, you add in a different colour." },
+      { label: "Category Sort", description: "After writing everything down, students sort their items into three categories of their own invention. The categories are often more interesting than the items." },
+    ],
   },
   {
     id: "rock-paper-scissors-champion",
@@ -263,6 +295,10 @@ export const brainBreaks: Activity[] = [
     selfEnding: true,
     categories: ["brain-break", "competitive", "wake-them-up", "get-moving"],
     tags: ["tournament", "loud", "energiser", "no-prep"],
+    modifications: [
+      { label: "Best of Three", description: "Players need to win two rounds before their opponent joins their cheer squad. Makes each match-up last longer." },
+      { label: "Teacher Final Boss", description: "Once one champion remains, they play the teacher in a best-of-three final. The whole class picks a side to cheer for." },
+    ],
   },
   {
     id: "pass-the-clap",
@@ -283,6 +319,10 @@ export const brainBreaks: Activity[] = [
     ageRange: { min: 4, max: 11 },
     categories: ["brain-break", "competitive", "kill-time"],
     tags: ["timing", "teamwork", "no-prep", "focus"],
+    modifications: [
+      { label: "Reverse", description: "At any point, a student can double-clap to reverse the direction. Keeps everyone on their toes." },
+      { label: "Two Claps Going", description: "Start a second clap going in the opposite direction. When they meet, both people have to pass their clap onwards without dropping either." },
+    ],
   },
   {
     id: "shake-it-out",
@@ -303,6 +343,9 @@ export const brainBreaks: Activity[] = [
     ageRange: { min: 4, max: 10 },
     categories: ["brain-break", "wake-them-up", "get-moving"],
     tags: ["energiser", "counting", "physical", "no-prep"],
+    modifications: [
+      { label: "Race Down", description: "Instead of everyone counting together, split into two halves of the room. First group to finish all their shakes and sit down wins." },
+    ],
   },
   {
     id: "guess-the-minute",
@@ -343,6 +386,10 @@ export const brainBreaks: Activity[] = [
     ageRange: { min: 6, max: 16 },
     categories: ["brain-break", "competitive", "creative"],
     tags: ["music", "guessing", "teams", "no-prep"],
+    modifications: [
+      { label: "Solo Hummer", description: "Instead of a whole group humming, one brave volunteer hums alone while the rest guess. Much harder, much funnier." },
+      { label: "Speed Round", description: "Give the humming group only the first five seconds of the song. If nobody guesses it, move on immediately." },
+    ],
   },
   {
     id: "this-or-that",
@@ -383,5 +430,9 @@ export const brainBreaks: Activity[] = [
     ageRange: { min: 6, max: 13 },
     categories: ["brain-break", "think-fast", "kill-time"],
     tags: ["observation", "memory", "no-prep", "paired"],
+    modifications: [
+      { label: "Swap Two People", description: "Instead of small changes, two students swap seats while eyes are closed. The other side has to spot who moved." },
+      { label: "Three Changes", description: "Each person makes three changes instead of one. The spotters get sixty seconds and have to find as many as possible." },
+    ],
   },
 ];

@@ -74,6 +74,8 @@ export interface Activity {
    * a teacher may still want a rough cap on how long it runs.
    */
   selfEnding?: boolean;
+  /** Optional twists on the base activity — shown as "Mix it up?" on the card. */
+  modifications?: { label: string; description: string }[];
 }
 
 /**

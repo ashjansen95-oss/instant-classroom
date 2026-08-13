@@ -21,6 +21,10 @@ export const pairsAndCurriculum: Activity[] = [
     ageRange: { min: 6, max: 18 },
     categories: ["pair-activities", "curriculum"],
     tags: ["discussion", "classic", "adaptable", "listening"],
+    modifications: [
+      { label: "Report Your Partner's Idea", description: "When sharing with the class, students must report their partner's idea instead of their own. Forces genuine listening." },
+      { label: "Stand and Share", description: "Everyone stands. You only sit down once you've shared your partner's idea with someone new. Room empties as ideas spread." },
+    ],
   },
   {
     id: "teach-your-partner",
@@ -41,6 +45,9 @@ export const pairsAndCurriculum: Activity[] = [
     ageRange: { min: 9, max: 18 },
     categories: ["pair-activities", "curriculum", "recap"],
     tags: ["revision", "explaining", "collaborative", "adaptable"],
+    modifications: [
+      { label: "Teach It Back Wrong", description: "Partner B deliberately teaches it back with one mistake. Partner A has to catch it. Tests whether they actually understood." },
+    ],
   },
   {
     id: "quiz-your-partner",
@@ -61,6 +68,9 @@ export const pairsAndCurriculum: Activity[] = [
     ageRange: { min: 9, max: 18 },
     categories: ["pair-activities", "curriculum", "recap"],
     tags: ["revision", "retrieval", "collaborative", "adaptable"],
+    modifications: [
+      { label: "Steal a Question", description: "After the quiz, pairs can 'steal' their favourite question from their partner and add it to their own revision notes." },
+    ],
   },
   {
     id: "mind-map-race",
@@ -81,6 +91,9 @@ export const pairsAndCurriculum: Activity[] = [
     ageRange: { min: 10, max: 18 },
     categories: ["pair-activities", "curriculum", "competitive"],
     tags: ["revision", "timed", "collaborative", "adaptable"],
+    modifications: [
+      { label: "Merge Maps", description: "After two minutes, pairs combine their map with the pair next to them. They get one more minute to connect the two maps together." },
+    ],
   },
   {
     id: "venn-in-thirty",
@@ -121,6 +134,9 @@ export const pairsAndCurriculum: Activity[] = [
     ageRange: { min: 8, max: 18 },
     categories: ["curriculum", "calm-down", "kill-time", "recap"],
     tags: ["assessment", "reflection", "quiet", "transition"],
+    modifications: [
+      { label: "Peer Mark", description: "After writing, swap answers with the person next to you. They mark it and write one sentence of feedback." },
+    ],
   },
   {
     id: "back-to-back-quiz",
@@ -261,6 +277,10 @@ export const pairsAndCurriculum: Activity[] = [
     ageRange: { min: 10, max: 18 },
     categories: ["curriculum", "think-fast", "recap"],
     tags: ["revision", "summarising", "volunteer", "speaking"],
+    modifications: [
+      { label: "Tag Team", description: "Two volunteers instead of one. They can tag each other in at any point — one stops, the other picks up immediately." },
+      { label: "Class Challenges", description: "After the summary, the class gets to challenge one thing the summariser said. If the challenge is valid, the summariser has to correct it on the spot." },
+    ],
   },
   {
     id: "agree-disagree-line",
@@ -361,6 +381,9 @@ export const pairsAndCurriculum: Activity[] = [
     ageRange: { min: 9, max: 18 },
     categories: ["curriculum", "kill-time", "recap"],
     tags: ["reflection", "prediction", "discussion", "adaptable"],
+    modifications: [
+      { label: "Bet on It", description: "Students rate their confidence from 1 to 5 alongside their prediction. Check next lesson and see who was right AND confident." },
+    ],
   },
   {
     id: "sentence-relay",
@@ -381,6 +404,10 @@ export const pairsAndCurriculum: Activity[] = [
     ageRange: { min: 9, max: 18 },
     categories: ["curriculum", "creative", "think-fast", "recap"],
     tags: ["writing", "english", "collaborative", "adaptable"],
+    modifications: [
+      { label: "Whisper Chain", description: "Instead of saying sentences out loud, each student whispers their sentence to the next person. Read the whole paragraph at the end — see how much drifted." },
+      { label: "Genre Shift", description: "Halfway through, announce a genre change — the paragraph must suddenly become a horror story, a romance, or a nature documentary." },
+    ],
   },
   {
     id: "silent-debate",
