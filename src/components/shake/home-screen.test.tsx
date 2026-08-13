@@ -142,21 +142,17 @@ describe("HomeScreen", () => {
 
       await userEvent.click(screen.getByRole("button", { name: "Next →" }));
       expect(screen.getByText("Or just say surprise me")).toBeInTheDocument();
-      // The final home stop has nothing left to narrate — no Next button,
-      // just the real element waiting to be tapped.
-      expect(screen.queryByRole("button", { name: "Next →" })).not.toBeInTheDocument();
     });
 
-    it("a real tap mid-narration fires the activity and skips the rest of the home tour", async () => {
+    it("tapping a real tile mid-tour advances to the next stop without firing a pick", async () => {
       await finishOnboarding();
-      // Still on the "tile" stop — tapping the real tile directly, without
-      // ever pressing Next through "more" and "surprise" first.
+      // Still on the "tile" stop — tapping the real tile directly.
 
       await userEvent.click(screen.getByRole("button", { name: "Wake them up" }));
 
-      expect(pick).toHaveBeenCalledExactlyOnceWith("wake", "button");
-      expect(screen.queryByText("Tap what you need")).not.toBeInTheDocument();
-      expect(screen.queryByText("Want something specific?")).not.toBeInTheDocument();
+      expect(pick).not.toHaveBeenCalled();
+      // Advanced to the "more" stop, not skipped to the activity screen.
+      expect(screen.getByText("Want something specific?")).toBeInTheDocument();
     });
 
     it("Skip tour ends it without ever firing an activity", async () => {

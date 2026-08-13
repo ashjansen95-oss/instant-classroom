@@ -21,7 +21,7 @@ export type WalkthroughStep = "tile" | "more" | "surprise" | "card" | "another" 
 
 const ORDER: Exclude<WalkthroughStep, null>[] = ["tile", "more", "surprise", "card", "another", "feedback", "save"];
 
-/** True for the three home-screen stops — the ones a real tap anywhere skips past. */
+/** True for the three home-screen stops — the ones where real taps advance the tour. */
 export function isHomeStep(step: WalkthroughStep): boolean {
   return step === "tile" || step === "more" || step === "surprise";
 }
@@ -39,13 +39,7 @@ export function useWalkthrough() {
     });
   }, [setStep]);
 
-  /** A real tap anywhere on Home (a tile, a More category, Surprise Me) jumps
-   *  straight past any remaining narration to the activity-screen stops —
-   *  they've already worked out the interaction, so the tour shouldn't make
-   *  them sit through "Next, Next, Next" first. */
-  const skipToActivity = useCallback(() => setStep("card"), [setStep]);
-
   const finish = useCallback(() => setStep(null), [setStep]);
 
-  return { step, hydrated, start, next, skipToActivity, finish };
+  return { step, hydrated, start, next, finish };
 }

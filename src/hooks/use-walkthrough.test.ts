@@ -31,13 +31,6 @@ describe("useWalkthrough", () => {
     expect(result.current.step).toBeNull();
   });
 
-  it("skipToActivity() jumps straight to the first activity-screen stop from any home stop", () => {
-    const { result } = renderHook(() => useWalkthrough());
-    act(() => result.current.start());
-    act(() => result.current.skipToActivity());
-    expect(result.current.step).toBe("card");
-  });
-
   it("finish() ends the tour from anywhere", () => {
     const { result } = renderHook(() => useWalkthrough());
     act(() => result.current.start());

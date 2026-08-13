@@ -38,17 +38,26 @@ export function HomeScreen() {
   const walkthrough = useWalkthrough();
   const greeting = useHomeGreeting();
 
-  // A real tap anywhere the tour hasn't reached yet — a tile, a More
-  // category, Surprise Me, even a real shake — means they've already worked
-  // it out. Jump straight to the activity-screen stops rather than making
-  // them sit through whatever narration is left.
-  const advanceIfTouring = () => {
-    if (isHomeStep(walkthrough.step)) walkthrough.skipToActivity();
+  // During the guided tour, tapping a real element on the home screen
+  // advances to the next tour stop rather than firing the app's actual
+  // functionality — with one exception: the "surprise" stop is the "now
+  // you try" moment, so the real pick fires there and navigates to the
+  // activity screen where the remaining tour stops (card, another,
+  // feedback, save) are waiting. Returns true when the tap was consumed
+  // by the tour and callers should bail out, false otherwise.
+  const advanceIfTouring = (): boolean => {
+    const current = walkthrough.step;
+    if (!isHomeStep(current)) return false;
+    walkthrough.next();
+    // On the surprise stop the teacher *should* fire a real pick —
+    // that's how they get to the activity screen for the remaining
+    // tour stops. On tile/more, block real functionality.
+    return current !== "surprise";
   };
 
   const { status, shaking, requestPermission } = useShake({
     onShake: () => {
-      advanceIfTouring();
+      if (advanceIfTouring()) return;
       pick("surprise", "shake");
     },
     enabled: preferences.shakeEnabled && !busy,
@@ -88,7 +97,7 @@ export function HomeScreen() {
 
   const onMoreSelect = (category: Category) => {
     setMoreOpen(false);
-    advanceIfTouring();
+    if (advanceIfTouring()) return;
     pick("surprise", "button", { ...EMPTY_FILTERS, categories: [category] });
   };
 
@@ -113,7 +122,7 @@ export function HomeScreen() {
         <div className="mt-5">
           <IntentGrid
             onSelect={(need) => {
-              advanceIfTouring();
+              if (advanceIfTouring()) return;
               pick(need, "button");
             }}
             busy={busy}
@@ -124,7 +133,10 @@ export function HomeScreen() {
           <button
             type="button"
             data-walkthrough="more"
-            onClick={() => setMoreOpen(true)}
+            onClick={() => {
+              if (advanceIfTouring()) return;
+              setMoreOpen(true);
+            }}
             disabled={busy}
             className="min-h-11 px-2 text-sm font-semibold text-ink-muted underline underline-offset-4 hover:text-ink disabled:opacity-60"
           >
@@ -135,7 +147,7 @@ export function HomeScreen() {
         <div className="mt-6">
           <ShakePad
             onTrigger={() => {
-              advanceIfTouring();
+              if (advanceIfTouring()) return;
               pick("surprise", "button");
             }}
             status={status}
@@ -215,6 +227,11 @@ export function HomeScreen() {
           selector="[data-walkthrough='surprise']"
           title="Or just say surprise me"
           description="Tap Surprise Me for something good, automatically matched to your class. Go on — give it a try!"
+          onNext={() => {
+            pick("surprise", "button");
+            walkthrough.next();
+          }}
+          nextLabel="Let's go"
           onSkip={walkthrough.finish}
         />
       )}
