@@ -52,8 +52,9 @@ export function TimerButton({
   const paused = timer.state === "paused";
 
   // progress is 0 at the start and 1 once time is up — this is the inverse,
-  // the share of the button that should still read as "remaining".
-  const remainingPercent = Math.round((1 - timer.progress) * 100);
+  // the share of the button that should still read as "remaining". No rounding
+  // so the fill drains smoothly between ticks instead of jumping in steps.
+  const remainingPercent = (1 - timer.progress) * 100;
 
   const handleClick = () => {
     if (finished) timer.start(); // tapping a finished timer runs it again
@@ -86,7 +87,7 @@ export function TimerButton({
       <span aria-hidden className="absolute inset-0 bg-primary-hover" />
       <span
         aria-hidden
-        className="absolute inset-y-0 right-0 bg-primary transition-[width] duration-200 ease-linear"
+        className="absolute inset-y-0 right-0 bg-primary transition-[width] duration-[250ms] ease-linear"
         style={{ width: `${finished ? 0 : remainingPercent}%` }}
       />
 

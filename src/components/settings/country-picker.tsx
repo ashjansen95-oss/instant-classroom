@@ -1,57 +1,37 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useCountry } from "@/hooks/use-country";
-import { COUNTRY_LIST } from "@/lib/i18n";
-import { cn } from "@/lib/utils";
+import { COUNTRY_LIST, type CountryCode } from "@/lib/i18n";
 
 /**
- * Country/region. This is the only control in the app that changes education
- * terminology, and it changes it everywhere at once.
+ * Country/region as a dropdown. Shows the currently selected country with its
+ * flag; tapping opens a native select. This is the only control in the app that
+ * changes education terminology, and it changes it everywhere at once.
  */
 export function CountryPicker({ compact }: { compact?: boolean }) {
   const { country, setCountry, chosenByUser, label } = useCountry();
 
   return (
     <div>
-      <ul className={cn("space-y-2", compact && "space-y-1.5")}>
-        {COUNTRY_LIST.map((option) => {
-          const selected = option.code === country;
-
-          return (
-            <li key={option.code}>
-              <button
-                type="button"
-                onClick={() => setCountry(option.code)}
-                aria-pressed={selected}
-                className={cn(
-                  "flex w-full items-center gap-3 rounded-2xl border-2 px-4 text-left",
-                  compact ? "min-h-12" : "min-h-14",
-                  selected
-                    ? "border-line-strong bg-primary-soft"
-                    : "border-line bg-surface hover:border-line-strong",
-                )}
-              >
-                <span aria-hidden className="text-xl">
-                  {option.flag}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block font-display font-bold">{option.name}</span>
-                  {!compact && (
-                    <span className="block text-xs text-ink-muted">
-                      {/* Shows the teacher exactly what will change. */}
-                      {option.names[8]?.label ?? ""} ·{" "}
-                      {option.names[option.levels[0]]?.label ?? ""}
-                    </span>
-                  )}
-                </span>
-                {/* A tick, not just a colour, so the choice is never colour-only. */}
-                {selected && <Check aria-hidden className="size-5 shrink-0 text-primary" strokeWidth={3} />}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="relative">
+        <select
+          value={country}
+          onChange={(e) => setCountry(e.target.value as CountryCode)}
+          aria-label="Country"
+          className="w-full cursor-pointer appearance-none rounded-2xl border-2 border-line-strong bg-surface py-3.5 pr-10 pl-4 font-display font-bold text-ink transition-colors hover:border-primary focus:border-primary focus:outline-none"
+        >
+          {COUNTRY_LIST.map((option) => (
+            <option key={option.code} value={option.code}>
+              {option.flag} {option.name}
+            </option>
+          ))}
+        </select>
+        <ChevronDown
+          aria-hidden
+          className="pointer-events-none absolute top-1/2 right-4 size-5 -translate-y-1/2 text-ink-muted"
+        />
+      </div>
 
       {!compact && (
         <p className="mt-3 text-sm text-ink-muted text-pretty">

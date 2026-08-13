@@ -17,6 +17,11 @@ describe("CountryPicker", () => {
   it("offers all seven markets", () => {
     render(<CountryPicker />);
 
+    const select = screen.getByRole("combobox", { name: "Country" });
+    const options = Array.from((select as HTMLSelectElement).options).map(
+      (o) => o.text,
+    );
+
     for (const name of [
       "Australia",
       "United Kingdom",
@@ -26,37 +31,26 @@ describe("CountryPicker", () => {
       "Ireland",
       "South Africa",
     ]) {
-      expect(screen.getByRole("button", { name: new RegExp(name) })).toBeInTheDocument();
+      expect(options.some((o) => o.includes(name))).toBe(true);
     }
-  });
-
-  it("previews what each market will call things", () => {
-    render(<CountryPicker />);
-
-    expect(screen.getByRole("button", { name: /Ireland/ })).toHaveTextContent("2nd Year");
-    expect(screen.getByRole("button", { name: /United States/ })).toHaveTextContent("Kindergarten");
-    expect(screen.getByRole("button", { name: /South Africa/ })).toHaveTextContent("Grade R");
   });
 
   it("persists the choice so it survives closing the app", async () => {
     render(<CountryPicker />);
 
-    await userEvent.click(screen.getByRole("button", { name: /New Zealand/ }));
+    await userEvent.selectOptions(
+      screen.getByRole("combobox", { name: "Country" }),
+      "NZ",
+    );
 
     expect(window.localStorage.getItem(`${STORAGE_PREFIX}country`)).toBe('"NZ"');
   });
 
-  it("marks the selection with more than colour", async () => {
+  it("shows the current selection", () => {
     render(<CountryPicker />);
-    const canada = screen.getByRole("button", { name: /Canada/ });
 
-    await userEvent.click(canada);
-
-    expect(canada).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("button", { name: /Australia/ })).toHaveAttribute(
-      "aria-pressed",
-      "false",
-    );
+    const select = screen.getByRole("combobox", { name: "Country" }) as HTMLSelectElement;
+    expect(select.value).toBe("AU");
   });
 
   it("changes terminology everywhere the moment it's switched", async () => {
@@ -71,12 +65,18 @@ describe("CountryPicker", () => {
 
     expect(screen.getByText("Year 6–Year 12")).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: /United States/ }));
+    await userEvent.selectOptions(
+      screen.getByRole("combobox", { name: "Country" }),
+      "US",
+    );
 
     expect(screen.getByText("Grade 6–Grade 12")).toBeInTheDocument();
     expect(screen.queryByText("Year 6–Year 12")).not.toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: /Ireland/ }));
+    await userEvent.selectOptions(
+      screen.getByRole("combobox", { name: "Country" }),
+      "IE",
+    );
 
     expect(screen.getByText("6th Class–6th Year")).toBeInTheDocument();
   });

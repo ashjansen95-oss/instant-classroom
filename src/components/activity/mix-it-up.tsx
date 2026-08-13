@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Shuffle, ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Sheet } from "@/components/ui/sheet";
 
 interface Modification {
   label: string;
@@ -13,30 +12,18 @@ export function MixItUp({ modifications }: { modifications: Modification[] }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <section aria-labelledby="mix-heading" className="mt-7">
-      <h2
-        id="mix-heading"
-        className="font-display text-sm font-bold tracking-wide text-ink-muted uppercase"
-      >
-        Mix it up
-      </h2>
-
+    <div className="mt-5">
       <button
         type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        aria-expanded={open}
-        className="mt-3 flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl border-2 border-line-strong bg-surface font-display text-lg font-bold shadow-[var(--shadow-rest)] -translate-y-0.5 transition-transform duration-100 active:translate-y-0 active:shadow-[var(--shadow-press)]"
+        onClick={() => setOpen(true)}
+        className="mx-auto flex items-center gap-1.5 rounded-full border border-line-strong px-4 py-2 text-sm font-bold text-ink-muted transition-colors hover:bg-surface-raised hover:text-ink"
       >
-        <Shuffle aria-hidden className="size-5" />
+        <span aria-hidden>🔀</span>
         Mix it up?
-        <ChevronDown
-          aria-hidden
-          className={cn("size-5 transition-transform duration-200", open && "rotate-180")}
-        />
       </button>
 
-      {open && (
-        <ul className="mt-3 space-y-3">
+      <Sheet open={open} onClose={() => setOpen(false)} title="Mix it up">
+        <ul className="space-y-3">
           {modifications.map((mod) => (
             <li
               key={mod.label}
@@ -49,7 +36,7 @@ export function MixItUp({ modifications }: { modifications: Modification[] }) {
             </li>
           ))}
         </ul>
-      )}
-    </section>
+      </Sheet>
+    </div>
   );
 }

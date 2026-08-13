@@ -203,15 +203,15 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
                 </li>
               ))}
             </ol>
+
+            {activity.modifications && activity.modifications.length > 0 && (
+              <MixItUp modifications={activity.modifications} />
+            )}
           </section>
         </div>
 
         {/* Only the activities that would otherwise leave a teacher improvising. */}
         {prompts && <PromptDeck bank={prompts} />}
-
-        {activity.modifications && activity.modifications.length > 0 && (
-          <MixItUp modifications={activity.modifications} />
-        )}
 
         <div className="mt-8 space-y-3">
           {activity.selfEnding ? [anotherButton, timerSlot] : [timerSlot, anotherButton]}

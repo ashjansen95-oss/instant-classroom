@@ -156,6 +156,8 @@
   --animate-rise-in: rise-in 0.34s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-pulse-ring: pulse-ring 2.4s ease-out infinite;
   --animate-ellipsis: ellipsis 1.2s steps(4, end) infinite;
+  --animate-slide-in-left: slide-in-left 0.15s ease-out both;
+  --animate-slide-in-right: slide-in-right 0.15s ease-out both;
 }
 
 @keyframes wiggle {
@@ -188,6 +190,16 @@
   25% { content: "."; }
   50% { content: ".."; }
   75% { content: "..."; }
+}
+
+@keyframes slide-in-left {
+  0% { opacity: 0; transform: translateX(40%); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-right {
+  0% { opacity: 0; transform: translateX(-40%); }
+  100% { opacity: 1; transform: translateX(0); }
 }
 
 /* --------------------------------------------------------------------------- */
