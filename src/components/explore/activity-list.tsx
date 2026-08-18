@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { ActivityMeta } from "@/components/activity/activity-meta";
+import { CATEGORY_LABELS } from "@/lib/labels";
 import type { Activity } from "@/lib/types";
 
 export function ActivityList({ activities }: { activities: Activity[] }) {
@@ -19,6 +20,18 @@ export function ActivityList({ activities }: { activities: Activity[] }) {
               <p className="mt-1 text-[0.9375rem] text-ink-muted text-pretty">
                 {activity.description}
               </p>
+              {activity.categories.length > 0 && (
+                <ul aria-label="Activity types" className="mt-2 flex flex-wrap gap-1.5">
+                  {activity.categories.map((cat) => (
+                    <li
+                      key={cat}
+                      className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary"
+                    >
+                      {CATEGORY_LABELS[cat]}
+                    </li>
+                  ))}
+                </ul>
+              )}
               <ActivityMeta activity={activity} compact className="mt-3" />
             </div>
             <ChevronRight aria-hidden className="mt-1 size-5 shrink-0 text-ink-faint" />
