@@ -20,6 +20,7 @@ import { usePreferences } from "@/hooks/use-preferences";
 import { useWalkthrough } from "@/hooks/use-walkthrough";
 import { track } from "@/lib/analytics";
 import { vibrate } from "@/lib/haptics";
+import { CATEGORY_LABELS } from "@/lib/labels";
 import {
   FEEDBACK_OPTIONS,
   NEEDS,
@@ -182,6 +183,19 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
           <p className="mt-3 text-xl text-ink-muted text-pretty">{activity.description}</p>
 
           <ActivityMeta activity={activity} className="mt-5" />
+
+          {activity.categories.length > 0 && (
+            <ul aria-label="Activity types" className="mt-3 flex flex-wrap gap-1.5">
+              {activity.categories.map((cat) => (
+                <li
+                  key={cat}
+                  className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary"
+                >
+                  {CATEGORY_LABELS[cat]}
+                </li>
+              ))}
+            </ul>
+          )}
 
           <section aria-labelledby="how-heading" className="mt-7">
             <h2
