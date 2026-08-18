@@ -33,7 +33,7 @@ export const memoryGames: Activity[] = [
     instructions: [
       "Describe a detailed scene out loud, once, without repeating yourself.",
       "Students listen only — no drawing while you talk.",
-      "Give them ninety seconds to draw everything they remember.",
+      "Give them two minutes to draw everything they remember.",
       "Compare a few drawings and see what got missed.",
     ],
     duration: 120,

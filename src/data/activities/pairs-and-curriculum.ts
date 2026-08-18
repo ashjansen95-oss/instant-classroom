@@ -301,6 +301,7 @@ export const pairsAndCurriculum: Activity[] = [
     ageRange: { min: 8, max: 18 },
     categories: ["curriculum", "kill-time"],
     tags: ["vocabulary", "listening", "background", "adaptable"],
+    timerless: true,
   },
   {
     id: "two-stars-and-a-wish",
@@ -460,7 +461,7 @@ export const pairsAndCurriculum: Activity[] = [
     instructions: [
       "Four questions on the board. You need a different person for each.",
       "Get their answer and their name written down.",
-      "Three minutes, then back to your seat.",
+      "Four minutes, then back to your seat.",
       "Check a couple of answers as a class.",
     ],
     duration: 240,

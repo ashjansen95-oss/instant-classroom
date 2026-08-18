@@ -58,7 +58,7 @@ export const senior: Activity[] = [
   {
     id: "walk-and-talk",
     title: "Walk and Talk",
-    description: "Two minutes walking the room in pairs, talking about one question.",
+    description: "Three minutes walking the room in pairs, talking about one question.",
     instructions: [
       "Find a partner and stand up. You're walking laps of the room.",
       "One question to discuss while you walk — no phones, no stopping.",

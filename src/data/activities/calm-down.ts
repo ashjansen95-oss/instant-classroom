@@ -145,7 +145,7 @@ export const calmDown: Activity[] = [
   {
     id: "slow-motion-everything",
     title: "Slow Motion",
-    description: "Everything for the next minute happens at a quarter speed, including you.",
+    description: "Everything for the next ninety seconds happens at a quarter speed, including you.",
     instructions: [
       "From now until the timer goes, everything is in slow motion.",
       "Slowly pack your book away. Slowly turn a page.",
