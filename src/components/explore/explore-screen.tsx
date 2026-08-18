@@ -52,12 +52,14 @@ export function ExploreScreen() {
 
   const filtered = useMemo(() => applyFilters(ACTIVITIES, filters, country), [filters, country]);
 
-  // Apply search, then sort alphabetically by title.
+  // Search bypasses filters — a teacher typing "debate" is looking for
+  // something specific and shouldn't be silently blocked by a level filter.
+  // Filters stay intact so clearing the search returns to the filtered view.
   const results = useMemo(() => {
-    const searched = searchQuery
-      ? filtered.filter((a) => matchesSearch(a, searchQuery))
+    const pool = searchQuery
+      ? ACTIVITIES.filter((a) => matchesSearch(a, searchQuery))
       : filtered;
-    return searched.toSorted((a, b) => a.title.localeCompare(b.title));
+    return pool.toSorted((a, b) => a.title.localeCompare(b.title));
   }, [filtered, searchQuery]);
 
   const activeCount = countActiveFilters(filters);
