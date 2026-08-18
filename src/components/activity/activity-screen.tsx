@@ -176,26 +176,27 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
         </div>
 
         <div data-walkthrough="card">
-          <h1 className="mt-3 font-display text-[2.25rem] leading-[1.05] font-extrabold tracking-tight text-balance uppercase">
-            {activity.title}
-          </h1>
+          <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-2">
+            <h1 className="font-display text-[2.25rem] leading-[1.05] font-extrabold tracking-tight text-balance uppercase">
+              {activity.title}
+            </h1>
+            {activity.categories.length > 0 && (
+              <ul aria-label="Activity types" className="flex flex-wrap gap-1.5">
+                {activity.categories.map((cat) => (
+                  <li
+                    key={cat}
+                    className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary"
+                  >
+                    {CATEGORY_LABELS[cat]}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
           <p className="mt-3 text-xl text-ink-muted text-pretty">{activity.description}</p>
 
           <ActivityMeta activity={activity} className="mt-5" />
-
-          {activity.categories.length > 0 && (
-            <ul aria-label="Activity types" className="mt-3 flex flex-wrap gap-1.5">
-              {activity.categories.map((cat) => (
-                <li
-                  key={cat}
-                  className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary"
-                >
-                  {CATEGORY_LABELS[cat]}
-                </li>
-              ))}
-            </ul>
-          )}
 
           <section aria-labelledby="how-heading" className="mt-7">
             <h2
