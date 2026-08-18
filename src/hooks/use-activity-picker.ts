@@ -17,6 +17,8 @@ const PREFETCH_LIMIT = 12;
 export interface PendingPick {
   activity: Activity;
   need: Need;
+  /** Replace the current history entry instead of pushing a new one. */
+  replace?: boolean;
 }
 
 /**
@@ -37,11 +39,13 @@ export function useActivityPicker() {
   const [noMatch, setNoMatch] = useState(false);
 
   const go = useCallback(
-    ({ activity, need }: PendingPick) => {
+    ({ activity, need, replace }: PendingPick) => {
       // Navigate first, then clear pending after the router has committed.
       // Clearing before the push exposed the home screen for a frame while
       // the new page was still mounting.
-      router.push(`/activity/${activity.id}?need=${need}`);
+      const url = `/activity/${activity.id}?need=${need}`;
+      if (replace) router.replace(url);
+      else router.push(url);
       requestAnimationFrame(() => setPending(null));
     },
     [router],
@@ -50,7 +54,7 @@ export function useActivityPicker() {
   const pick = useCallback(
     (
       need: Need,
-      source: "shake" | "button",
+      source: "shake" | "button" | "swap",
       filters?: FilterState,
       /** Passed by "give me another like this" — steers towards its shape. */
       like?: Activity | null,
@@ -85,9 +89,20 @@ export function useActivityPicker() {
 
       record(activity);
 
+      // "Give me another" is a rejection, not a destination — replace the
+      // current history entry so Back goes straight out to Home/Explore
+      // instead of replaying every rejected activity. The flag rides on the
+      // PendingPick so it's available when go() fires after the reel lands,
+      // avoiding stale-closure issues with React state.
+      const pendingPick: PendingPick = {
+        activity,
+        need,
+        replace: source === "swap",
+      };
+
       // No spinning reel for anyone who has asked for less motion.
-      if (reducedMotion) go({ activity, need });
-      else setPending({ activity, need });
+      if (reducedMotion) go(pendingPick);
+      else setPending(pendingPick);
     },
     [activeLevel, country, go, history, pending, record, reducedMotion],
   );

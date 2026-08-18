@@ -84,7 +84,9 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
     track("activity_skipped", { id: activity.id });
     // A plain fresh pick — no similarity bias. That's what "More like this"
     // below is for; this button means "not this one", nothing more specific.
-    pick(need, "button");
+    // "swap" tells the router to replace rather than push, so Back goes
+    // straight out to Home/Explore instead of replaying rejected activities.
+    pick(need, "swap");
   };
 
   // Self-ending activities (a champion, a correct guess, five points) finish

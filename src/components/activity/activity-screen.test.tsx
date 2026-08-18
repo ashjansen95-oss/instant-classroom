@@ -118,7 +118,7 @@ describe("ActivityScreen action buttons", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "Give me another" }));
 
-    expect(pick).toHaveBeenCalledWith("surprise", "button");
+    expect(pick).toHaveBeenCalledWith("surprise", "swap");
   });
 
   it("replaces the Start timer button with the timer panel in place, without navigating away", async () => {
