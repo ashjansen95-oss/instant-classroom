@@ -13,7 +13,7 @@ import { isHomeStep, useWalkthrough } from "@/hooks/use-walkthrough";
 import { track } from "@/lib/analytics";
 import { Page } from "@/components/ui/page";
 import { Button } from "@/components/ui/button";
-import { EMPTY_FILTERS, NEEDS, type Category, type Need } from "@/lib/types";
+import { EMPTY_FILTERS, NEEDS, type Category, type Need, type Subject } from "@/lib/types";
 import { ActivityReel } from "./activity-reel";
 import { InstallPrompt } from "./install-prompt";
 import { IntentGrid } from "./intent-grid";
@@ -99,6 +99,12 @@ export function HomeScreen() {
     setMoreOpen(false);
     if (advanceIfTouring()) return;
     pick("surprise", "button", { ...EMPTY_FILTERS, categories: [category] });
+  };
+
+  const onMoreSelectSubject = (subject: Subject) => {
+    setMoreOpen(false);
+    if (advanceIfTouring()) return;
+    pick("surprise", "button", { ...EMPTY_FILTERS, subjects: [subject] });
   };
 
   return (
@@ -196,7 +202,12 @@ export function HomeScreen() {
         </p>
       </Page>
 
-      <MoreSheet open={moreOpen} onClose={() => setMoreOpen(false)} onSelect={onMoreSelect} />
+      <MoreSheet
+        open={moreOpen}
+        onClose={() => setMoreOpen(false)}
+        onSelect={onMoreSelect}
+        onSelectSubject={onMoreSelectSubject}
+      />
 
       {/* Suppressed while the More sheet itself is open — a highlighted
           "More" button behind an already-open sheet just reads as confused,

@@ -80,14 +80,28 @@ export function scoreCandidates({
   const filtered = applyFilters(ageAppropriate, filters, country);
   if (filtered.length === 0) return [];
 
-  // 3. Surprise Me skips activities that need lesson context or a deliberate
-  //    mood choice — recap needs a lesson, curriculum needs subject content,
-  //    mindfulness is too intentional, and icebreakers are a start-of-term pick.
+  // 3. Every need-based pick — the six intent tiles and Surprise Me alike —
+  //    skips activities tagged with a curriculum subject, UNLESS the teacher
+  //    explicitly asked for one (the More sheet's Subjects tiles, or an
+  //    Explore subject filter feeding in here). Subject content is a
+  //    deliberate choice, not something "wake them up" or a shake should
+  //    hand back on its own — but once asked for, it must actually appear;
+  //    `filtered` is already narrowed to that subject by `applyFilters`, so
+  //    this step becomes a no-op rather than filtering it straight back out.
+  const noSubject =
+    filters.subjects.length > 0
+      ? filtered
+      : filtered.filter((a) => !a.subjects || a.subjects.length === 0);
+
+  // 4. Surprise Me additionally skips activities that need lesson context or
+  //    a deliberate mood choice — recap needs a lesson, curriculum needs
+  //    subject content, mindfulness is too intentional, and icebreakers are
+  //    a start-of-term pick.
   const SURPRISE_EXCLUDED: Category[] = ["recap", "curriculum", "mindfulness", "icebreakers"];
   const contextFree =
     need === "surprise"
-      ? filtered.filter((a) => !a.categories.some((c) => SURPRISE_EXCLUDED.includes(c)))
-      : filtered;
+      ? noSubject.filter((a) => !a.categories.some((c) => SURPRISE_EXCLUDED.includes(c)))
+      : noSubject;
   if (contextFree.length === 0) return [];
 
   // 5. Drop what they've just seen — but only while enough choice remains.

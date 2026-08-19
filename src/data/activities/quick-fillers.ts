@@ -352,6 +352,7 @@ export const quickFillers: Activity[] = [
     movement: "seated",
     equipment: ["whiteboard"],
     ageRange: { min: 6, max: 16 },
+    subjects: ["Art"],
     categories: ["kill-time", "competitive", "creative", "curriculum"],
     tags: ["drawing", "teams", "loud", "adaptable"],
     modifications: [

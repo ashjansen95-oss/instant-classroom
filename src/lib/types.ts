@@ -50,7 +50,7 @@ export type Category = (typeof CATEGORIES)[number];
  * teacher's own profile uses in `@/lib/teaching-context` — that's a separate,
  * unconstrained field, not activity data.
  */
-export const SUBJECTS = ["English", "Mathematics", "Science", "History", "Geography"] as const;
+export const SUBJECTS = ["English", "Mathematics", "Science", "History", "Geography", "Art"] as const;
 export type Subject = (typeof SUBJECTS)[number];
 
 /** Equipment a teacher would actually have to hand. "none" is by far the best answer. */

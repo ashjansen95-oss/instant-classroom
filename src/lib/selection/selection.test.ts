@@ -197,6 +197,18 @@ describe("picking", () => {
     expect(drawn.every((a) => a.noise === "quiet")).toBe(true);
   });
 
+  it("never hands a subject-tagged activity back to an intent tile or Surprise Me", () => {
+    // Subject activities (Maths, English, Science, History, Geography) are a
+    // deliberate choice made through Explore's Subject filter — a teacher
+    // tapping a mood tile or shaking has not asked for curriculum content.
+    const needs: Need[] = ["reset", "wake", "calm", "move", "fun", "think", "surprise"];
+    for (const need of needs) {
+      const drawn = drawSequence(need, 15);
+      const subjectPicks = drawn.filter((a) => a.subjects && a.subjects.length > 0);
+      expect(subjectPicks.map((a) => a.id), `${need} returned subject activities`).toEqual([]);
+    }
+  });
+
   it("returns high-energy activities when the teacher asks to wake them up", () => {
     const drawn = drawSequence("wake", 20);
     expect(drawn.every((a) => a.energy === "high" || a.energy === "medium")).toBe(true);

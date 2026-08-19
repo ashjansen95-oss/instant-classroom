@@ -306,12 +306,12 @@ export const subjectHistory: Activity[] = [
   {
     id: "interrogate-the-source",
     title: "Interrogate The Source",
-    description: "Groups draft the three sharpest questions to ask a source, then test them against a real one.",
+    description: "Groups draft three trust-testing questions, then try them out on a real historical source.",
     instructions: [
-      "Groups of three. Their brief: you may ask any source only three questions.",
-      "Draft the three questions that would tell you most about whether to trust it.",
-      "Now read out one real source from the bank. Every group runs their three questions against it.",
-      "Groups pitch their three and what the questions revealed. Agree on a class top three.",
+      "Groups of three. The brief: imagine you can ask any historical source exactly three questions before deciding whether to trust it.",
+      "Draft those three questions now — nothing to test them on yet, just the questions.",
+      "Now read out one real source from the bank. Each group asks their three questions of it and writes down what the answers tell them.",
+      "Groups share their questions and what running them actually revealed. Agree on a class top three questions.",
     ],
     duration: 300,
     energy: "low",

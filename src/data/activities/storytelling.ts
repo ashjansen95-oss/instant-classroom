@@ -91,6 +91,7 @@ export const storytelling: Activity[] = [
     movement: "seated",
     equipment: ["paper"],
     ageRange: { min: 7, max: 14 },
+    subjects: ["Art"],
     categories: ["storytelling", "pair-activities", "challenges"],
     tags: ["communication", "drawing", "collaborative", "listening"],
     modifications: [

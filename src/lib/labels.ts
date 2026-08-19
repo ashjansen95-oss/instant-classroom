@@ -83,7 +83,22 @@ export const SUBJECT_LABELS: Record<Subject, string> = {
   Science: "Science",
   History: "History",
   Geography: "Geography",
+  Art: "Art",
 };
+
+/**
+ * The More sheet's "Subjects" row — every subject the library has real
+ * content for. Tapping one behaves exactly like a category tile: pick,
+ * reel, activity, drawn only from that subject.
+ */
+export const SUBJECT_OPTIONS: { subject: Subject; emoji: string; label: string }[] = [
+  { subject: "English", emoji: "📖", label: "English" },
+  { subject: "Mathematics", emoji: "🔢", label: "Mathematics" },
+  { subject: "Science", emoji: "🔬", label: "Science" },
+  { subject: "History", emoji: "🏛️", label: "History" },
+  { subject: "Geography", emoji: "🌍", label: "Geography" },
+  { subject: "Art", emoji: "🎨", label: "Art" },
+];
 
 export const DURATION_LABELS = Object.fromEntries(
   Object.entries(DURATION_BUCKETS).map(([key, value]) => [key, value.label]),
@@ -120,7 +135,7 @@ export const NEED_LABELS = Object.fromEntries(
  * "More" a trap, returning the same one or two things on every tap.
  */
 export const MORE_OPTIONS: { category: Category; emoji: string; label: string }[] = [
-  { category: "creative", emoji: "🎨", label: "Art" },
+  { category: "creative", emoji: "🎨", label: "Creative" },
   { category: "competitive", emoji: "🏆", label: "Games" },
   { category: "pair-activities", emoji: "🤝", label: "Partner up" },
   { category: "recap", emoji: "🔁", label: "Recap" },
