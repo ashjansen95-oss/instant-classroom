@@ -12,7 +12,7 @@ import { useCountry } from "@/hooks/use-country";
 import { useExploreFilters } from "@/hooks/use-explore-filters";
 import { useExploreScroll } from "@/hooks/use-explore-scroll";
 import { useTeaching } from "@/hooks/use-teaching";
-import { CATEGORY_LABELS } from "@/lib/labels";
+import { CATEGORY_LABELS, SUBJECT_LABELS } from "@/lib/labels";
 import { track } from "@/lib/analytics";
 import { applyFilters, countActiveFilters } from "@/lib/selection";
 import type { Activity } from "@/lib/types";
@@ -25,7 +25,8 @@ function matchesSearch(activity: Activity, query: string): boolean {
     activity.title.toLowerCase().includes(q) ||
     activity.description.toLowerCase().includes(q) ||
     activity.tags.some((t) => t.toLowerCase().includes(q)) ||
-    activity.categories.some((c) => CATEGORY_LABELS[c].toLowerCase().includes(q))
+    activity.categories.some((c) => CATEGORY_LABELS[c].toLowerCase().includes(q)) ||
+    (activity.subjects ?? []).some((s) => SUBJECT_LABELS[s].toLowerCase().includes(q))
   );
 }
 

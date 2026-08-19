@@ -2,6 +2,7 @@ import type { Activity } from "@/lib/types";
 import { brainBreaks } from "./brain-breaks";
 import { calmDown } from "./calm-down";
 import { challenges } from "./challenges";
+import { classicGames } from "./classic-games";
 import { creative } from "./creative";
 import { drama } from "./drama";
 import { earlyYears } from "./early-years";
@@ -15,6 +16,11 @@ import { riddles } from "./riddles";
 import { senior } from "./senior";
 import { silly } from "./silly";
 import { storytelling } from "./storytelling";
+import { subjectEnglish } from "./subject-english";
+import { subjectGeography } from "./subject-geography";
+import { subjectHistory } from "./subject-history";
+import { subjectMathematics } from "./subject-mathematics";
+import { subjectScience } from "./subject-science";
 import { teamBuilding } from "./team-building";
 import { thinkFast } from "./think-fast";
 import { wakeThemUp } from "./wake-them-up";
@@ -45,6 +51,12 @@ export const ACTIVITIES: Activity[] = [
   ...teamBuilding,
   ...icebreakers,
   ...mindfulness,
+  ...subjectEnglish,
+  ...subjectMathematics,
+  ...subjectScience,
+  ...subjectHistory,
+  ...subjectGeography,
+  ...classicGames,
 ];
 
 const BY_ID = new Map(ACTIVITIES.map((activity) => [activity.id, activity]));

@@ -7,6 +7,7 @@ import type {
   Movement,
   Need,
   Noise,
+  Subject,
 } from "@/lib/types";
 import { DURATION_BUCKETS } from "@/lib/types";
 
@@ -74,6 +75,14 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   "team-building": "Team building",
   icebreakers: "Icebreakers",
   mindfulness: "Mindfulness",
+};
+
+export const SUBJECT_LABELS: Record<Subject, string> = {
+  English: "English",
+  Mathematics: "Mathematics",
+  Science: "Science",
+  History: "History",
+  Geography: "Geography",
 };
 
 export const DURATION_LABELS = Object.fromEntries(

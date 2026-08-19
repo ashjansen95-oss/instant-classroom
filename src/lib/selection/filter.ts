@@ -1,5 +1,5 @@
 import { ageRangeIncludes, studentAgeForLevel, type CountryCode } from "@/lib/i18n";
-import type { Activity, DurationBucket, FilterState } from "@/lib/types";
+import type { Activity, DurationBucket, FilterState, Subject } from "@/lib/types";
 import { DURATION_BUCKETS } from "@/lib/types";
 
 /** Hard filtering. Nothing here is a preference — if a filter is set, it's absolute. */
@@ -18,6 +18,12 @@ function allows<T>(selected: T[], value: T): boolean {
 
 function allowsAny<T>(selected: T[], values: T[]): boolean {
   return selected.length === 0 || values.some((value) => selected.includes(value));
+}
+
+/** Activities with no subject (subject-agnostic frames) only match an empty filter. */
+function allowsSubject(selected: Subject[], values: Subject[] | undefined): boolean {
+  if (selected.length === 0) return true;
+  return (values ?? []).some((value) => selected.includes(value));
 }
 
 /**
@@ -50,7 +56,8 @@ export function matchesFilters(
     // Matches if the activity suits any of the levels the teacher picked.
     (filters.levels.length === 0 ||
       filters.levels.some((level) => suitsTeachingLevel(activity, country, level))) &&
-    allowsAny(filters.categories, activity.categories)
+    allowsAny(filters.categories, activity.categories) &&
+    allowsSubject(filters.subjects, activity.subjects)
   );
 }
 

@@ -8,6 +8,7 @@ import {
   MOVEMENTS,
   NOISE_LEVELS,
   DURATION_BUCKETS,
+  SUBJECTS,
   type DurationBucket,
 } from "@/lib/types";
 import { COUNTRY_CODES, MAX_AGE, MIN_AGE, levelsIn, suitsLevel } from "@/lib/i18n";
@@ -72,6 +73,10 @@ describe("activity library", () => {
     for (const category of activity.categories) expect(CATEGORIES).toContain(category);
 
     expect(activity.tags.length).toBeGreaterThan(0);
+
+    if (activity.subjects) {
+      for (const subject of activity.subjects) expect(SUBJECTS).toContain(subject);
+    }
   });
 
   it.each(ACTIVITIES)("$id has a duration that lands in a filter bucket", (activity) => {
@@ -88,6 +93,18 @@ describe("activity library", () => {
         matches.length,
         `category "${category}" only has ${matches.length} activities`,
       ).toBeGreaterThanOrEqual(8);
+    }
+  });
+
+  it("covers every subject with a usable number of activities", () => {
+    // Mirrors the per-category gate above — a teacher whose default subject is
+    // set thin should never see the same two or three activities on repeat.
+    for (const subject of SUBJECTS) {
+      const matches = ACTIVITIES.filter((a) => a.subjects?.includes(subject));
+      expect(
+        matches.length,
+        `subject "${subject}" only has ${matches.length} activities`,
+      ).toBeGreaterThanOrEqual(12);
     }
   });
 
@@ -172,6 +189,7 @@ describe("activity library", () => {
       [
         "beat-the-teacher",
         "changed-game",
+        "corner-countdown",
         "count-to-twenty",
         "freeze-frame",
         "guess-my-number",

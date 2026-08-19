@@ -12,6 +12,7 @@ import {
   FORMAT_LABELS,
   MOVEMENT_LABELS,
   NOISE_LABELS,
+  SUBJECT_LABELS,
 } from "@/lib/labels";
 import {
   CATEGORIES,
@@ -22,6 +23,7 @@ import {
   FORMATS,
   MOVEMENTS,
   NOISE_LEVELS,
+  SUBJECTS,
   type FilterState,
 } from "@/lib/types";
 
@@ -68,6 +70,13 @@ const GROUP_EMOJI: Partial<Record<Group, Record<string, string>>> = {
     icebreakers: "👋",
     mindfulness: "🧘",
   },
+  subjects: {
+    English: "📖",
+    Mathematics: "🔢",
+    Science: "🔬",
+    History: "🏛️",
+    Geography: "🌍",
+  },
 };
 
 /** Every filter group, as data, so the sheet is one loop rather than eight blocks. */
@@ -89,6 +98,7 @@ const GROUPS: {
   { key: "movement", label: "Movement", options: MOVEMENTS, labels: MOVEMENT_LABELS },
   { key: "equipment", label: "Equipment", options: EQUIPMENT, labels: EQUIPMENT_LABELS },
   { key: "categories", label: "Type", options: CATEGORIES, labels: CATEGORY_LABELS },
+  { key: "subjects", label: "Subject", options: SUBJECTS, labels: SUBJECT_LABELS },
 ];
 
 export function FilterSheet({

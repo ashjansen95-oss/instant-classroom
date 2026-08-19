@@ -20,7 +20,7 @@ import { usePreferences } from "@/hooks/use-preferences";
 import { useWalkthrough } from "@/hooks/use-walkthrough";
 import { track } from "@/lib/analytics";
 import { vibrate } from "@/lib/haptics";
-import { CATEGORY_LABELS } from "@/lib/labels";
+import { CATEGORY_LABELS, SUBJECT_LABELS } from "@/lib/labels";
 import {
   FEEDBACK_OPTIONS,
   NEEDS,
@@ -182,8 +182,16 @@ export function ActivityScreen({ activity }: { activity: Activity }) {
             <h1 className="font-display text-[2.25rem] leading-[1.05] font-extrabold tracking-tight text-balance uppercase">
               {activity.title}
             </h1>
-            {activity.categories.length > 0 && (
+            {(activity.categories.length > 0 || (activity.subjects?.length ?? 0) > 0) && (
               <ul aria-label="Activity types" className="flex flex-wrap gap-1.5">
+                {activity.subjects?.map((subject) => (
+                  <li
+                    key={subject}
+                    className="rounded-full bg-accent/15 px-2.5 py-0.5 text-xs font-semibold text-accent"
+                  >
+                    {SUBJECT_LABELS[subject]}
+                  </li>
+                ))}
                 {activity.categories.map((cat) => (
                   <li
                     key={cat}

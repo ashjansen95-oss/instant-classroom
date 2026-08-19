@@ -43,6 +43,16 @@ export const CATEGORIES = [
 ] as const;
 export type Category = (typeof CATEGORIES)[number];
 
+/**
+ * Curriculum subject, orthogonal to `Category` — a category is what *kind* of
+ * activity it is (creative, think-fast…), a subject is what it's *about*.
+ * Deliberately scoped to these five for now, not the wider free-text list a
+ * teacher's own profile uses in `@/lib/teaching-context` — that's a separate,
+ * unconstrained field, not activity data.
+ */
+export const SUBJECTS = ["English", "Mathematics", "Science", "History", "Geography"] as const;
+export type Subject = (typeof SUBJECTS)[number];
+
 /** Equipment a teacher would actually have to hand. "none" is by far the best answer. */
 export const EQUIPMENT = ["none", "paper", "whiteboard", "timer", "other"] as const;
 export type Equipment = (typeof EQUIPMENT)[number];
@@ -75,6 +85,14 @@ export interface Activity {
    */
   ageRange: AgeRange;
   categories: Category[];
+  /**
+   * The curriculum subject(s) this activity is genuinely about — most have
+   * one, a few legitimately cross two (e.g. reading a graph is Science and
+   * Mathematics). Omitted (or empty) for subject-agnostic activities, and
+   * for curriculum frames like Quiz Your Partner where the teacher's own
+   * lesson supplies the subject.
+   */
+  subjects?: Subject[];
   tags: string[];
   /**
    * True when the activity ends on its own condition — a champion, a correct
@@ -128,6 +146,7 @@ export interface FilterState {
   /** Canonical levels the teacher selected, not bands. */
   levels: EducationLevel[];
   categories: Category[];
+  subjects: Subject[];
 }
 
 export const EMPTY_FILTERS: FilterState = {
@@ -139,6 +158,7 @@ export const EMPTY_FILTERS: FilterState = {
   equipment: [],
   levels: [],
   categories: [],
+  subjects: [],
 };
 
 /** Monetisation seam. Nothing is gated in the MVP — see FUTURE.md. */
