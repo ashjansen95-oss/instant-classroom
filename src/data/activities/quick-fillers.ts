@@ -126,6 +126,7 @@ export const quickFillers: Activity[] = [
     equipment: ["none"],
     ageRange: { min: 6, max: 16 },
     timerless: true,
+    subjects: ["English"],
     categories: ["kill-time", "creative", "think-fast", "writing"],
     tags: ["no-prep", "funny", "quick", "discussion"],
   },

@@ -39,7 +39,7 @@ export const subjectHistory: Activity[] = [
     ],
     duration: 120,
     energy: "low",
-    noise: "moderate",
+    noise: "quiet",
     format: "pairs",
     movement: "seated",
     equipment: ["none"],

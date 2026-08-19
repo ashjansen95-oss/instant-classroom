@@ -164,12 +164,4 @@ export const subjectEnglishPrompts: PromptBanks = {
       "A team losing badly, narrated by the coach.",
     ],
   },
-  "kill-your-darlings": {
-    label: "Nothing to hand? Cut this:",
-    items: [
-      "In my personal opinion, I think that it is fairly clear that reading books is actually quite a good thing for people to do. There are a lot of very many different reasons for this. One of the reasons is that reading books can help to improve and increase your vocabulary, which is the words that you know.",
-      "The thing about the internet, which is something that basically everybody uses these days in the modern world of today, is that it has changed a lot of things about the way that we live our lives. In the past, before the internet existed, people had to go to a library building to find out information about things.",
-      "It was a day that was extremely hot, and the sun was beating down very strongly from up above in the sky. Slowly and carefully, she walked in a slow way down the long street, which seemed to stretch on and on for what felt like it might be forever. There was nobody else around anywhere.",
-    ],
-  },
 };

@@ -19,6 +19,7 @@ export const writing: Activity[] = [
     movement: "seated",
     equipment: ["paper"],
     ageRange: { min: 8, max: 16 },
+    subjects: ["English"],
     categories: ["writing", "creative", "calm-down"],
     tags: ["poetry", "quiet", "quick", "no-prep"],
     modifications: [
@@ -43,6 +44,7 @@ export const writing: Activity[] = [
     movement: "seated",
     equipment: ["paper"],
     ageRange: { min: 8, max: 16 },
+    subjects: ["English"],
     categories: ["writing", "creative", "silly"],
     tags: ["funny", "quick", "performance", "no-prep"],
     modifications: [
@@ -67,6 +69,7 @@ export const writing: Activity[] = [
     movement: "seated",
     equipment: ["paper"],
     ageRange: { min: 9, max: 16 },
+    subjects: ["English"],
     categories: ["writing", "creative", "challenges"],
     tags: ["quiet", "writing-game", "vocabulary", "challenge"],
     modifications: [
@@ -91,6 +94,7 @@ export const writing: Activity[] = [
     movement: "seated",
     equipment: ["paper"],
     ageRange: { min: 8, max: 16 },
+    subjects: ["English"],
     categories: ["writing", "creative", "silly"],
     tags: ["funny", "quick", "voting", "no-prep"],
     modifications: [

@@ -115,6 +115,7 @@ export const storytelling: Activity[] = [
     movement: "seated",
     equipment: ["paper"],
     ageRange: { min: 9, max: 16 },
+    subjects: ["English"],
     categories: ["storytelling", "writing", "creative"],
     tags: ["writing", "quiet", "narrative", "quick"],
     modifications: [

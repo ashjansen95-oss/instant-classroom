@@ -45,6 +45,7 @@ export const silly: Activity[] = [
     equipment: ["none"],
     ageRange: { min: 8, max: 16 },
     timerless: true,
+    subjects: ["English"],
     categories: ["silly", "writing", "creative"],
     tags: ["vocabulary", "funny", "no-prep", "quick"],
     modifications: [
